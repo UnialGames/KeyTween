@@ -4,11 +4,11 @@ Unity uGUI용 키프레임 UI 애니메이션 — 타임라인에서 만들고, 
 
 [![Unity 6000.0+](https://img.shields.io/badge/unity-6000.0%2B-000.svg)](https://unity.com/releases/editor/archive)
 [![Release](https://img.shields.io/github/v/release/UnialGames/KeyTween)](https://github.com/UnialGames/KeyTween/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
 
 [English README](README.md)
 
-<img src="Docs/media/rpg/rpg-summon.gif" width="640" alt="RPG 샘플: 소환">
+<img src="Docs~/media/rpg/rpg-summon.gif" width="640" alt="RPG 샘플: 소환">
 
 ## 개요
 
@@ -60,7 +60,7 @@ https://github.com/UnialGames/KeyTween.git#v0.1.0
 }
 ```
 
-`#v0.1.0` 대신 `#upm`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
+`#v0.1.0` 대신 `#main`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
 
 ## 시작하기
 
@@ -73,18 +73,18 @@ https://github.com/UnialGames/KeyTween.git#v0.1.0
 3. 상태 탭의 **+**로 상태를 만들고, 상태 인스펙터에서 이름을 `Hover`로 바꿉니다.
 4. 타임라인 빈 곳을 우클릭 → **Add Track…** → `RectTransform` 아래 **Scale**, `Image` 아래 **Color**를 고르고 → **Add 2**. 트랙마다 0초 키와 끝 키(0.2초)가 생깁니다.
 
-   <img src="Docs/media/editor/editor-add-track.gif" width="640" alt="트랙 추가">
+   <img src="Docs~/media/editor/editor-add-track.gif" width="640" alt="트랙 추가">
 
 5. Scale의 끝 키를 클릭해 Value `1.1`, Ease `OutBack`. Color의 끝 키는 조금 밝은 색으로 바꿉니다.
 6. 눈금자를 끌거나 **▶**로 미리봅니다. Play 모드가 필요 없습니다.
 
-   <img src="Docs/media/editor/editor-preview.gif" width="640" alt="미리보기">
+   <img src="Docs~/media/editor/editor-preview.gif" width="640" alt="미리보기">
 
 7. 상태 인스펙터의 **Play On**을 `PointerEnter`로 고릅니다.
 8. 같은 방법으로 `Unhover`를 만듭니다. 끝 키는 `1`과 원래 색, Play On은 `PointerExit`.
 9. Play 모드에서 버튼 위로 포인터를 올렸다 뺍니다.
 
-   <img src="Docs/media/editor/editor-play-mode.gif" width="494" alt="Play 모드">
+   <img src="Docs~/media/editor/editor-play-mode.gif" width="494" alt="Play 모드">
 
 ### 2. 코드에서 재생하기
 
@@ -212,7 +212,7 @@ KeyTweenEventInfo shown = await anim.WaitEventAsync("Shown");   // 어느 상태
 - **자식 호출** — 팝업의 `Open` 상태가 0.25초에 버튼의 `Hover`를 부릅니다(타임라인 우클릭 → **Add Child Call ▸ 자식 ▸ 상태**). 부모 타임라인에 막대로 보이고, 부모 길이에 포함됩니다.
 - **오버라이드** — 호출 아래에 불린 상태의 트랙이 흐리게 보입니다. 하나를 클릭하면 **그 트랙만** 팝업에서 덮어씁니다. 버튼 Prefab은 바뀌지 않고, 손대지 않은 트랙은 계속 원본을 따릅니다. 여러 단계(화면 > 팝업 > 버튼)에서는 가장 바깥이 이깁니다(Unity 중첩 Prefab 규칙과 같음).
 
-영상: [팝업 안의 버튼만 바꾸기](https://youtu.be/rXO_kNexiGc) · 자세히: [Guide §12](Docs/Guide.md#12-자식-호출과-오버라이드-중첩-prefab)
+영상: [팝업 안의 버튼만 바꾸기](https://youtu.be/rXO_kNexiGc) · 자세히: [Guide §12](Docs~/Guide.md#12-자식-호출과-오버라이드-중첩-prefab)
 
 ## 샘플링, 값 읽고 쓰기
 
@@ -244,7 +244,7 @@ list.RemoveItem(5);                                // 데이터에서 지운 뒤
 await list.ResizeItem(3, 0f);                      // 아코디언: 한 아이템 크기를 애니메이션한 뒤 지우기
 ```
 
-배치: 세로, 가로, 그리드, 메이슨리. 여기에 루프, 스냅(가까운 쪽 / 한 번에 한 칸), 자동 스크롤, 끝 유지, 섹션 헤더 고정을 더해 캐러셀, 페이지, 배너, 휠 피커, 채팅, 아코디언, 탭, 접히는 헤더, 당겨서 새로고침을 만듭니다. 도우미: `KeyTweenPageIndicator`, `KeyTweenScrollScrub`, `KeyTweenPullToRefresh`. **UI Components** 샘플에 18가지 예시가 있습니다. 자세히: [ScrollList](Docs/ScrollList.md)
+배치: 세로, 가로, 그리드, 메이슨리. 여기에 루프, 스냅(가까운 쪽 / 한 번에 한 칸), 자동 스크롤, 끝 유지, 섹션 헤더 고정을 더해 캐러셀, 페이지, 배너, 휠 피커, 채팅, 아코디언, 탭, 접히는 헤더, 당겨서 새로고침을 만듭니다. 도우미: `KeyTweenPageIndicator`, `KeyTweenScrollScrub`, `KeyTweenPullToRefresh`. **UI Components** 샘플에 18가지 예시가 있습니다. 자세히: [ScrollList](Docs~/ScrollList.md)
 
 ## 화면 전환
 
@@ -291,7 +291,7 @@ public Awaitable WillEnter(KeyTweenTransition t)
 }
 ```
 
-자세히: [Screens](Docs/Screens.md)
+자세히: [Screens](Docs~/Screens.md)
 
 ## 연동 (UniTask, R3, UIEffect)
 
@@ -316,7 +316,7 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 | R3 | `PlayAsObservable`(구독하면 재생, 끝나면 한 번 내보냄, 구독을 끊으면 멈춤), `EventsAsObservable`, `EventAsObservable` |
 | UIEffect (`com.coffee.ui-effect` 5.0 이상) | 트랙 14종: 톤, 색, 샘플링, 트랜지션(디졸브 등), 엣지 샤인, 그라데이션, 디테일 |
 
-자세히: [Integrations](Docs/Integrations.md)
+자세히: [Integrations](Docs~/Integrations.md)
 
 ## 샘플
 
@@ -329,9 +329,9 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 
 | 영웅 목록 → 상세(공유 요소 전환) → 강화 | 모험 → 편성 → 전투 → 승리 |
 |---|---|
-| ![영웅](Docs/media/rpg/rpg-heroes.gif) | ![전투](Docs/media/rpg/rpg-battle.gif) |
+| ![영웅](Docs~/media/rpg/rpg-heroes.gif) | ![전투](Docs~/media/rpg/rpg-battle.gif) |
 | **랭킹: 긴 목록 스크롤** | **우편 받기 · 출석 보상** |
-| ![랭킹](Docs/media/rpg/rpg-ranking.gif) | ![우편](Docs/media/rpg/rpg-mail.gif) |
+| ![랭킹](Docs~/media/rpg/rpg-ranking.gif) | ![우편](Docs~/media/rpg/rpg-mail.gif) |
 
 ## 성능
 
@@ -346,20 +346,20 @@ Windows 플레이어, IL2CPP 릴리스, 2,000개. 괄호는 같은 값을 스크
 - 재생 중 GC 할당이 없고, 코드 트윈(DOTween Pro·LitMotion)과 같은 수준이며 Animator·AnimationUI보다 가볍습니다. 글자 효과는 가장 빠릅니다.
 - 약한 곳은 재생 시작 비용입니다(2,000개를 한 번에 다시 재생: 2.31ms, LitMotion 1.34ms).
 
-측정 방법과 전체 표: [Performance](Docs/Performance.md), [Benchmarks](Docs/Benchmarks.md)
+측정 방법과 전체 표: [Performance](Docs~/Performance.md), [Benchmarks](Docs~/Benchmarks.md)
 
 ## 문서
 
 | 문서 | 내용 |
 |---|---|
-| [Guide](Docs/Guide.md) | 에디터: 창, 상태·트랙·키, 미리보기, 저장, 녹화, 중첩 Prefab 오버라이드 |
-| [API](Docs/API.md) | 코드: 재생, 기다리기, 이벤트, 런타임 값 |
-| [ScrollList](Docs/ScrollList.md) | 스크롤 리스트와 도우미 컴포넌트 |
-| [Screens](Docs/Screens.md) | 화면 전환 컨테이너, 생명주기, 공유 요소 |
-| [Integrations](Docs/Integrations.md) | UniTask, R3, UIEffect |
-| [Comparison](Docs/Comparison.md) | 다른 도구와 제작 편의 비교 |
-| [Performance](Docs/Performance.md) · [Benchmarks](Docs/Benchmarks.md) | 위 수치의 측정 방법과 전체 결과 표 |
+| [Guide](Docs~/Guide.md) | 에디터: 창, 상태·트랙·키, 미리보기, 저장, 녹화, 중첩 Prefab 오버라이드 |
+| [API](Docs~/API.md) | 코드: 재생, 기다리기, 이벤트, 런타임 값 |
+| [ScrollList](Docs~/ScrollList.md) | 스크롤 리스트와 도우미 컴포넌트 |
+| [Screens](Docs~/Screens.md) | 화면 전환 컨테이너, 생명주기, 공유 요소 |
+| [Integrations](Docs~/Integrations.md) | UniTask, R3, UIEffect |
+| [Comparison](Docs~/Comparison.md) | 다른 도구와 제작 편의 비교 |
+| [Performance](Docs~/Performance.md) · [Benchmarks](Docs~/Benchmarks.md) | 위 수치의 측정 방법과 전체 결과 표 |
 
 ## 라이선스
 
-[MIT](LICENSE). RPG 샘플의 아이콘은 [game-icons.net](https://game-icons.net)(CC BY 3.0, 작가는 `Samples/RPG/Art/CREDITS.md`), 글꼴은 Passion One(SIL OFL 1.1)입니다.
+[MIT](LICENSE.md). RPG 샘플의 아이콘은 [game-icons.net](https://game-icons.net)(CC BY 3.0, 작가는 `Samples/RPG/Art/CREDITS.md`), 글꼴은 Passion One(SIL OFL 1.1)입니다.

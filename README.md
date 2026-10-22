@@ -4,11 +4,11 @@ Keyframe UI animation for Unity uGUI — authored on a timeline, stored in the p
 
 [![Unity 6000.0+](https://img.shields.io/badge/unity-6000.0%2B-000.svg)](https://unity.com/releases/editor/archive)
 [![Release](https://img.shields.io/github/v/release/UnialGames/KeyTween)](https://github.com/UnialGames/KeyTween/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
 
 [한국어 README](README_KO.md)
 
-<img src="Docs/media/rpg/rpg-summon.gif" width="640" alt="RPG sample: summon">
+<img src="Docs~/media/rpg/rpg-summon.gif" width="640" alt="RPG sample: summon">
 
 ## Overview
 
@@ -60,7 +60,7 @@ Or add it to `Packages/manifest.json`:
 }
 ```
 
-`#upm` instead of `#v0.1.0` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
+`#main` instead of `#v0.1.0` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
 
 ## Getting Started
 
@@ -73,18 +73,18 @@ The button grows to 1.1× and gets lighter when the pointer enters, and returns 
 3. Add a state with **+** in the state tabs and name it `Hover` in the state inspector.
 4. Right-click an empty part of the timeline → **Add Track…** → pick **Scale** under `RectTransform` and **Color** under `Image` → **Add 2**. Each track gets a key at 0 s and an end key (0.2 s).
 
-   <img src="Docs/media/editor/editor-add-track.gif" width="640" alt="Add Track">
+   <img src="Docs~/media/editor/editor-add-track.gif" width="640" alt="Add Track">
 
 5. Click Scale's end key: Value `1.1`, Ease `OutBack`. Set Color's end key to a lighter color.
 6. Drag the ruler or press **▶** to preview — no Play mode needed.
 
-   <img src="Docs/media/editor/editor-preview.gif" width="640" alt="Preview">
+   <img src="Docs~/media/editor/editor-preview.gif" width="640" alt="Preview">
 
 7. In the state inspector, set **Play On** to `PointerEnter`.
 8. Make `Unhover` the same way: end keys back at `1` and the original color, Play On `PointerExit`.
 9. Enter Play mode and move the pointer over the button.
 
-   <img src="Docs/media/editor/editor-play-mode.gif" width="494" alt="Play mode">
+   <img src="Docs~/media/editor/editor-play-mode.gif" width="494" alt="Play mode">
 
 ### 2. Playing it from code
 
@@ -212,7 +212,7 @@ A shared prefab (a button) placed inside another prefab (a popup):
 - **Child call** — the popup's `Open` state calls the button's `Hover` at 0.25 s (timeline right-click → **Add Child Call ▸ child ▸ state**). It shows as a bar on the parent's timeline, and the parent's length includes it.
 - **Override** — the called state's tracks appear dimmed under the call. Click one and **only that track** is overridden in the popup; the button prefab is unchanged, and the tracks you did not touch keep following it. With several levels (screen > popup > button), the outermost wins, like Unity's nested prefab rule.
 
-Video: [Overriding a button inside a popup](https://youtu.be/rXO_kNexiGc) · Details: [Guide §12](Docs/Guide.md#12-자식-호출과-오버라이드-중첩-prefab)
+Video: [Overriding a button inside a popup](https://youtu.be/rXO_kNexiGc) · Details: [Guide §12](Docs~/Guide.md#12-자식-호출과-오버라이드-중첩-prefab)
 
 ## Sampling, Reading and Writing Values
 
@@ -244,7 +244,7 @@ list.RemoveItem(5);                                // after removing it from you
 await list.ResizeItem(3, 0f);                      // accordion: animate one item's size, then remove it
 ```
 
-Layouts: vertical, horizontal, grid, masonry, plus loop, snap (nearest / one per swipe), auto scroll, stick to end and sticky headers — enough for carousels, pages, banners, wheel pickers, chat, accordions, tabs, a collapsing header and pull to refresh. Helpers: `KeyTweenPageIndicator`, `KeyTweenScrollScrub`, `KeyTweenPullToRefresh`. The **UI Components** sample has 18 examples. Details: [ScrollList](Docs/ScrollList.md)
+Layouts: vertical, horizontal, grid, masonry, plus loop, snap (nearest / one per swipe), auto scroll, stick to end and sticky headers — enough for carousels, pages, banners, wheel pickers, chat, accordions, tabs, a collapsing header and pull to refresh. Helpers: `KeyTweenPageIndicator`, `KeyTweenScrollScrub`, `KeyTweenPullToRefresh`. The **UI Components** sample has 18 examples. Details: [ScrollList](Docs~/ScrollList.md)
 
 ## Screen Transitions
 
@@ -291,7 +291,7 @@ public Awaitable WillEnter(KeyTweenTransition t)
 }
 ```
 
-Details: [Screens](Docs/Screens.md)
+Details: [Screens](Docs~/Screens.md)
 
 ## Integrations (UniTask, R3, UIEffect)
 
@@ -316,7 +316,7 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 | R3 | `PlayAsObservable` (plays on subscribe, emits once at the end, stops on dispose), `EventsAsObservable`, `EventAsObservable` |
 | UIEffect (`com.coffee.ui-effect` 5.0+) | 14 tracks: tone, color, sampling, transition (dissolve …), edge shine, gradation, detail |
 
-Details: [Integrations](Docs/Integrations.md)
+Details: [Integrations](Docs~/Integrations.md)
 
 ## Samples
 
@@ -329,9 +329,9 @@ Details: [Integrations](Docs/Integrations.md)
 
 | Heroes → detail (shared element) → upgrade | Adventure → formation → battle → victory |
 |---|---|
-| ![Heroes](Docs/media/rpg/rpg-heroes.gif) | ![Battle](Docs/media/rpg/rpg-battle.gif) |
+| ![Heroes](Docs~/media/rpg/rpg-heroes.gif) | ![Battle](Docs~/media/rpg/rpg-battle.gif) |
 | **Ranking: a long list** | **Mail and daily rewards** |
-| ![Ranking](Docs/media/rpg/rpg-ranking.gif) | ![Mail](Docs/media/rpg/rpg-mail.gif) |
+| ![Ranking](Docs~/media/rpg/rpg-ranking.gif) | ![Mail](Docs~/media/rpg/rpg-mail.gif) |
 
 ## Performance
 
@@ -346,7 +346,7 @@ Windows player, IL2CPP release, 2,000 objects. In parentheses: time above settin
 - No GC while playing, on par with code tweens (DOTween Pro, LitMotion) and lighter than Animator and AnimationUI. Text effects are the fastest.
 - The weak spot is starting plays: restarting 2,000 at once costs 2.31 ms (LitMotion 1.34 ms).
 
-Method and full tables: [Performance](Docs/Performance.md), [Benchmarks](Docs/Benchmarks.md)
+Method and full tables: [Performance](Docs~/Performance.md), [Benchmarks](Docs~/Benchmarks.md)
 
 ## Documentation
 
@@ -354,14 +354,14 @@ The full documents are in Korean.
 
 | Document | Contents |
 |---|---|
-| [Guide](Docs/Guide.md) | The editor: window, states, tracks and keys, preview, saving, recording, nested prefab overrides |
-| [API](Docs/API.md) | Code: playing, awaiting, events, runtime values |
-| [ScrollList](Docs/ScrollList.md) | The scroll list and its helper components |
-| [Screens](Docs/Screens.md) | Screen containers, lifecycle, shared elements |
-| [Integrations](Docs/Integrations.md) | UniTask, R3, UIEffect |
-| [Comparison](Docs/Comparison.md) | Authoring compared with other tools |
-| [Performance](Docs/Performance.md) · [Benchmarks](Docs/Benchmarks.md) | How the numbers above were measured, full result tables |
+| [Guide](Docs~/Guide.md) | The editor: window, states, tracks and keys, preview, saving, recording, nested prefab overrides |
+| [API](Docs~/API.md) | Code: playing, awaiting, events, runtime values |
+| [ScrollList](Docs~/ScrollList.md) | The scroll list and its helper components |
+| [Screens](Docs~/Screens.md) | Screen containers, lifecycle, shared elements |
+| [Integrations](Docs~/Integrations.md) | UniTask, R3, UIEffect |
+| [Comparison](Docs~/Comparison.md) | Authoring compared with other tools |
+| [Performance](Docs~/Performance.md) · [Benchmarks](Docs~/Benchmarks.md) | How the numbers above were measured, full result tables |
 
 ## License
 
-[MIT](LICENSE). The RPG sample's icons are from [game-icons.net](https://game-icons.net) (CC BY 3.0, authors in `Samples/RPG/Art/CREDITS.md`); its font is Passion One (SIL OFL 1.1).
+[MIT](LICENSE.md). The RPG sample's icons are from [game-icons.net](https://game-icons.net) (CC BY 3.0, authors in `Samples/RPG/Art/CREDITS.md`); its font is Passion One (SIL OFL 1.1).

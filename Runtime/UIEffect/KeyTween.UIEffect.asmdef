@@ -1,0 +1,25 @@
+{
+    "name": "KeyTween.UIEffect",
+    "rootNamespace": "KeyTweening",
+    "references": [
+        "KeyTween",
+        "Coffee.UIEffect"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "KEYTWEEN_UIEFFECT"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.coffee.ui-effect",
+            "expression": "5.0.0",
+            "define": "KEYTWEEN_UIEFFECT"
+        }
+    ],
+    "noEngineReferences": false
+}

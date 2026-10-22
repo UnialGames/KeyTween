@@ -1,0 +1,11 @@
+{
+    "name": "KeyTween.Editor",
+    "rootNamespace": "KeyTweening.Editor",
+    "references": [
+        "KeyTween",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
+        "UniTask"
+    ],
+    "includePlatforms": [ "Editor" ]
+}
