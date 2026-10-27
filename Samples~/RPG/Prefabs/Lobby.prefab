@@ -584,10 +584,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &1566559993609065642
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1161,7 +1159,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Pulse
-    interrupt: 0
 --- !u!1 &751918748375314838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,10 +1947,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &350948385489783753
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2353,10 +2348,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &6243075212864942239
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2680,10 +2673,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &1364751334597371080
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3241,10 +3232,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &8200827993323130418
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3568,10 +3557,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &6983637196608589757
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4068,10 +4055,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &7175256938884937496
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8844,7 +8829,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Pulse
-    interrupt: 0
 --- !u!1 &5442875202412474624
 GameObject:
   m_ObjectHideFlags: 0
@@ -9497,10 +9481,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &2211841965617898547
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -9823,10 +9805,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &4871804676337148466
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10228,7 +10208,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Idle
-    interrupt: 0
 --- !u!1 &6027627856045655400
 GameObject:
   m_ObjectHideFlags: 0
@@ -11580,10 +11559,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &4148987645425116881
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11845,7 +11822,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Pulse
-    interrupt: 0
 --- !u!1 &6890747585362394982
 GameObject:
   m_ObjectHideFlags: 0
@@ -12155,10 +12131,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &7092688778309468929
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -12481,10 +12455,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &1066452366042974804
 CanvasGroup:
   m_ObjectHideFlags: 0

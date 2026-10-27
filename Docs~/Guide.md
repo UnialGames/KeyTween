@@ -53,10 +53,9 @@
 | `Select` / `Deselect` | 선택 이벤트 |
 | `ToggleOn` / `ToggleOff` | 같은 오브젝트 `Toggle`의 값 변경 |
 
-- 이벤트를 고르면 **Interrupt**(§11)도 정합니다.
 - 같은 순간에 재생되는 상태가 둘이면 경고가 나옵니다. 예: `OnEnable`과 `Start`는 Instantiate할 때 둘 다 호출됩니다.
 - `interactable`이 꺼진 Selectable은 입력 이벤트를 무시합니다(`OnEnable`·`Start`는 그래도 재생).
-- Button의 OnClick 같은 UnityEvent에서는 `KeyTween.PlayState(string)`(역재생은 `PlayStateReversed`)을 연결합니다.
+- Button의 OnClick 같은 UnityEvent에서는 `KeyTween.Play (string)`(역재생은 `PlayReversed (string)`)을 고르고 상태 이름을 적습니다.
 
 ## 5. 트랙 추가
 
@@ -156,14 +155,13 @@ Punch·Shake의 `Frequency`는 초당 흔들림 수, `Damping`은 줄어드는 �
 - 재생 소스: 트랙의 AudioSource → `KeyTween`의 Audio Source → 둘 다 없으면 숨은 공용 2D AudioSource. UI 오브젝트마다 AudioSource를 붙일 필요가 없습니다.
 - 상태 길이에 사운드 끝까지 포함되므로, 닫기 연출이 끝난 뒤 Destroy해도 소리가 끊기지 않습니다.
 
-## 11. 여러 상태가 겹칠 때 (Interrupt)
+## 11. 여러 상태가 겹칠 때
 
-여러 상태가 동시에 재생될 수 있습니다. 새 상태는 **자기가 움직이는 속성만** 이전 상태에서 가져오고, 나머지는 계속 재생됩니다(호버 중에 누르기).
+여러 상태가 동시에 재생될 수 있습니다. 새 상태는 **자기가 움직이는 속성만** 이전 상태에서 그 자리에서 가져오고, 나머지는 계속 재생됩니다(호버 중에 누르기).
 
-| Interrupt | 동작 |
-|---|---|
-| `Cancel` | 겹치는 속성만 가져옵니다. 속성을 모두 잃은 상태는 멈춥니다. Start = Current Value 트랙은 멈춘 자리에서 이어집니다. |
-| `Complete` | 겹치는 상태를 끝 값으로 맞춘 뒤 시작합니다. |
+- 속성을 모두 잃은 상태는 멈추고, 그 `PlayAsync`는 취소됩니다.
+- Start = Current Value 트랙은 멈춘 자리에서 이어집니다. 그래서 호버가 중간에 끊겨도 튀지 않습니다.
+- 앞 상태를 끝 모습까지 맞추고 이벤트도 발생시킨 뒤 넘어가야 하면, 코드에서 `Complete("앞 상태")`를 먼저 부르고 재생합니다([API](API.md#재생)).
 
 ## 12. 자식 호출과 오버라이드 (중첩 Prefab)
 

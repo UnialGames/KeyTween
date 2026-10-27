@@ -2528,10 +2528,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!1 &1084502730251453621
 GameObject:
   m_ObjectHideFlags: 0
@@ -4483,7 +4481,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Bob
-    interrupt: 0
 --- !u!1 &4590100986285513227
 GameObject:
   m_ObjectHideFlags: 0
@@ -5838,10 +5835,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!1 &6800802938541153644
 GameObject:
   m_ObjectHideFlags: 0

@@ -1894,10 +1894,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!1 &1036369414007103025
 GameObject:
   m_ObjectHideFlags: 0
@@ -2432,7 +2430,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Spin
-    interrupt: 0
 --- !u!1 &2946446615511944240
 GameObject:
   m_ObjectHideFlags: 0
@@ -3043,7 +3040,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Spin
-    interrupt: 0
 --- !u!1 &3719565792927155147
 GameObject:
   m_ObjectHideFlags: 0
@@ -3581,10 +3577,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!1 &4740828990402765506
 GameObject:
   m_ObjectHideFlags: 0
@@ -3800,7 +3794,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Pulse
-    interrupt: 0
 --- !u!1 &5597934572946571666
 GameObject:
   m_ObjectHideFlags: 0
@@ -4462,10 +4455,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!1 &8756696488767609730
 GameObject:
   m_ObjectHideFlags: 0

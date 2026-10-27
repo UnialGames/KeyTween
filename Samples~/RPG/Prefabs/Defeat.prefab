@@ -2427,10 +2427,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &2320514821273228947
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2752,10 +2750,8 @@ MonoBehaviour:
   bindings:
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!225 &1203184022874609138
 CanvasGroup:
   m_ObjectHideFlags: 0

@@ -2,6 +2,18 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] - 2026-10-27
+
+Simpler play API. Code that passed `KeyTweenInterrupt` or called `PlayState` needs a small change (below).
+
+### Changed
+- A state that is played takes the properties it animates from states already playing, where they are, and continues from there; a state left with no properties stops (its `PlayAsync` is canceled). This was the default (`KeyTweenInterrupt.Cancel`) and is now the only behavior.
+- `Play(string)` and `PlayReversed(string)` take one argument, so they are listed for UnityEvents such as a Button's OnClick. `Play(string, PointerEventData)` passes the pointer for tracks that start from it.
+
+### Removed
+- `KeyTweenInterrupt`, the `interrupt` parameter of `Play`, `PlayAsync`, `PlayReversed`, `PlayReversedAsync`, `PlayUniTaskAsync`, `PlayReversedUniTaskAsync` and `PlayAsObservable`, and the Interrupt setting of Play On. To finish a state before the next one, call `Complete("state")` first: its end pose, its remaining events, its await completing.
+- `PlayState` and `PlayStateReversed`: use `Play` and `PlayReversed`. UnityEvents saved with the old names must be picked again (the samples are updated).
+
 ## [0.1.1] - 2026-10-27
 
 ### Fixed

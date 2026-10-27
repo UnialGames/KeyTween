@@ -562,10 +562,8 @@ MonoBehaviour:
   bindings:
   - evt: 8
     state: On
-    interrupt: 0
   - evt: 9
     state: Off
-    interrupt: 0
 --- !u!1 &8383241065421719829
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,10 +7,11 @@
 ```csharp
 public sealed class KeyTween : MonoBehaviour
 {
-    public void Play(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel, PointerEventData pointer = null);
-    public Awaitable PlayAsync(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel, CancellationToken cancellationToken = default);
-    public void PlayReversed(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel);
-    public Awaitable PlayReversedAsync(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel, CancellationToken cancellationToken = default);
+    public void Play(string stateName);              // 인자 하나: Button OnClick 같은 UnityEvent 목록에도 나옴
+    public void Play(string stateName, PointerEventData pointer);   // Start = Pointer 트랙용(누른 자리)
+    public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default);
+    public void PlayReversed(string stateName);      // UnityEvent 목록에도 나옴
+    public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default);
 
     public void Complete(string stateName);         // 재생 중인 상태를 끝으로 건너뜀
     public void Stop(string stateName);             // 그 자리에서 멈춤
@@ -19,9 +20,6 @@ public sealed class KeyTween : MonoBehaviour
     public bool IsPlaying(string stateName);
     public bool HasState(string stateName);
     public float Duration(string stateName);        // 오버라이드 반영 길이, 없는 상태면 0
-
-    public void PlayState(string stateName);         // UnityEvent 연결용 (인자 하나)
-    public void PlayStateReversed(string stateName);
 }
 ```
 
@@ -36,6 +34,7 @@ public sealed class KeyTween : MonoBehaviour
 
 - 시간은 실시간입니다(`Time.timeScale`을 따르지 않음).
 - 반복 상태(Loop)의 `PlayAsync`는 `Complete`나 `Stop` 전에는 끝나지 않습니다.
+- 재생 중인 다른 상태가 같은 속성을 움직이고 있으면, 새 상태가 그 속성만 그 자리에서 가져갑니다([Guide §11](Guide.md#11-여러-상태가-겹칠-때)). 앞 상태를 끝 모습까지 마치게 하려면 먼저 `Complete("앞 상태")`를 부릅니다.
 
 ### 끝나는 경우
 
@@ -43,7 +42,6 @@ public sealed class KeyTween : MonoBehaviour
 |---|---|---|---|
 | 끝에 도달 | 완료 | 모두 발생 | 모두 재생 |
 | `Complete` 호출 | 완료 | 순서대로 발생 | 재생 안 함 |
-| 다른 상태가 `Complete` 인터럽트로 시작 | 완료 | 순서대로 발생 | 재생 안 함 |
 | 다른 상태가 속성을 모두 가져감 | 취소 | 발생 안 함 | 재생 안 함 |
 | 같은 상태를 다시 재생 | 이전 재생 취소 | 발생 안 함 | 재생 안 함 |
 | 오브젝트 비활성화 | 취소 | 발생 안 함 | 재생 안 함 |

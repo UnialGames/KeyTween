@@ -55,13 +55,6 @@ namespace KeyTweening
         TextNumber,         // TMP_Text: the first number in the text, counted (the rest stays, e.g. "21/100", "Lv. 3")
     }
 
-    /// <summary>How a new state treats states that are still playing on the same properties.</summary>
-    public enum KeyTweenInterrupt
-    {
-        Cancel,     // stop them where they are; tracks that start from current continue from there
-        Complete,   // snap them to their end first
-    }
-
     public enum KeyTweenCurveType
     {
         Ease,       // an ease preset (KeyTweenEase)
@@ -690,39 +683,39 @@ namespace KeyTweening
             }
         }
 
-        /// <summary>For UnityEvents (e.g. a Button's OnClick), which can only pass one argument.</summary>
-        public void PlayState(string stateName) => Play(stateName);
-
-        /// <summary>For UnityEvents: plays a state backwards (e.g. a Back button undoing an Open).</summary>
-        public void PlayStateReversed(string stateName) => PlayReversed(stateName);
-
         /// <summary>
         /// Plays a state from its end back to its start: values, events, sounds and child calls in reverse order
         /// (child states play reversed too). Key values started from "Current" keep what the last forward play captured,
-        /// so Back returns exactly where Open started.
+        /// so Back returns exactly where Open started. Also listed for UnityEvents, e.g. a Back button's OnClick.
         /// </summary>
-        public void PlayReversed(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel)
+        public void PlayReversed(string stateName)
         {
-            var playback = Prepare(stateName, interrupt, null, reversed: true);
+            var playback = Prepare(stateName, null, reversed: true);
             if (playback != null) StartMotion(playback);
         }
 
         /// <summary><see cref="PlayReversed"/> that completes or is canceled like <see cref="PlayAsync"/>.</summary>
-        public Awaitable PlayReversedAsync(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel,
-            CancellationToken cancellationToken = default)
+        public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested) return Done(canceled: true);
-            var playback = Prepare(stateName, interrupt, null, reversed: true);
+            var playback = Prepare(stateName, null, reversed: true);
             if (playback == null) return Done(canceled: false);
             var task = Await(playback, cancellationToken);
             StartMotion(playback);
             return task;
         }
 
-        public void Play(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel,
-            PointerEventData pointer = null)
+        /// <summary>
+        /// Plays a state; the first pose (0 s) is written at once. States already playing give it the properties it
+        /// animates and stop there (to finish one first, call <see cref="Complete"/> on it). Also listed for UnityEvents,
+        /// e.g. a Button's OnClick.
+        /// </summary>
+        public void Play(string stateName) => Play(stateName, null);
+
+        /// <summary><see cref="Play(string)"/>; <paramref name="pointer"/> is where tracks that start from the pointer begin.</summary>
+        public void Play(string stateName, PointerEventData pointer)
         {
-            var playback = Prepare(stateName, interrupt, pointer);
+            var playback = Prepare(stateName, pointer);
             if (playback != null) StartMotion(playback);
         }
 
@@ -733,11 +726,10 @@ namespace KeyTweening
         /// e.g. <c>await anim.PlayAsync("Close"); Destroy(gameObject);</c> never destroys a popup that was reopened mid-close.
         /// </summary>
         /// <remarks>Unity's <see cref="Awaitable"/>: await it once. With UniTask installed, PlayUniTaskAsync returns a UniTask.</remarks>
-        public Awaitable PlayAsync(string stateName, KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel,
-            CancellationToken cancellationToken = default)
+        public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested) return Done(canceled: true);
-            var playback = Prepare(stateName, interrupt, null);
+            var playback = Prepare(stateName, null);
             if (playback == null) return Done(canceled: false);
             var task = Await(playback, cancellationToken);
             StartMotion(playback);
@@ -927,7 +919,7 @@ namespace KeyTweening
         }
 
         /// <summary>Everything Play does except starting the motion. Split out so tests can drive time.</summary>
-        internal Playback Prepare(string stateName, KeyTweenInterrupt interrupt, PointerEventData pointer, bool reversed = false)
+        internal Playback Prepare(string stateName, PointerEventData pointer, bool reversed = false)
         {
             EnsureInitialized();
             var playback = FindPlayback(stateName);
@@ -938,7 +930,7 @@ namespace KeyTweening
             }
 
             Stop(playback);
-            TakeOver(playback.state, interrupt);
+            TakeOver(playback.state);
 
             foreach (var track in playback.state.tracks) track.released = false;
             // Reversed keeps the values the last forward play resolved ("Current" = where Open started); first time, resolve now.
@@ -955,20 +947,12 @@ namespace KeyTweening
             return playback;
         }
 
-        // Other playing states give up the properties this state animates.
-        void TakeOver(KeyTweenState incoming, KeyTweenInterrupt interrupt)
+        // Other playing states give up the properties this state animates, where they are; a state left with none stops.
+        void TakeOver(KeyTweenState incoming)
         {
             foreach (var other in _playbacks)
             {
                 if (!other.active || other.state == incoming || !Overlaps(other.state, incoming)) continue;
-
-                if (interrupt == KeyTweenInterrupt.Complete)
-                {
-                    other.handle.TryCancel();
-                    Evaluate(other.state, other.state.Duration);
-                    Finish(other);
-                    continue;
-                }
 
                 var anyLeft = false;
                 foreach (var track in other.state.tracks)

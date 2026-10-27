@@ -26,7 +26,6 @@ namespace KeyTweening
     {
         public KeyTweenEvent evt;
         public string state;
-        public KeyTweenInterrupt interrupt;
     }
 
     /// <summary>Plays KeyTween states when UI events happen on this object.</summary>
@@ -76,7 +75,7 @@ namespace KeyTweening
             if (evt != KeyTweenEvent.OnEnable && evt != KeyTweenEvent.Start && _selectable != null && !_selectable.IsInteractable()) return;
 
             foreach (var b in bindings)
-                if (b.evt == evt) _animation.Play(b.state, b.interrupt, pointer);
+                if (b.evt == evt) _animation.Play(b.state, pointer);
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "com.unialgames.keytween",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "displayName": "KeyTween",
   "description": "Keyframe UI animation for uGUI: animations live in the prefab, authored as keys in a dedicated editor with live preview, recording and per-prefab overrides. Tween-level performance, text effects, scroll lists and screen transitions.",
   "unity": "6000.0",

@@ -261,7 +261,6 @@ MonoBehaviour:
   bindings:
   - evt: 0
     state: Spin
-    interrupt: 0
 --- !u!1 &2573375487685503867
 GameObject:
   m_ObjectHideFlags: 0

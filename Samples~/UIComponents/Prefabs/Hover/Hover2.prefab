@@ -363,10 +363,8 @@ MonoBehaviour:
   bindings:
   - evt: 1
     state: Hover
-    interrupt: 0
   - evt: 2
     state: Unhover
-    interrupt: 0
 --- !u!1 &5252898282332787608
 GameObject:
   m_ObjectHideFlags: 0

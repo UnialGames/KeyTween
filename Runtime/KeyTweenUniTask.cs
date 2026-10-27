@@ -11,14 +11,12 @@ namespace KeyTweening
     public static class KeyTweenUniTaskExtensions
     {
         /// <summary><see cref="KeyTween.PlayAsync"/> as a UniTask (same completion and cancellation).</summary>
-        public static UniTask PlayUniTaskAsync(this KeyTween animation, string stateName,
-            KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel, CancellationToken cancellationToken = default) =>
-            animation.PlayAsync(stateName, interrupt, cancellationToken).AsUniTask();
+        public static UniTask PlayUniTaskAsync(this KeyTween animation, string stateName, CancellationToken cancellationToken = default) =>
+            animation.PlayAsync(stateName, cancellationToken).AsUniTask();
 
         /// <summary><see cref="KeyTween.PlayReversedAsync"/> as a UniTask.</summary>
-        public static UniTask PlayReversedUniTaskAsync(this KeyTween animation, string stateName,
-            KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel, CancellationToken cancellationToken = default) =>
-            animation.PlayReversedAsync(stateName, interrupt, cancellationToken).AsUniTask();
+        public static UniTask PlayReversedUniTaskAsync(this KeyTween animation, string stateName, CancellationToken cancellationToken = default) =>
+            animation.PlayReversedAsync(stateName, cancellationToken).AsUniTask();
 
         /// <summary><see cref="KeyTween.WaitEventAsync"/> as a UniTask.</summary>
         public static UniTask<KeyTweenEventInfo> WaitEventUniTaskAsync(this KeyTween animation, string eventName,

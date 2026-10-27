@@ -835,7 +835,5 @@ MonoBehaviour:
   bindings:
   - evt: 8
     state: On
-    interrupt: 0
   - evt: 9
     state: Off
-    interrupt: 0

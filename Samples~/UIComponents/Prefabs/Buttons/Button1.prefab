@@ -912,16 +912,12 @@ MonoBehaviour:
   bindings:
   - evt: 1
     state: Hover
-    interrupt: 0
   - evt: 2
     state: Unhover
-    interrupt: 0
   - evt: 3
     state: Press
-    interrupt: 0
   - evt: 4
     state: Release
-    interrupt: 0
 --- !u!1 &6434901874298466375
 GameObject:
   m_ObjectHideFlags: 0

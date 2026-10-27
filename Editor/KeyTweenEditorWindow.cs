@@ -1057,7 +1057,7 @@ namespace KeyTweening.Editor
                 tooltip = "When this state plays by itself. None: it never plays automatically; call Play/PlayAsync from your own code.",
             };
             field.RegisterValueChangedCallback(e =>
-                SetPlayOn(state.name, e.newValue == none ? null : (KeyTweenEvent)Enum.Parse(typeof(KeyTweenEvent), e.newValue), binding?.interrupt ?? default));
+                SetPlayOn(state.name, e.newValue == none ? null : (KeyTweenEvent)Enum.Parse(typeof(KeyTweenEvent), e.newValue)));
             section.Add(field);
 
             if (binding == null)
@@ -1065,10 +1065,6 @@ namespace KeyTweening.Editor
                 section.Add(Hint("Not played automatically. Call it from your own code, or pick an event to play it on."));
                 return section;
             }
-
-            var interrupt = new EnumField("Interrupt", binding.interrupt) { tooltip = "What happens to a state already playing on the same properties." };
-            interrupt.RegisterValueChangedCallback(e => SetPlayOn(state.name, binding.evt, (KeyTweenInterrupt)e.newValue));
-            section.Add(interrupt);
 
             // Two states on events that fire together fight over the same object (e.g. OnEnable and Start both run on Instantiate).
             static bool OnCreate(KeyTweenEvent e) => e is KeyTweenEvent.OnEnable or KeyTweenEvent.Start;
@@ -1081,7 +1077,7 @@ namespace KeyTweening.Editor
         }
 
         // One binding per state: replaces whatever the state had (null = None).
-        void SetPlayOn(string stateName, KeyTweenEvent? evt, KeyTweenInterrupt interrupt)
+        void SetPlayOn(string stateName, KeyTweenEvent? evt)
         {
             var trigger = _target.GetComponent<KeyTweenTrigger>();
             if (trigger == null)
@@ -1091,7 +1087,7 @@ namespace KeyTweening.Editor
             }
             Undo.RecordObject(trigger, "Play On");
             trigger.bindings.RemoveAll(b => b.state == stateName);
-            if (evt != null) trigger.bindings.Add(new KeyTweenBinding { evt = evt.Value, state = stateName, interrupt = interrupt });
+            if (evt != null) trigger.bindings.Add(new KeyTweenBinding { evt = evt.Value, state = stateName });
             PrefabUtility.RecordPrefabInstancePropertyModifications(trigger);
             EditorUtility.SetDirty(trigger);
             Rebuild();

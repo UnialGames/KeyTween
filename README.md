@@ -47,7 +47,7 @@ Videos: [RPG Sample](https://youtu.be/79Aw-O2kEgA) · [Button hover in the edito
 Open **Window > Package Manager**, click **+ > Add package from git URL…** and enter:
 
 ```
-https://github.com/UnialGames/KeyTween.git#v0.1.1
+https://github.com/UnialGames/KeyTween.git#v0.1.2
 ```
 
 Or add it to `Packages/manifest.json`:
@@ -55,12 +55,12 @@ Or add it to `Packages/manifest.json`:
 ```json
 {
   "dependencies": {
-    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.1"
+    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.2"
   }
 }
 ```
 
-`#main` instead of `#v0.1.1` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
+`#main` instead of `#v0.1.2` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
 
 ## Getting Started
 
@@ -128,7 +128,7 @@ How a `PlayAsync` ends:
 | Case | `PlayAsync` | Remaining events | Remaining sounds |
 |---|---|---|---|
 | Reaches the end | completes | all raised | all played |
-| `Complete` (or another state starts with interrupt `Complete`) | completes | raised in order | not played |
+| `Complete` | completes | raised in order | not played |
 | Another state takes all of its properties | **canceled** | not raised | not played |
 | The same state is played again | earlier play **canceled** | not raised | not played |
 | Object disabled, `Stop`, token canceled | **canceled** | not raised | not played |
@@ -146,18 +146,14 @@ await typing;
 
 ## When States Overlap
 
-Several states can play at once. A new state takes over **only the properties it animates**; the rest keep playing (press while hovering). The interrupt decides what happens to what it takes over:
+Several states can play at once. A new state takes over **only the properties it animates**, where they are, and continues from there (no jump when a hover is cut short). The rest keep playing (press while hovering). A state left with no properties stops, and its `PlayAsync` is canceled.
 
-| `KeyTweenInterrupt` | Effect |
-|---|---|
-| `Cancel` (default) | Takes the overlapping properties where they are. A state left with no properties stops. Tracks that start from the current value continue from there. |
-| `Complete` | Snaps the overlapping states to their end values first. |
+To finish a state before the next one — its end pose, its remaining events, its `await` completing — complete it first:
 
 ```csharp
-anim.Play("Close", KeyTweenInterrupt.Complete);    // finish Open first, then close from its end pose
+anim.Complete("Open");    // Open jumps to its end; an await on it completes and its "Shown" event is raised
+anim.Play("Close");       // then Close starts from the open pose
 ```
-
-Play On triggers have the same setting in the state inspector.
 
 ## Changing End Values at Runtime
 
@@ -203,7 +199,7 @@ In the state inspector, **Play On** picks when a state plays; the editor adds a 
 | `Select` / `Deselect` | selection events |
 | `ToggleOn` / `ToggleOff` | the `Toggle` on the same object changes |
 
-A Selectable whose `interactable` is off ignores input triggers. From a UnityEvent such as Button `OnClick`, wire `KeyTween.PlayState(string)` (or `PlayStateReversed`).
+A Selectable whose `interactable` is off ignores input triggers. From a UnityEvent such as Button `OnClick`, pick `KeyTween.Play (string)` (or `PlayReversed (string)`) and type the state name.
 
 ## Nested Prefabs: Child Calls and Overrides
 

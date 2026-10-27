@@ -18,8 +18,8 @@ var canceled = await popup.PlayUniTaskAsync("Close").SuppressCancellationThrow()
 
 | 메서드 | 내용 |
 |---|---|
-| `PlayUniTaskAsync(stateName, interrupt, ct)` | `PlayAsync`의 UniTask판 |
-| `PlayReversedUniTaskAsync(stateName, interrupt, ct)` | 역재생 |
+| `PlayUniTaskAsync(stateName, ct)` | `PlayAsync`의 UniTask판 |
+| `PlayReversedUniTaskAsync(stateName, ct)` | 역재생 |
 | `WaitEventUniTaskAsync(eventName, ct)` | 다음 애니메이션 이벤트까지 |
 
 완료·취소 규칙은 `PlayAsync`와 같습니다([API](API.md#끝나는-경우)). 내부적으로 `Awaitable`을 `AsUniTask()`로 바꿉니다.
@@ -37,7 +37,7 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 
 | 메서드 | 내용 |
 |---|---|
-| `PlayAsObservable(stateName, interrupt)` | 구독하면 재생, 끝나면 `Unit` 하나를 내보내고 완료. 끝나지 못하면 `OperationCanceledException`으로 완료. 구독을 끊으면 그 자리에서 멈춤 |
+| `PlayAsObservable(stateName)` | 구독하면 재생, 끝나면 `Unit` 하나를 내보내고 완료. 끝나지 못하면 `OperationCanceledException`으로 완료. 구독을 끊으면 그 자리에서 멈춤 |
 | `EventsAsObservable()` | 모든 애니메이션 이벤트 |
 | `EventAsObservable(eventName)` | 이름이 같은 이벤트만 |
 

@@ -16,20 +16,19 @@ namespace KeyTweening
         /// (OperationCanceledException) when the state does not finish (taken over, played again, object disabled).
         /// Disposing the subscription stops the state where it is.
         /// </summary>
-        public static Observable<Unit> PlayAsObservable(this KeyTween animation, string stateName,
-            KeyTweenInterrupt interrupt = KeyTweenInterrupt.Cancel) =>
-            Observable.Create<Unit, (KeyTween, string, KeyTweenInterrupt)>((animation, stateName, interrupt), static (observer, s) =>
+        public static Observable<Unit> PlayAsObservable(this KeyTween animation, string stateName) =>
+            Observable.Create<Unit, (KeyTween, string)>((animation, stateName), static (observer, s) =>
             {
                 var cancel = new CancellationTokenSource();
-                Run(observer, s.Item1, s.Item2, s.Item3, cancel.Token);
+                Run(observer, s.Item1, s.Item2, cancel.Token);
                 return Disposable.Create(cancel, static c => { c.Cancel(); c.Dispose(); });
             });
 
-        static async void Run(Observer<Unit> observer, KeyTween animation, string state, KeyTweenInterrupt interrupt, CancellationToken token)
+        static async void Run(Observer<Unit> observer, KeyTween animation, string state, CancellationToken token)
         {
             try
             {
-                await animation.PlayAsync(state, interrupt, token);
+                await animation.PlayAsync(state, token);
                 observer.OnNext(Unit.Default);
                 observer.OnCompleted();
             }

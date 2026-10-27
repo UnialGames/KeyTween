@@ -47,7 +47,7 @@ KeyTween은 Animator 클립을 만들듯 타임라인에 키를 찍어 UI 애니
 **Window > Package Manager**에서 **+ > Add package from git URL…**을 누르고 아래 주소를 넣습니다.
 
 ```
-https://github.com/UnialGames/KeyTween.git#v0.1.1
+https://github.com/UnialGames/KeyTween.git#v0.1.2
 ```
 
 또는 `Packages/manifest.json`에 추가합니다.
@@ -55,12 +55,12 @@ https://github.com/UnialGames/KeyTween.git#v0.1.1
 ```json
 {
   "dependencies": {
-    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.1"
+    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.2"
   }
 }
 ```
 
-`#v0.1.1` 대신 `#main`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
+`#v0.1.2` 대신 `#main`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
 
 ## 시작하기
 
@@ -128,7 +128,7 @@ float length = anim.Duration("Open");              // 오버라이드 반영. �
 | 경우 | `PlayAsync` | 남은 이벤트 | 남은 사운드 |
 |---|---|---|---|
 | 끝에 도달 | 완료 | 모두 발생 | 모두 재생 |
-| `Complete` (또는 다른 상태가 인터럽트 `Complete`로 시작) | 완료 | 순서대로 발생 | 재생 안 함 |
+| `Complete` | 완료 | 순서대로 발생 | 재생 안 함 |
 | 다른 상태가 속성을 모두 가져감 | **취소** | 발생 안 함 | 재생 안 함 |
 | 같은 상태를 다시 재생 | 이전 재생 **취소** | 발생 안 함 | 재생 안 함 |
 | 오브젝트 비활성화, `Stop`, 토큰 취소 | **취소** | 발생 안 함 | 재생 안 함 |
@@ -146,18 +146,14 @@ await typing;
 
 ## 여러 상태가 겹칠 때
 
-여러 상태가 동시에 재생될 수 있습니다. 새 상태는 **자기가 움직이는 속성만** 가져오고, 나머지는 계속 재생됩니다(호버 중에 누르기). 가져간 상태를 어떻게 할지는 인터럽트로 정합니다.
+여러 상태가 동시에 재생될 수 있습니다. 새 상태는 **자기가 움직이는 속성만** 그 자리에서 가져와 이어서 움직입니다(호버가 중간에 끊겨도 튀지 않음). 나머지는 계속 재생됩니다(호버 중에 누르기). 속성을 모두 잃은 상태는 멈추고, 그 `PlayAsync`는 취소됩니다.
 
-| `KeyTweenInterrupt` | 동작 |
-|---|---|
-| `Cancel` (기본) | 겹치는 속성을 그 자리에서 가져옵니다. 속성을 모두 잃은 상태는 멈춥니다. 지금 값에서 출발하는 트랙은 그 자리에서 이어집니다. |
-| `Complete` | 겹치는 상태를 먼저 끝 값으로 맞춥니다. |
+다음 상태 전에 앞 상태를 끝내야 하면(끝 모습, 남은 이벤트, `await` 완료) 먼저 `Complete`합니다.
 
 ```csharp
-anim.Play("Close", KeyTweenInterrupt.Complete);    // Open을 끝낸 뒤 그 끝 모습에서 닫기
+anim.Complete("Open");    // Open이 끝 모습으로. 기다리던 await는 완료되고 "Shown" 이벤트도 발생
+anim.Play("Close");       // 그다음 열린 모습에서 닫기
 ```
-
-Play On으로 재생할 때도 상태 인스펙터에서 같은 설정을 고릅니다.
 
 ## 실행 중에 끝 값 바꾸기
 
@@ -203,7 +199,7 @@ KeyTweenEventInfo shown = await anim.WaitEventAsync("Shown");   // 어느 상태
 | `Select` / `Deselect` | 선택 이벤트 |
 | `ToggleOn` / `ToggleOff` | 같은 오브젝트 `Toggle`의 값 변경 |
 
-`interactable`이 꺼진 Selectable은 입력 이벤트를 무시합니다. Button `OnClick` 같은 UnityEvent에서는 `KeyTween.PlayState(string)`(역재생은 `PlayStateReversed`)을 연결합니다.
+`interactable`이 꺼진 Selectable은 입력 이벤트를 무시합니다. Button `OnClick` 같은 UnityEvent에서는 `KeyTween.Play (string)`(역재생은 `PlayReversed (string)`)을 고르고 상태 이름을 적습니다.
 
 ## 중첩 Prefab: 자식 호출과 오버라이드
 
