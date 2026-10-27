@@ -47,7 +47,7 @@ Videos: [RPG Sample](https://youtu.be/79Aw-O2kEgA) · [Button hover in the edito
 Open **Window > Package Manager**, click **+ > Add package from git URL…** and enter:
 
 ```
-https://github.com/UnialGames/KeyTween.git#v0.1.2
+https://github.com/UnialGames/KeyTween.git
 ```
 
 Or add it to `Packages/manifest.json`:
@@ -55,12 +55,26 @@ Or add it to `Packages/manifest.json`:
 ```json
 {
   "dependencies": {
-    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.2"
+    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git"
   }
 }
 ```
 
-`#main` instead of `#v0.1.2` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
+This follows the latest release (the repository's `main` changes only when a version is released). To update later, select KeyTween in the Package Manager and click **Update** (or **Manage › Update**).
+
+**Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)). Samples are copied into your project, so after an update import them again to get the new version.
+
+### Installing a specific version
+
+Add the version's tag after `#` (all versions: [Releases](https://github.com/UnialGames/KeyTween/releases)):
+
+```
+https://github.com/UnialGames/KeyTween.git#v0.1.3
+```
+
+- A tagged install stays on that version: **Update** in the Package Manager fetches the same tag again and does not move to a newer one.
+- To change the version, change the tag in `Packages/manifest.json` (or add the URL with the new tag again). Unity installs it when you return to the editor.
+- To go back to following the latest release, remove `#v…` from the URL.
 
 ## Getting Started
 

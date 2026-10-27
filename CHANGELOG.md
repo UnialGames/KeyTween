@@ -2,6 +2,11 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.1.3] - 2026-10-27
+
+### Changed
+- README: the install URL without a tag follows the latest release (update with **Update** in the Package Manager); a new section explains installing a specific version (`#v0.1.3`), which **Update** does not move.
+
 ## [0.1.2] - 2026-10-27
 
 Simpler play API. Code that passed `KeyTweenInterrupt` or called `PlayState` needs a small change (below).

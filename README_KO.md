@@ -47,7 +47,7 @@ KeyTween은 Animator 클립을 만들듯 타임라인에 키를 찍어 UI 애니
 **Window > Package Manager**에서 **+ > Add package from git URL…**을 누르고 아래 주소를 넣습니다.
 
 ```
-https://github.com/UnialGames/KeyTween.git#v0.1.2
+https://github.com/UnialGames/KeyTween.git
 ```
 
 또는 `Packages/manifest.json`에 추가합니다.
@@ -55,12 +55,26 @@ https://github.com/UnialGames/KeyTween.git#v0.1.2
 ```json
 {
   "dependencies": {
-    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.2"
+    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git"
   }
 }
 ```
 
-`#v0.1.2` 대신 `#main`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
+이 주소는 항상 최신 릴리스를 받습니다(저장소의 `main`은 버전을 배포할 때만 바뀝니다). 나중에 업데이트하려면 Package Manager에서 KeyTween을 고르고 **Update**(또는 **Manage › Update**)를 누릅니다.
+
+**샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)). 샘플은 프로젝트로 복사되므로, 업데이트한 뒤 새 샘플이 필요하면 다시 Import합니다.
+
+### 특정 버전으로 설치하기
+
+주소 뒤에 `#`과 버전 태그를 붙입니다(전체 버전: [Releases](https://github.com/UnialGames/KeyTween/releases)).
+
+```
+https://github.com/UnialGames/KeyTween.git#v0.1.3
+```
+
+- 태그를 붙여 설치하면 그 버전에 고정됩니다. Package Manager의 **Update**는 같은 태그를 다시 받을 뿐 새 버전으로 바뀌지 않습니다.
+- 버전을 바꾸려면 `Packages/manifest.json`의 태그를 바꾸거나, 새 태그를 붙인 주소로 다시 추가합니다. 에디터로 돌아가면 Unity가 설치합니다.
+- 다시 최신을 따라가려면 주소에서 `#v…`를 지웁니다.
 
 ## 시작하기
 
