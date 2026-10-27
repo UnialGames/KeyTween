@@ -24,7 +24,7 @@ var canceled = await popup.PlayUniTaskAsync("Close").SuppressCancellationThrow()
 
 완료·취소 규칙은 `PlayAsync`와 같습니다([API](API.md#끝나는-경우)). 내부적으로 `Awaitable`을 `AsUniTask()`로 바꿉니다.
 
-샘플 `Samples/UniTask` (장면 `UniTaskPopup.unity`): Open(`WhenAll`), Close(`SuppressCancellationThrow`), Slow(3초 상태에 1초 `Timeout` → `Complete`), Wait Shown. 모두 `destroyCancellationToken`으로 취소됩니다.
+쓰임 예: 열기는 `WhenAll`(팝업과 배경을 함께), 닫기는 `SuppressCancellationThrow`, 느린 상태는 `Timeout` 뒤 `Complete`, 이벤트 기다리기는 `WaitEventUniTaskAsync`. 모두 `destroyCancellationToken`으로 취소하면 오브젝트가 사라질 때 함께 정리됩니다.
 
 ## R3
 
@@ -41,7 +41,7 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 | `EventsAsObservable()` | 모든 애니메이션 이벤트 |
 | `EventAsObservable(eventName)` | 이름이 같은 이벤트만 |
 
-샘플 `Samples/R3` (장면 `R3Popup.unity`): 연타 `ThrottleFirst`, 닫기 `Switch`, `Shown` 이벤트 로그.
+쓰임 예: 연타는 `ThrottleFirst`로 막고, 닫기 버튼은 `Switch`로 마지막 재생만 남기고, `EventAsObservable("Shown")`으로 이벤트를 로그에 남깁니다.
 R3 설치에는 Unity 패키지(`https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity`)와 NuGet의 R3 본체 DLL(NuGetForUnity 등)이 필요합니다.
 
 ## UIEffect

@@ -2,6 +2,11 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-10-27
+
+### Fixed
+- Importing a sample into a project without TMP Essential Resources left every label invisible. KeyTween now imports them automatically when a sample is imported into such a project (the same as Window › TextMeshPro › Import TMP Essential Resources).
+
 ## [0.1.0] - 2026-10-23
 
 First public release.

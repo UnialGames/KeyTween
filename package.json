@@ -1,6 +1,6 @@
 {
   "name": "com.unialgames.keytween",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "KeyTween",
   "description": "Keyframe UI animation for uGUI: animations live in the prefab, authored as keys in a dedicated editor with live preview, recording and per-prefab overrides. Tween-level performance, text effects, scroll lists and screen transitions.",
   "unity": "6000.0",
@@ -19,12 +19,12 @@
   "samples": [
     {
       "displayName": "RPG Sample",
-      "description": "A mobile RPG UI built only with KeyTween states: lobby, heroes, bag, summon, adventure, battle, quests, shop, guild and more. Open Scenes/RPG.unity. Needs the Input System package.",
+      "description": "A mobile RPG UI built only with KeyTween states: lobby, heroes, bag, summon, adventure, battle, quests, shop, guild and more. Open Scenes/RPG.unity. Needs the Input System package; TMP Essential Resources are imported automatically if the project has none.",
       "path": "Samples~/RPG"
     },
     {
       "displayName": "UI Components",
-      "description": "Buttons, hover effects, toggles, a popup, text effects and 18 scroll list examples, each a prefab with its states. Open a scene in Scenes/. Needs the Input System package.",
+      "description": "Buttons, hover effects, toggles, a popup, text effects and 18 scroll list examples, each a prefab with its states. Open a scene in Scenes/. Needs the Input System package; TMP Essential Resources are imported automatically if the project has none.",
       "path": "Samples~/UIComponents"
     }
   ]

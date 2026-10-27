@@ -47,7 +47,7 @@ Videos: [RPG Sample](https://youtu.be/79Aw-O2kEgA) · [Button hover in the edito
 Open **Window > Package Manager**, click **+ > Add package from git URL…** and enter:
 
 ```
-https://github.com/UnialGames/KeyTween.git#v0.1.0
+https://github.com/UnialGames/KeyTween.git#v0.1.1
 ```
 
 Or add it to `Packages/manifest.json`:
@@ -55,12 +55,12 @@ Or add it to `Packages/manifest.json`:
 ```json
 {
   "dependencies": {
-    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.0"
+    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.1"
   }
 }
 ```
 
-`#main` instead of `#v0.1.0` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
+`#main` instead of `#v0.1.1` follows the latest release. **Samples:** select KeyTween in the Package Manager and import them from the **Samples** tab (see [Samples](#samples)).
 
 ## Getting Started
 
@@ -324,8 +324,8 @@ Details: [Integrations](Docs~/Integrations.md)
 |---|---|---|---|
 | **RPG Sample** | Package Manager › Samples | A whole mobile RPG UI: title, lobby, heroes and upgrade, bag, summon, adventure, battle, quests, shop, mail, guild chat, ranking, story, settings. Every motion is a prefab state; scripts only open screens and fill data. Scene `Scenes/RPG.unity` | Input System |
 | **UI Components** | Package Manager › Samples | Buttons, hover effects, toggles, a popup, text effects and 18 scroll list examples, one scene each | Input System |
-| UniTask | this repository, `Assets/KeyTween/Samples/UniTask` | `WhenAll`, `SuppressCancellationThrow`, `Timeout` + `Complete`, waiting for an event | UniTask |
-| R3 | this repository, `Assets/KeyTween/Samples/R3` | `ThrottleFirst` against double taps, `Switch` on close, an event log | R3 |
+
+TMP Essential Resources (TextMeshPro's settings and shaders) are imported automatically when you import a sample into a project that has none. Examples for UniTask and R3 are in [Integrations](Docs~/Integrations.md).
 
 | Heroes → detail (shared element) → upgrade | Adventure → formation → battle → victory |
 |---|---|

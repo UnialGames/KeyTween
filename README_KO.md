@@ -47,7 +47,7 @@ KeyTween은 Animator 클립을 만들듯 타임라인에 키를 찍어 UI 애니
 **Window > Package Manager**에서 **+ > Add package from git URL…**을 누르고 아래 주소를 넣습니다.
 
 ```
-https://github.com/UnialGames/KeyTween.git#v0.1.0
+https://github.com/UnialGames/KeyTween.git#v0.1.1
 ```
 
 또는 `Packages/manifest.json`에 추가합니다.
@@ -55,12 +55,12 @@ https://github.com/UnialGames/KeyTween.git#v0.1.0
 ```json
 {
   "dependencies": {
-    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.0"
+    "com.unialgames.keytween": "https://github.com/UnialGames/KeyTween.git#v0.1.1"
   }
 }
 ```
 
-`#v0.1.0` 대신 `#main`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
+`#v0.1.1` 대신 `#main`을 쓰면 최신 릴리스를 따라갑니다. **샘플:** Package Manager에서 KeyTween을 고르고 **Samples** 탭에서 Import합니다([샘플](#샘플)).
 
 ## 시작하기
 
@@ -324,8 +324,8 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 |---|---|---|---|
 | **RPG Sample** | Package Manager › Samples | 모바일 RPG UI 한 벌: 타이틀, 로비, 영웅·강화, 가방, 소환, 모험, 전투, 퀘스트, 상점, 우편, 길드 채팅, 랭킹, 스토리, 설정. 모든 움직임이 Prefab의 상태이고 스크립트는 화면을 열고 데이터를 채우기만 함. 장면 `Scenes/RPG.unity` | Input System |
 | **UI Components** | Package Manager › Samples | 버튼, 호버, 토글, 팝업, 글자 효과, 스크롤 리스트 18종. 씬마다 하나씩 | Input System |
-| UniTask | 이 저장소의 `Assets/KeyTween/Samples/UniTask` | `WhenAll`, `SuppressCancellationThrow`, `Timeout` + `Complete`, 이벤트 기다리기 | UniTask |
-| R3 | 이 저장소의 `Assets/KeyTween/Samples/R3` | 연타 막는 `ThrottleFirst`, 닫기 `Switch`, 이벤트 로그 | R3 |
+
+TMP Essential Resources(TextMeshPro의 설정과 셰이더)가 없는 프로젝트에 샘플을 Import하면 자동으로 함께 가져옵니다. UniTask·R3 예제는 [Integrations](Docs~/Integrations.md)에 있습니다.
 
 | 영웅 목록 → 상세(공유 요소 전환) → 강화 | 모험 → 편성 → 전투 → 승리 |
 |---|---|
