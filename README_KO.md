@@ -19,6 +19,7 @@ KeyTween에서는 Animator 클립을 만들 때처럼 타임라인에 키를 놓
 * **별도 에셋이 없습니다.** 클립이나 컨트롤러 같은 에셋이 없고, 각 트랙은 Prefab 안의 컴포넌트를 직접 가리킵니다.
 * **에디터에서 만듭니다.** 타임라인 창, 트랙 추가 창, 키 인스펙터, 녹화 기능으로 애니메이션을 만듭니다.
 * **Play 모드 없이 미리 봅니다.** 미리보기는 편집 모드, Prefab 모드, Play 모드 어디서나 동작합니다.
+* **UI와 게임 오브젝트를 함께 움직입니다.** UI 말고도 Transform, SpriteRenderer, 재질 속성, Light, Camera, AudioSource 트랙으로 월드 공간의 오브젝트를 움직입니다. 원하는 컴포넌트의 트랙을 직접 만들 수도 있습니다.
 * **재생 시점을 코드 없이 정합니다.** 포인터 진입, 클릭, 활성화 같은 시점을 상태마다 고릅니다.
 * **코드는 한 줄이면 됩니다.** `await anim.PlayAsync("Open")`은 상태를 재생하고 Unity `Awaitable`을 돌려줍니다. 재생이 끝까지 가지 못했을 때 어떻게 끝나는지도 규칙으로 정해져 있습니다.
 * **Prefab과 함께 움직입니다.** 상태는 Prefab에 저장되어 Prefab과 함께 다닙니다. 바깥 Prefab은 안에 든 Prefab의 상태를 호출하고 그 트랙을 덮어쓸 수 있습니다. 덮어쓴 내용은 바깥 Prefab 안에서만 적용됩니다.
@@ -197,7 +198,7 @@ bool playing = anim.IsPlaying("Open");
 float length = anim.Duration("Open");              // 오버라이드를 반영한 길이. 없는 상태면 0
 ```
 
-* 재생 시간은 실제 시간을 따르며, `Time.timeScale`의 영향을 받지 않습니다.
+* 재생 시간은 기본으로 `Time.timeScale`을 따르므로, 게임을 일시 정지하면 함께 멈춥니다. 일시 정지 메뉴처럼 게임이 멈춘 동안에도 움직여야 하는 UI는 KeyTween의 **Time**을 `Unscaled`로 바꿉니다.
 * 없는 상태 이름을 넘기면 경고를 남기고 바로 완료됩니다.
 
 ### 재생이 끝나는 경우
@@ -364,7 +365,7 @@ Button의 `OnClick` 같은 UnityEvent에서도 상태를 재생할 수 있습니
 * 재생하려면 `KeyTween.Play (string)`을 고르고 상태 이름을 적습니다.
 * 거꾸로 재생하려면 `PlayReversed (string)`을 고릅니다.
 
-자세한 내용은 [Play On](Docs~/Guide.md#4-play-on--재생-시점)을 참고하세요.
+자세한 내용은 [Play On](Docs~/Guide.md#4-play-on)을 참고하세요.
 
 ## 중첩 Prefab: 자식 호출과 오버라이드
 

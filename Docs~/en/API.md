@@ -116,7 +116,20 @@ if (anim.HasState("Open") && !anim.IsPlaying("Open")) anim.Play("Open");
 
 ### Play Time
 
-Time runs in real time. It is not affected by `Time.timeScale`.
+Each KeyTween's **Time** (`timeMode`) decides whether playback follows `Time.timeScale`.
+
+| Time | Clock | Use |
+|---|---|---|
+| `Scaled` (default) | Game time. Stops while `Time.timeScale` is 0 | Game objects, battle effects |
+| `Unscaled` | Real time. Keeps playing while the game is paused | Pause menus, loading screens |
+
+```csharp
+pauseMenu.timeMode = KeyTweenTimeMode.Unscaled;   // applies from the next play
+```
+
+* It can be overridden per prefab instance. For example, keep a shared button `Unscaled` and switch only the buttons placed on the game screen to `Scaled`.
+* A state played by a child call follows the child KeyTween's **Time**.
+* Outside Play mode (playing from code in the editor), both use real time.
 
 ### When States Overlap
 
@@ -361,7 +374,80 @@ Besides `KeyTween`, the package provides the following components.
 
 | Component | Documentation |
 |---|---|
-| `KeyTweenTrigger` (Play On) | Added automatically when you pick Play On in the editor. [Guide §4](Guide.md#4-play-on--when-it-plays) |
+| `KeyTweenTrigger` (Play On) | Added automatically when you pick Play On in the editor. [Guide §4](Guide.md#4-play-on) |
 | `KeyTweenScrollList`, `KeyTweenPageIndicator`, `KeyTweenScrollScrub`, `KeyTweenPullToRefresh` | [ScrollList](ScrollList.md) |
 | `KeyTweenScreen`, `KeyTweenPageContainer`, `KeyTweenModalContainer`, `KeyTweenSheetContainer`, `KeyTweenSharedElement` | [Screens](Screens.md) |
 | `KeyTweenEventListener` | [Animation Events](#animation-events) |
+
+## Custom Tracks
+
+You can make a track for a value that has no built-in track. Write one class that animates a component of your project, and it appears in the Add Track window for objects that have that component.
+
+### Writing a Track Class
+
+Derive from `KeyTweenFloatTrack<T>` and implement `Get`, which reads the value, and `Set`, which writes it. `T` is the component the track animates.
+
+```csharp
+using KeyTweening;
+using UnityEngine.Scripting;
+using UnityEngine.UI;
+
+[Preserve]
+public sealed class ScrollbarSizeTrack : KeyTweenFloatTrack<Scrollbar>
+{
+    protected override float Get(Scrollbar target) => target.size;
+    protected override void Set(Scrollbar target, float value) => target.size = value;
+}
+```
+
+* The class must be `public` and have a parameterless constructor.
+* Put it in a runtime assembly, not in an Editor folder, because it must also play in builds.
+* The track's name is the class name without `Track`. The example above shows as `Scrollbar Size`.
+
+### Value Types
+
+Derive from the class that matches the value. The key inspector shows a matching field.
+
+| Base class | Value | Key field |
+|---|---|---|
+| `KeyTweenFloatTrack<T>` | `float` | number |
+| `KeyTweenVector2Track<T>` | `Vector2` | x, y |
+| `KeyTweenVector3Track<T>` | `Vector3` | x, y, z |
+| `KeyTweenColorTrack<T>` | `Color` | color |
+| `KeyTweenCustomTrack<T>` | `Vector4` | x, y, z, w |
+
+### Changing the Name, Color and Conditions
+
+Override these properties when you need to.
+
+| Property | Use |
+|---|---|
+| `Name` | The name shown on the track and in the Add Track window |
+| `TrackColor` | The track's color in the timeline |
+| `Range` | The slider range of a number track (e.g. `new Vector2(0, 1)`) |
+| `Offers(Component)` | Which objects show this track (e.g. only with a certain setting) |
+
+```csharp
+public override string Name => "Handle Size";
+public override Vector2 Range => new(0f, 1f);
+```
+
+### Preview and Recording
+
+When the preview stops, the values a track changed are written back to what they were before the preview. If you list the serialized fields the value is stored in, recording also puts keys on that track.
+
+```csharp
+public override void SerializedFields(Component target, List<(Object owner, string path)> fields) =>
+    fields.Add((target, "m_Size"));
+```
+
+### When a Build Strips Code
+
+A track is created from its saved class name. With IL2CPP and a Managed Stripping Level above Minimal, classes that no code uses directly can be removed. Mark the class with `[Preserve]` to keep it.
+
+### When a Class Is Renamed
+
+A track is saved with the full name of its class (namespace and assembly included).
+
+* If you rename the class or its namespace, the track shows as `(missing)` and writes nothing.
+* Rename it back, or add the track again.

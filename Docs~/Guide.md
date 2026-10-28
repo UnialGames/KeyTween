@@ -12,6 +12,8 @@ KeyTween 에디터를 쓰기 전에 알아 두면 좋은 용어를 설명합니�
 
 애니메이션 데이터는 별도의 에셋 없이 `KeyTween` 컴포넌트 안에 직렬화됩니다. 그래서 Prefab을 복제하거나 옮겨도 연출이 함께 따라갑니다.
 
+컴포넌트 인스펙터의 **Time**은 재생 시간이 `Time.timeScale`을 따를지 정합니다. 기본은 `Scaled`(따름)이고, 일시 정지 중에도 움직여야 하는 UI는 `Unscaled`로 둡니다. 자세한 내용은 [재생 시간](API.md#재생-시간)을 참고하세요.
+
 ### 상태 (State)
 
 상태는 이름이 붙은 연출 하나입니다. 코드에서도 이 이름으로 재생합니다.
@@ -52,7 +54,7 @@ Play On은 상태가 저절로 재생되는 시점입니다. 고르지 않으면
 * 클릭할 때
 * 컴포넌트가 켜질 때
 
-자세한 내용은 [Play On — 재생 시점](#4-play-on--재생-시점)을 참고하세요.
+자세한 내용은 [Play On](#4-play-on)을 참고하세요.
 
 ## 2. 창 열기와 구성
 
@@ -70,7 +72,7 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 
 창은 선택한 오브젝트나 그 부모에 있는 `KeyTween`을 편집합니다.
 
-인스펙터의 **Raw Data**를 펼치면 직렬화된 데이터를 그대로 볼 수 있습니다.
+인스펙터의 **Raw Data (read-only)** 항목을 펼치면 직렬화된 데이터를 그대로 볼 수 있습니다. 읽기 전용이며, 상태와 트랙은 KeyTween Editor에서 고칩니다.
 
 ### KeyTween 붙이기
 
@@ -143,7 +145,7 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 * **Loop**는 Animator 클립의 Loop Time과 같은 개념입니다. 이벤트, 사운드, 자식 호출은 바퀴마다 다시 실행됩니다.
 * **Play On**에서 이벤트를 고르면 `KeyTweenTrigger` 컴포넌트가 자동으로 붙습니다.
 
-고를 수 있는 이벤트는 [Play On — 재생 시점](#4-play-on--재생-시점)을 참고하세요.
+고를 수 있는 이벤트는 [Play On](#4-play-on)을 참고하세요.
 
 ### 상태의 길이
 
@@ -154,7 +156,7 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 * 사운드의 끝
 * 자식 호출의 끝
 
-## 4. Play On — 재생 시점
+## 4. Play On
 
 Play On은 상태가 코드 없이 저절로 재생되는 시점입니다.
 
@@ -229,23 +231,66 @@ Start 옵션은 [트랙 옵션](#8-트랙-옵션-트랙-인스펙터)을 참고�
 
 ### 만들 수 있는 트랙
 
-| 대상 | 트랙 (창에 보이는 이름) |
+트랙 추가 창은 고른 오브젝트에 붙은 컴포넌트에 맞는 트랙만 보여 줍니다.
+
+**오브젝트**
+
+| 대상 | 트랙 |
 |---|---|
 | 모든 오브젝트 | Scale, Rotation, Active |
-| RectTransform | Size, Position, Anchor Min, Anchor Max, Pivot |
+| UI가 아닌 오브젝트 (Transform) | Position, World Position, World Rotation |
+
+**UI**
+
+| 대상 | 트랙 |
+|---|---|
+| RectTransform | Position, Size, Anchor Min, Anchor Max, Pivot, Offset Min, Offset Max |
 | CanvasGroup | Group Alpha |
-| Graphic (Image, TMP 등) | Color, Alpha |
+| Graphic (Image, RawImage, TMP 등) | Color, Alpha |
 | Image (Image Type = Filled) | Fill Amount |
-| TMP_Text | Font Size, Character Spacing, Reveal (Typewriter), Number (Count) |
+| RawImage | UV Rect |
+| Shadow, Outline | Effect Color, Effect Distance |
+| RectMask2D | Softness, Padding |
+| Slider | Value |
+| ScrollRect | Scroll Position |
+| LayoutElement | Min Size, Preferred Size, Flexible Size |
+
+**TextMeshPro**
+
+| 대상 | 트랙 |
+|---|---|
+| TMP_Text | Font Size, Character Spacing, Word Spacing, Line Spacing, Reveal (Typewriter), Number (Count) |
+| TMP_Text 재질 | Outline Width, Outline Color, Face Dilate, Underlay Color |
 | TMP_Text 글자별 | Char Scale, Char Position, Char Rotation, Char Color, Char Alpha |
-| Camera | Camera Background, Camera Size |
-| UIEffect (설치한 경우) | UIEffect 트랙 14종 ([Integrations](Integrations.md)) |
+
+**2D, 3D, 카메라, 소리**
+
+| 대상 | 트랙 |
+|---|---|
+| SpriteRenderer | Color, Alpha |
+| Renderer (MeshRenderer 등) | Material 트랙: 재질의 색, 숫자, 벡터 속성마다 하나 (예: `Material _BaseColor`) |
+| Light | Light Color, Intensity, Range (Point, Spot), Spot Angle (Spot) |
+| Camera | Camera Background, Camera Size, Field of View, Near Clip, Far Clip, Viewport Rect |
+| AudioSource | Volume, Pitch |
+
+**이벤트와 사운드**
+
+| 대상 | 트랙 |
+|---|---|
 | 루트 | Animation Events, Sound |
-| AudioSource가 있는 오브젝트 | Sound (그 AudioSource로 재생) |
+
+**그 밖의 트랙**
+
+* UIEffect를 설치하면 UIEffect 트랙 14종이 추가됩니다. 자세한 내용은 [연동](Integrations.md)을 참고하세요.
+* 프로젝트의 컴포넌트를 움직이는 트랙은 직접 만들 수 있습니다. 자세한 내용은 [커스텀 트랙 만들기](API.md#커스텀-트랙-만들기)를 참고하세요.
+
+**알아 둘 점**
 
 * `Group Alpha`는 화면이나 팝업 전체를 페이드할 때 씁니다.
-* `Rotation`은 오일러 각(도)입니다. 값을 −180~180 범위로 읽으므로, −30°에서 0°로 갈 때 먼 쪽으로 돌지 않습니다.
+* `Rotation`과 `World Rotation`은 오일러 각(도)입니다. 값을 −180~180 범위로 읽으므로, −30°에서 0°로 갈 때 먼 쪽으로 돌지 않습니다.
 * `Active`는 키 사이를 보간하지 않고, 키 시간에 오브젝트를 켜거나 끕니다.
+* Material 트랙은 MaterialPropertyBlock으로 씁니다. 재질 에셋은 바뀌지 않고, 같은 재질을 쓰는 다른 오브젝트에도 영향을 주지 않습니다.
+* TMP 재질 트랙은 그 텍스트만 쓰는 재질 인스턴스를 만듭니다. 미리보기를 멈추면 원래 재질로 돌아옵니다.
 
 ### 트랙 대상 바꾸기
 
@@ -540,6 +585,23 @@ struct를 고르면 그 필드를 인스펙터에서 바로 편집할 수 있습
 * 움직일 속성을 모두 넘겨준 상태는 멈추고, 그 상태의 `PlayAsync`는 취소됩니다.
 * Start가 Current Value인 트랙은 멈춘 자리에서 이어서 움직입니다. 그래서 호버가 중간에 끊겨도 값이 튀지 않습니다.
 
+### 같은 값을 쓰는 트랙
+
+트랙 종류가 달라도 같은 값을 쓰는 트랙끼리는 **겹치는 부분(채널)만** 넘겨받습니다.
+
+| 같은 값을 쓰는 트랙 | 겹치는 채널 |
+|---|---|
+| Color와 Alpha (Graphic, SpriteRenderer) | 투명도(a) |
+| Char Color와 Char Alpha | 투명도(a) |
+| Position, Size와 Offset Min, Offset Max (RectTransform) | Offset이 바꾸는 위치와 크기 |
+| Position과 World Position, Rotation과 World Rotation | 전체 |
+
+예를 들어 버튼의 `Hover`가 Color를 재생하는 중에 `Fade`가 Alpha를 재생하면 다음과 같습니다.
+
+* `Hover`는 R, G, B를 계속 씁니다.
+* 투명도는 `Fade`가 가져갑니다.
+* 반대로 `Fade` 중에 `Hover`가 시작되면, `Fade`는 하나뿐인 채널을 넘겨주었으므로 멈춥니다.
+
 ### 앞 상태를 끝내고 넘어가기
 
 앞 상태를 끝 모습까지 맞추고 이벤트도 발생시킨 뒤 넘어가야 할 때가 있습니다. 이때는 코드에서 `Complete("앞 상태")`를 먼저 부르고 다음 상태를 재생합니다.
@@ -790,6 +852,5 @@ KeyTween 창에서 쓸 수 있는 우클릭 메뉴와 단축키입니다.
 
 * 키 복사와 붙여넣기
 * 상태 탭에서 바로 이름 바꾸기, 복제하기, 순서 바꾸기. 이름은 상태 인스펙터의 **Name**에서 바꿉니다.
-* `Time.timeScale` 반영. 재생은 실시간을 기준으로 합니다.
 
 재생 시계는 Design을 참고하세요.

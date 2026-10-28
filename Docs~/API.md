@@ -116,7 +116,20 @@ if (anim.HasState("Open") && !anim.IsPlaying("Open")) anim.Play("Open");
 
 ### 재생 시간
 
-시간은 실시간으로 흐릅니다. `Time.timeScale`의 영향을 받지 않습니다.
+재생 시간이 `Time.timeScale`을 따를지는 KeyTween마다 **Time**(`timeMode`)으로 정합니다.
+
+| Time | 시간 | 쓰는 곳 |
+|---|---|---|
+| `Scaled` (기본) | 게임 시간. `Time.timeScale`이 0이면 멈춥니다 | 게임 오브젝트, 전투 연출 |
+| `Unscaled` | 실제 시간. 게임이 멈춰도 재생됩니다 | 일시 정지 메뉴, 로딩 화면 |
+
+```csharp
+pauseMenu.timeMode = KeyTweenTimeMode.Unscaled;   // 다음 재생부터 적용됩니다
+```
+
+* Prefab 인스턴스마다 덮어쓸 수 있습니다. 공용 버튼은 `Unscaled`로 두고, 게임 화면에 놓인 버튼만 `Scaled`로 바꾸는 식입니다.
+* 자식 호출로 재생되는 상태는 자식 KeyTween의 **Time**을 따릅니다.
+* Play 모드가 아닐 때(에디터에서 코드로 재생할 때)는 둘 다 실제 시간입니다.
 
 ### 다른 상태와 겹칠 때
 
@@ -361,7 +374,80 @@ public static void KeyTween.Write(Component target, KeyTweenProperty property, V
 
 | 컴포넌트 | 문서 |
 |---|---|
-| `KeyTweenTrigger` (Play On) | 에디터에서 Play On을 고르면 자동으로 붙습니다. [Guide §4](Guide.md#4-play-on--재생-시점) |
+| `KeyTweenTrigger` (Play On) | 에디터에서 Play On을 고르면 자동으로 붙습니다. [Guide §4](Guide.md#4-play-on) |
 | `KeyTweenScrollList`, `KeyTweenPageIndicator`, `KeyTweenScrollScrub`, `KeyTweenPullToRefresh` | [ScrollList](ScrollList.md) |
 | `KeyTweenScreen`, `KeyTweenPageContainer`, `KeyTweenModalContainer`, `KeyTweenSheetContainer`, `KeyTweenSharedElement` | [Screens](Screens.md) |
 | `KeyTweenEventListener` | [애니메이션 이벤트](#애니메이션-이벤트) |
+
+## 커스텀 트랙 만들기
+
+내장 트랙이 없는 값도 트랙으로 만들 수 있습니다. 프로젝트의 컴포넌트를 움직이는 클래스를 하나 만들면, 그 컴포넌트가 붙은 오브젝트의 트랙 추가 창에 나옵니다.
+
+### 트랙 클래스 만들기
+
+`KeyTweenFloatTrack<T>`를 상속하고, 값을 읽는 `Get`과 쓰는 `Set`을 구현합니다. `T`는 트랙이 움직일 컴포넌트입니다.
+
+```csharp
+using KeyTweening;
+using UnityEngine.Scripting;
+using UnityEngine.UI;
+
+[Preserve]
+public sealed class ScrollbarSizeTrack : KeyTweenFloatTrack<Scrollbar>
+{
+    protected override float Get(Scrollbar target) => target.size;
+    protected override void Set(Scrollbar target, float value) => target.size = value;
+}
+```
+
+* 클래스는 `public`이고 매개변수 없는 생성자가 있어야 합니다.
+* Editor 폴더가 아닌 런타임 어셈블리에 둡니다. 빌드에서도 재생되어야 하기 때문입니다.
+* 트랙 이름은 클래스 이름에서 `Track`을 뺀 것입니다. 위 예는 `Scrollbar Size`로 보입니다.
+
+### 값의 형식
+
+값의 형식에 맞는 클래스를 상속합니다. 키 인스펙터의 입력 칸도 형식에 맞게 나옵니다.
+
+| 상속할 클래스 | 값 | 키 입력 칸 |
+|---|---|---|
+| `KeyTweenFloatTrack<T>` | `float` | 숫자 |
+| `KeyTweenVector2Track<T>` | `Vector2` | x, y |
+| `KeyTweenVector3Track<T>` | `Vector3` | x, y, z |
+| `KeyTweenColorTrack<T>` | `Color` | 색 |
+| `KeyTweenCustomTrack<T>` | `Vector4` | x, y, z, w |
+
+### 이름, 색, 조건 바꾸기
+
+필요하면 다음 속성을 다시 정의합니다.
+
+| 속성 | 쓰임 |
+|---|---|
+| `Name` | 트랙과 트랙 추가 창에 보이는 이름 |
+| `TrackColor` | 타임라인에서 트랙의 색 |
+| `Range` | 숫자 트랙의 슬라이더 범위 (예: `new Vector2(0, 1)`) |
+| `Offers(Component)` | 이 트랙을 보여 줄 오브젝트의 조건 (예: 특정 설정일 때만) |
+
+```csharp
+public override string Name => "Handle Size";
+public override Vector2 Range => new(0f, 1f);
+```
+
+### 미리보기와 녹화
+
+미리보기를 멈추면 트랙이 바꾼 값은 미리보기 전에 읽은 값으로 다시 쓰여 돌아옵니다. 값이 저장되는 직렬화 필드를 알려 주면 녹화에서도 그 트랙으로 키가 찍힙니다.
+
+```csharp
+public override void SerializedFields(Component target, List<(Object owner, string path)> fields) =>
+    fields.Add((target, "m_Size"));
+```
+
+### 빌드에서 코드가 제거될 때
+
+트랙은 저장된 클래스 이름으로 만들어집니다. IL2CPP에서 Managed Stripping Level을 Minimal보다 높게 쓰면, 코드에서 직접 쓰지 않는 클래스가 제거될 수 있습니다. 그래서 클래스에 `[Preserve]`를 붙입니다.
+
+### 클래스 이름을 바꿨을 때
+
+트랙은 클래스의 전체 이름(네임스페이스, 어셈블리 포함)으로 저장됩니다.
+
+* 클래스나 네임스페이스의 이름을 바꾸면, 그 트랙은 `(missing)`으로 보이고 아무 값도 쓰지 않습니다.
+* 예전 이름으로 되돌리거나, 트랙을 새로 추가합니다.

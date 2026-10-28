@@ -19,6 +19,7 @@ KeyTween lets you build UI animation the same way you build an Animator clip: by
 * **No extra assets.** There are no clip or controller assets, and each track refers directly to a component in the prefab.
 * **Authoring in the editor.** You build animations in the KeyTween window with the Add Track picker, the key inspector and recording.
 * **Preview without Play mode.** Previews work in Edit mode, Prefab mode and Play mode.
+* **UI and game objects.** Besides UI, tracks animate world-space objects: Transform, SpriteRenderer, material properties, Light, Camera and AudioSource. You can add your own tracks for any component.
 * **Choose when a state plays without code.** Each state can play on pointer enter, on click, on enable and so on.
 * **One line of code.** `await anim.PlayAsync("Open")` plays a state and returns a Unity `Awaitable`. Clear rules define how a play ends when it cannot finish.
 * **Built for prefabs.** States are saved with the prefab. A parent prefab can call a state of a nested prefab and override its tracks. The override applies only inside the parent.
@@ -197,7 +198,7 @@ bool playing = anim.IsPlaying("Open");
 float length = anim.Duration("Open");              // includes overrides; 0 if the state does not exist
 ```
 
-* Playback uses real time and does not follow `Time.timeScale`.
+* Playback follows `Time.timeScale` by default, so pausing the game pauses it. For UI that must keep moving while the game is paused (a pause menu), set the KeyTween's **Time** to `Unscaled`.
 * If no state has the given name, KeyTween logs a warning and the call completes immediately.
 
 ### How a Play Ends
@@ -364,7 +365,7 @@ You can also play a state from a UnityEvent, such as a Button's `OnClick`.
 * To play it, choose `KeyTween.Play (string)` and type the state name.
 * To play it in reverse, choose `PlayReversed (string)` instead.
 
-For details, see [Play On](Docs~/en/Guide.md#4-play-on--when-it-plays).
+For details, see [Play On](Docs~/en/Guide.md#4-play-on).
 
 ## Nested Prefabs: Child Calls and Overrides
 

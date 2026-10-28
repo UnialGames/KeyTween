@@ -12,6 +12,8 @@ This page explains the terms used throughout the KeyTween editor.
 
 The animation data is serialized inside the `KeyTween` component, with no separate asset. As a result, the animation travels with the prefab when you duplicate or move it.
 
+**Time** in the component inspector decides whether playback follows `Time.timeScale`. The default is `Scaled` (it follows); set it to `Unscaled` for UI that must keep moving while the game is paused. For details, see [Play Time](API.md#play-time).
+
 ### State
 
 A state is one named animation. Code plays a state by this name.
@@ -52,7 +54,7 @@ Play On is the moment a state plays by itself. If you do not pick one, the state
 * On click
 * When the component is enabled
 
-For details, see [Play On — When It Plays](#4-play-on--when-it-plays).
+For details, see [Play On](#4-play-on).
 
 ## 2. Opening the Window and Its Layout
 
@@ -70,7 +72,7 @@ Open the window in any of these ways. The window title is "KeyTween".
 
 The window edits the `KeyTween` on the selected object or on one of its parents.
 
-Expand **Raw Data** in the inspector to see the serialized data as it is stored.
+Expand **Raw Data (read-only)** in the inspector to see the serialized data as it is stored. It is read-only; edit states and tracks in the KeyTween Editor.
 
 ### Adding a KeyTween
 
@@ -143,7 +145,7 @@ When no track or key is selected, the inspector shows the state's settings.
 * **Loop** is the same idea as Loop Time on an Animator clip. Events, sounds and child calls fire again on every loop.
 * Choosing an event in **Play On** adds a `KeyTweenTrigger` component automatically.
 
-For the available events, see [Play On — When It Plays](#4-play-on--when-it-plays).
+For the available events, see [Play On](#4-play-on).
 
 ### State Length
 
@@ -154,7 +156,7 @@ A state's length is set by whatever ends last. The latest of the following is th
 * The end of a sound
 * The end of a child call
 
-## 4. Play On — When It Plays
+## 4. Play On
 
 Play On sets when a state plays by itself, without code.
 
@@ -229,23 +231,66 @@ For the Start option, see [Track Options](#8-track-options-track-inspector).
 
 ### Available Tracks
 
-| Target | Tracks (names shown in the window) |
+The Add Track window shows only the tracks that match the components on the selected object.
+
+**Objects**
+
+| Target | Tracks |
 |---|---|
 | Any object | Scale, Rotation, Active |
-| RectTransform | Size, Position, Anchor Min, Anchor Max, Pivot |
+| Objects that are not UI (Transform) | Position, World Position, World Rotation |
+
+**UI**
+
+| Target | Tracks |
+|---|---|
+| RectTransform | Position, Size, Anchor Min, Anchor Max, Pivot, Offset Min, Offset Max |
 | CanvasGroup | Group Alpha |
-| Graphic (Image, TMP, and so on) | Color, Alpha |
+| Graphic (Image, RawImage, TMP, and so on) | Color, Alpha |
 | Image (Image Type = Filled) | Fill Amount |
-| TMP_Text | Font Size, Character Spacing, Reveal (Typewriter), Number (Count) |
+| RawImage | UV Rect |
+| Shadow, Outline | Effect Color, Effect Distance |
+| RectMask2D | Softness, Padding |
+| Slider | Value |
+| ScrollRect | Scroll Position |
+| LayoutElement | Min Size, Preferred Size, Flexible Size |
+
+**TextMeshPro**
+
+| Target | Tracks |
+|---|---|
+| TMP_Text | Font Size, Character Spacing, Word Spacing, Line Spacing, Reveal (Typewriter), Number (Count) |
+| TMP_Text material | Outline Width, Outline Color, Face Dilate, Underlay Color |
 | TMP_Text per character | Char Scale, Char Position, Char Rotation, Char Color, Char Alpha |
-| Camera | Camera Background, Camera Size |
-| UIEffect (when installed) | 14 UIEffect tracks ([Integrations](Integrations.md)) |
+
+**2D, 3D, camera and sound**
+
+| Target | Tracks |
+|---|---|
+| SpriteRenderer | Color, Alpha |
+| Renderer (MeshRenderer and so on) | Material tracks: one per color, number and vector property of its material (e.g. `Material _BaseColor`) |
+| Light | Light Color, Intensity, Range (Point, Spot), Spot Angle (Spot) |
+| Camera | Camera Background, Camera Size, Field of View, Near Clip, Far Clip, Viewport Rect |
+| AudioSource | Volume, Pitch |
+
+**Events and sounds**
+
+| Target | Tracks |
+|---|---|
 | Root | Animation Events, Sound |
-| Objects with an AudioSource | Sound (plays through that AudioSource) |
+
+**Other tracks**
+
+* With UIEffect installed, 14 UIEffect tracks are added. For details, see [Integrations](Integrations.md).
+* You can write your own track for a component of your project. For details, see [Custom Tracks](API.md#custom-tracks).
+
+**Things to know**
 
 * `Group Alpha` is for fading a whole screen or popup.
-* `Rotation` uses Euler angles in degrees. Values are read in the range −180 to 180, so going from −30° to 0° does not turn the long way around.
+* `Rotation` and `World Rotation` use Euler angles in degrees. Values are read in the range −180 to 180, so going from −30° to 0° does not turn the long way around.
 * `Active` does not interpolate between keys. It turns the object on or off at each key's time.
+* Material tracks write through a MaterialPropertyBlock. The material asset does not change, and other objects that use the same material are not affected.
+* TMP material tracks make a material instance used only by that text. When the preview stops, the original material comes back.
 
 ### Changing a Track's Target
 
@@ -540,6 +585,23 @@ The new state takes over **only the properties it animates** from the earlier st
 * A state that has handed over all of its properties stops, and its `PlayAsync` is canceled.
 * Tracks whose Start is Current Value continue from where they stopped. This is why a hover that is cut short does not jump.
 
+### Tracks That Write the Same Value
+
+Tracks of different kinds that write the same value take over **only the part they share (the channels)**.
+
+| Tracks that write the same value | Shared channels |
+|---|---|
+| Color and Alpha (Graphic, SpriteRenderer) | transparency (a) |
+| Char Color and Char Alpha | transparency (a) |
+| Position, Size and Offset Min, Offset Max (RectTransform) | the position and size an offset changes |
+| Position and World Position, Rotation and World Rotation | all of it |
+
+For example, when a button's `Hover` plays Color and `Fade` then plays Alpha:
+
+* `Hover` keeps writing R, G and B.
+* `Fade` takes the transparency.
+* The other way round, when `Hover` starts during `Fade`, `Fade` has handed over its only channel, so it stops.
+
 ### Finishing the Earlier State First
 
 Sometimes the earlier state must reach its end pose and raise its events before the next one plays. In that case, call `Complete("earlier state")` from code first, then play the next state.
@@ -790,6 +852,5 @@ The KeyTween editor currently does not support the following:
 
 * Copying and pasting keys
 * Renaming, duplicating or reordering states directly in the state tabs. To rename a state, use **Name** in the state inspector.
-* Following `Time.timeScale`. Playback runs in real time.
 
 For the playback clock, see Design.
