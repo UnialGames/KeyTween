@@ -128,6 +128,19 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 
 빈 타임라인과 상태 인스펙터가 나타납니다.
 
+### 상태 탭 다루기
+
+| 하려는 것 | 방법 |
+|---|---|
+| 이름 바꾸기 | 탭을 더블클릭하고 새 이름을 입력한 뒤 Enter. Esc는 취소 |
+| 복제하기 | 탭 우클릭 › **Duplicate**. 바로 뒤에 `이름 Copy`로 생기고, 그 상태가 열립니다 |
+| 순서 바꾸기 | 탭을 옆으로 끌어 놓습니다. 탭 우클릭 › **Move Left** / **Move Right**도 됩니다 |
+| 삭제하기 | 탭 우클릭 › **Delete** (확인을 거침) |
+
+* 이름은 탭 우클릭 › **Rename**이나 상태 인스펙터의 **Name**에서도 바꿀 수 있습니다. 이름을 바꾸면 Play On 연결도 새 이름을 따라갑니다.
+* 빈 이름과 다른 상태가 이미 쓰는 이름은 받지 않습니다. 코드와 Play On이 이름으로 상태를 찾기 때문입니다.
+* 복제한 상태에는 Play On이 복사되지 않습니다. 이벤트 하나는 상태 하나를 재생합니다.
+
 ![새로 만든 Hover 상태. 타임라인은 비어 있고, 오른쪽 상태 인스펙터에 Name, Loop, Duration, Play On이 보입니다.](media/editor/editor-state.png)
 
 ### 상태 인스펙터
@@ -322,6 +335,18 @@ Start 옵션은 [트랙 옵션](#8-트랙-옵션-트랙-인스펙터)을 참고�
 
 키를 삭제하려면 Delete나 Backspace를 누르거나, 우클릭 메뉴에서 **Delete Selected Keys**를 고릅니다.
 
+### 키 복사하고 붙여넣기
+
+1. 키를 고르고 Ctrl+C(Mac은 Cmd+C)를 누릅니다. 여러 트랙의 키를 함께 골라도 됩니다.
+2. 재생 막대를 붙여넣을 시간에 둡니다.
+3. Ctrl+V(Mac은 Cmd+V)를 누릅니다. 우클릭 메뉴의 **Copy Selected Keys**, **Paste Keys at Playhead**도 같습니다.
+
+* 가장 앞의 키가 재생 막대 위치에 오고, 키끼리의 간격은 그대로입니다. 값, 도착 방식, 커브도 함께 복사됩니다.
+* 키는 복사한 키와 같은 오브젝트, 같은 종류의 트랙에 들어갑니다. 다른 상태에 붙여넣어 그 트랙이 없으면 트랙이 새로 생깁니다.
+* 다른 Prefab의 KeyTween에 붙여넣으면, 루트에서 같은 경로에 있는 오브젝트의 트랙에 들어갑니다. 그런 오브젝트가 없는 키는 건너뜁니다.
+* 재생 막대는 상태 끝을 넘지 않습니다. 끝 뒤에 이어 붙이려면 그 자리를 우클릭하고 **Paste Keys Here**를 고릅니다.
+* 붙여넣는 시간에 이미 키가 있으면 붙여넣은 키로 바뀝니다. 붙여넣은 키가 선택되므로 바로 끌어 옮길 수 있습니다.
+
 ### 타임라인 보기
 
 | 동작 | 방법 |
@@ -340,7 +365,7 @@ Start 옵션은 [트랙 옵션](#8-트랙-옵션-트랙-인스펙터)을 참고�
 
 키를 고르면 인스펙터에 **Key** 섹션과 **Arrival** 섹션이 차례로 나옵니다. 어떤 키든 구성은 같습니다.
 
-![Button · Color 트랙의 키 인스펙터. Time 0.2, 색 값, Capture Current Value 버튼, Arrival Type = Ease, Ease = Out Sine, 곡선 미리보기가 보입니다.](media/editor/editor-key-inspector.png)
+![Button · Color 트랙의 키 인스펙터. Time 0.2, 색 값, Arrival Type = Ease, Ease = Out Sine, 곡선 미리보기가 보입니다.](media/editor/editor-key-inspector.png)
 
 * Key 섹션에서 해당하지 않는 칸은 숨기지 않습니다. 비활성으로 두고 그 이유를 보여 줍니다.
 * Arrival 섹션은 고른 Type에 맞는 칸만 보여 줍니다.
@@ -362,13 +387,6 @@ Key 섹션에서 키의 시간(**Time (s)**)과 값을 정합니다. 값 칸의 
 * Active는 체크 박스로 편집합니다.
 
 재생을 시작할 때 정해지는 값은 비활성입니다. 예를 들어 Start가 Current Value인 트랙의 첫 키가 그렇습니다.
-
-### 지금 값으로 키 정하기
-
-**Capture Current Value**를 누르면 오브젝트의 지금 값이 키에 들어갑니다. 절댓값 트랙에서만 쓸 수 있습니다.
-
-1. Scene에서 오브젝트를 원하는 모습으로 둡니다.
-2. 키 인스펙터에서 **Capture Current Value**를 누릅니다.
 
 ### 도착 방식 정하기
 
@@ -825,9 +843,10 @@ KeyTween 창에서 쓸 수 있는 우클릭 메뉴와 단축키입니다.
 
 | 어디서 | 메뉴 |
 |---|---|
-| 타임라인 빈 곳 | Add Track..., Add Child Call ▸ 자식 ▸ 상태 |
+| 상태 탭 | Rename, Duplicate, Move Left, Move Right, Delete |
+| 타임라인 빈 곳 | Paste Keys at Playhead, Paste Keys Here, Add Track..., Add Child Call ▸ 자식 ▸ 상태 |
 | 키프레임 트랙 머리 | Add Key at Playhead, Remove Track (오버라이드 트랙에서는 Revert Track to Original) |
-| 키프레임 줄 | Add Key Here, Delete Selected Keys, Remove Track |
+| 키프레임 줄 | Add Key Here, Copy Selected Keys, Paste Keys at Playhead, Paste Keys Here, Delete Selected Keys, Remove Track |
 | 이벤트, 사운드 트랙 머리 | Add Event / Sound at Playhead, Remove Track |
 | 이벤트, 사운드 마커 | Delete |
 | 자식 호출 | Revert All (outermost overrides), Remove Child Call |
@@ -837,6 +856,7 @@ KeyTween 창에서 쓸 수 있는 우클릭 메뉴와 단축키입니다.
 | 키 | 동작 |
 |---|---|
 | Ctrl+S (Cmd+S) | Save |
+| Ctrl+C / Ctrl+V (Cmd+C / Cmd+V) | 고른 키를 복사 / 재생 막대 위치에 붙여넣기 |
 | Delete / Backspace | 고른 키와 마커를 삭제 |
 | F | 전체 보기 |
 | Esc | 우클릭 메뉴 닫기 |
@@ -845,12 +865,3 @@ KeyTween 창에서 쓸 수 있는 우클릭 메뉴와 단축키입니다.
 * Save 단축키는 **Edit > Shortcuts**의 `KeyTween/Save`에서 바꿀 수 있습니다.
 
 모든 편집은 Unity Undo로 되돌릴 수 있습니다.
-
-## 17. 지원하지 않는 것
-
-현재 KeyTween 에디터가 지원하지 않는 기능입니다.
-
-* 키 복사와 붙여넣기
-* 상태 탭에서 바로 이름 바꾸기, 복제하기, 순서 바꾸기. 이름은 상태 인스펙터의 **Name**에서 바꿉니다.
-
-재생 시계는 Design을 참고하세요.

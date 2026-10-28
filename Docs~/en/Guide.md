@@ -128,6 +128,19 @@ A state is one named animation. You create a state for each situation, such as `
 
 The timeline is empty and the state inspector appears.
 
+### Working with State Tabs
+
+| To | Do this |
+|---|---|
+| Rename | Double-click the tab, type the new name and press Enter. Esc cancels |
+| Duplicate | Right-click the tab › **Duplicate**. The copy appears right after it as `Name Copy` and opens |
+| Reorder | Drag the tab sideways and drop it. Right-click › **Move Left** / **Move Right** also works |
+| Delete | Right-click the tab › **Delete** (after you confirm) |
+
+* You can also rename with right-click › **Rename** or **Name** in the state inspector. Play On links follow a new name.
+* An empty name, or a name another state already uses, is not accepted, because code and Play On find states by name.
+* A duplicated state does not get a copy of Play On: one event plays one state.
+
 ![A newly created Hover state. The timeline is empty, and the state inspector on the right shows Name, Loop, Duration and Play On.](../media/editor/editor-state.png)
 
 ### State Inspector
@@ -322,6 +335,18 @@ Add a key in any of these ways:
 
 To delete keys, press Delete or Backspace, or right-click and choose **Delete Selected Keys**.
 
+### Copying and Pasting Keys
+
+1. Select keys and press Ctrl+C (Cmd+C on Mac). They can be on several tracks.
+2. Put the playhead where the keys should go.
+3. Press Ctrl+V (Cmd+V on Mac). **Copy Selected Keys** and **Paste Keys at Playhead** in the context menu do the same.
+
+* The earliest key lands on the playhead and the spacing between the keys stays the same. Values, arrival and curves are copied too.
+* Keys go on the track of the same object and kind as the copied ones. Pasted into another state without that track, the track is created.
+* Pasted into the KeyTween of another prefab, keys go on the object at the same path from the root. Keys whose object is not there are skipped.
+* The playhead does not go past the end of the state. To paste after the end, right-click there and choose **Paste Keys Here**.
+* A key already at a pasted time is replaced. The pasted keys are selected, so you can drag them right away.
+
 ### Navigating the Timeline
 
 | Action | How |
@@ -340,7 +365,7 @@ To delete keys, press Delete or Backspace, or right-click and choose **Delete Se
 
 When you select a key, the inspector shows a **Key** section followed by an **Arrival** section. Every key uses the same layout.
 
-![The key inspector for the Button · Color track, showing Time 0.2, a color value, the Capture Current Value button, Arrival Type = Ease, Ease = Out Sine and a curve preview.](../media/editor/editor-key-inspector.png)
+![The key inspector for the Button · Color track, showing Time 0.2, a color value, Arrival Type = Ease, Ease = Out Sine and a curve preview.](../media/editor/editor-key-inspector.png)
 
 * In the Key section, fields that do not apply are not hidden. They are disabled and show the reason.
 * The Arrival section shows only the fields for the chosen Type.
@@ -362,13 +387,6 @@ How you edit the value depends on its kind:
 * Active uses a checkbox.
 
 Values that are decided when playback starts are disabled. For example, the first key of a track whose Start is Current Value is disabled.
-
-### Capturing the Current Value
-
-**Capture Current Value** puts the object's current value into the key. It is available on absolute-value tracks only.
-
-1. Pose the object the way you want in the Scene.
-2. Click **Capture Current Value** in the key inspector.
 
 ### Setting the Arrival
 
@@ -825,9 +843,10 @@ These are the context menus and keyboard shortcuts available in the KeyTween win
 
 | Where | Menu |
 |---|---|
-| Empty part of the timeline | Add Track..., Add Child Call ▸ child ▸ state |
+| State tab | Rename, Duplicate, Move Left, Move Right, Delete |
+| Empty part of the timeline | Paste Keys at Playhead, Paste Keys Here, Add Track..., Add Child Call ▸ child ▸ state |
 | Keyframe track header | Add Key at Playhead, Remove Track (on an override track: Revert Track to Original) |
-| Keyframe row | Add Key Here, Delete Selected Keys, Remove Track |
+| Keyframe row | Add Key Here, Copy Selected Keys, Paste Keys at Playhead, Paste Keys Here, Delete Selected Keys, Remove Track |
 | Event or sound track header | Add Event / Sound at Playhead, Remove Track |
 | Event or sound marker | Delete |
 | Child call | Revert All (outermost overrides), Remove Child Call |
@@ -837,6 +856,7 @@ These are the context menus and keyboard shortcuts available in the KeyTween win
 | Key | Action |
 |---|---|
 | Ctrl+S (Cmd+S) | Save |
+| Ctrl+C / Ctrl+V (Cmd+C / Cmd+V) | Copies the selected keys / pastes them at the playhead |
 | Delete / Backspace | Deletes the selected keys and markers |
 | F | Frame all |
 | Esc | Closes the context menu |
@@ -845,12 +865,3 @@ These are the context menus and keyboard shortcuts available in the KeyTween win
 * You can change the Save shortcut at `KeyTween/Save` in **Edit > Shortcuts**.
 
 Every edit can be undone with Unity's Undo.
-
-## 17. Not Supported
-
-The KeyTween editor currently does not support the following:
-
-* Copying and pasting keys
-* Renaming, duplicating or reordering states directly in the state tabs. To rename a state, use **Name** in the state inspector.
-
-For the playback clock, see Design.
