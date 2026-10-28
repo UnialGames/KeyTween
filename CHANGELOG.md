@@ -2,6 +2,25 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-10-28
+
+Tracks for game objects (not only UI), custom tracks, and playback that follows `Time.timeScale`. KeyTweens that must keep moving while the game is paused (timeScale 0), such as a pause menu, need **Time** set to `Unscaled` (see Changed).
+
+### Added
+- Documentation site: https://unialgames.github.io/KeyTween/ (the documents and an API reference). The Package Manager's **Documentation** link opens it, and the READMEs link to it.
+- README and API document: awaiting several KeyTweens together (`PlayAsync` in turn, `Task.WhenAll`, `UniTask.WhenAll`).
+- Tracks for objects that are not UI: Position, World Position, World Rotation (Transform), Color and Alpha (SpriteRenderer), Material tracks for a Renderer's color, number and vector properties (through a MaterialPropertyBlock, the material asset is not changed), Light (Color, Intensity, Range, Spot Angle), Camera (Field of View, Near Clip, Far Clip, Viewport Rect) and AudioSource (Volume, Pitch).
+- UI tracks: Offset Min and Max (RectTransform), UV Rect (RawImage), Effect Color and Distance (Shadow, Outline), Softness and Padding (RectMask2D), Value (Slider), Scroll Position (ScrollRect), Min, Preferred and Flexible Size (LayoutElement).
+- TextMeshPro tracks: Word Spacing, Line Spacing, Outline Width, Outline Color, Face Dilate, Underlay Color. Material tracks use an instance of the text's material; the editor preview puts the original back.
+- Custom tracks: derive from `KeyTweenFloatTrack<T>` (or the Vector2, Vector3, Color and Vector4 versions) and implement `Get` and `Set`; the track appears in the Add Track window for objects with `T`.
+
+### Changed
+- **Playback now follows `Time.timeScale` by default**, like Animator, DOTween and LitMotion: pausing the game (timeScale 0) pauses KeyTween animations. Each KeyTween has **Time** (`timeMode`): `Scaled` (default) or `Unscaled` (real time, the old behavior, for pause menus and loading screens). It is a normal serialized field, so a prefab instance can override it. Existing prefabs load as `Scaled`; set the ones that must move while paused to `Unscaled`.
+- When states overlap, a new state takes over the shared channels of another kind of track on the same value: an Alpha state takes only the a of a playing Color track, which keeps writing r, g, b; a Color state stops a playing Alpha track. The same holds for Char Color and Char Alpha, and Offset Min/Max take over Position and Size.
+- The Add Track window offers Sound only on the root. A sound track still picks its AudioSource in its inspector (**Audio Source (optional)**).
+- Recording puts a change on a track the state already has for that field: World Position, World Rotation, Offset Min/Max, a SpriteRenderer's Alpha, Scroll Position (moving the Content) and Number (the number in the text). Before, it made a second Position, Rotation, Size or Color track. Editing a text no longer records a Reveal key. Light, Camera, AudioSource, Shadow, LayoutElement and UIEffect values are recorded too.
+- Each track kind is defined in one place (`KeyTweenTrackType`): reading, writing, the editor's field, preview restore and recording. `KeyTween.Read` and `KeyTween.Write` still work for built-in properties.
+
 ## [0.1.3] - 2026-10-27
 
 ### Changed

@@ -29,9 +29,10 @@ namespace KeyTweening
     }
 
     /// <summary>
-    /// The one clock behind every playing state and scroll motion: real time (time scale ignored), ticked once per frame
-    /// in the player loop's Update, and by the editor update outside Play mode. Callbacks are static (state passed in),
-    /// so starting a timer does not allocate once the slot array has grown.
+    /// The clock behind every playing state and scroll motion, ticked once per frame in the player loop's Update, and by the
+    /// editor update outside Play mode. Each timer runs on real time (time scale ignored) or on game time (scaled: stops
+    /// while Time.timeScale is 0); outside Play mode both are real time. Callbacks are static (state passed in), so starting
+    /// a timer does not allocate once the slot array has grown.
     /// </summary>
     internal static class KeyTweenTimer
     {
@@ -39,7 +40,8 @@ namespace KeyTweening
         {
             public int version;
             public bool active;
-            public double start;
+            public bool scaled;      // game time (Time.timeScale) instead of real time
+            public double start;     // on its own clock
             public float duration;
             public object state;
             public Action<object, float> tick;   // (state, elapsed seconds), last call at elapsed = duration
@@ -50,14 +52,14 @@ namespace KeyTweening
         static int _count;                       // slots in use or freed, up to here
         static int[] _free = new int[64];
         static int _freeCount;
-        static double _now;
+        static double _now, _scaledNow;
 
         /// <summary>
         /// Starts a timer of <paramref name="duration"/> seconds: <paramref name="tick"/> every frame with the elapsed time,
-        /// then <paramref name="complete"/>. The first tick comes on the next frame.
+        /// then <paramref name="complete"/>. The first tick comes on the next frame. <paramref name="scaled"/>: on game time.
         /// </summary>
         public static KeyTweenTimerHandle Start(float duration, object state, Action<object, float> tick,
-            Action<object> complete = null, Action<object> cancel = null)
+            Action<object> complete = null, Action<object> cancel = null, bool scaled = false)
         {
             EnsureHooked();
             int slot;
@@ -69,7 +71,8 @@ namespace KeyTweening
             }
             ref var s = ref _slots[slot];
             s.active = true;
-            s.start = Now;
+            s.scaled = scaled;
+            s.start = scaled ? ScaledNow : Now;
             s.duration = duration;
             s.state = state;
             s.tick = tick;
@@ -105,18 +108,23 @@ namespace KeyTweening
 
         static double Now => Time.realtimeSinceStartupAsDouble;
 
+        // Game time is the frame's time, which stands still while Time.timeScale is 0. Outside Play mode it does not advance
+        // with the editor, so timers there (scripts run in Edit mode) stay on real time.
+        static double ScaledNow => Application.isPlaying ? Time.timeAsDouble : Now;
+
         /// <summary>Advances every timer to the current time. Callbacks may start or cancel timers.</summary>
         internal static void Update()
         {
             _now = Now;
-            KeyTweenBatch.Run(_now);   // values of every batched playback at _now, before the callbacks write them
+            _scaledNow = ScaledNow;
+            KeyTweenBatch.Run(_now, _scaledNow);   // values of every batched playback at this frame's times, before the callbacks write them
             var count = _count;   // timers started during this update tick from the next frame
             for (var i = 0; i < count; i++)
             {
                 ref var s = ref _slots[i];
                 if (!s.active) continue;
                 var version = s.version;
-                var elapsed = (float)(_now - s.start);
+                var elapsed = (float)((s.scaled ? _scaledNow : _now) - s.start);
                 if (elapsed < s.duration)
                 {
                     s.tick?.Invoke(s.state, elapsed);

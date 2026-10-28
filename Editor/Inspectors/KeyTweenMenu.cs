@@ -46,7 +46,7 @@ namespace KeyTweening.Editor
         {
             if (IsEmpty) return;
             var host = anchor;
-            while (host.parent != null && !host.ClassListContains("uia-root")) host = host.parent;
+            while (host.parent != null && !host.ClassListContains("kt-root")) host = host.parent;
 
             var blocker = new VisualElement { focusable = true, style = { position = Position.Absolute, left = 0, top = 0, right = 0, bottom = 0 } };
             blocker.RegisterCallback<PointerDownEvent>(e => { if (e.target == blocker) blocker.RemoveFromHierarchy(); });
@@ -63,20 +63,20 @@ namespace KeyTweening.Editor
             while (levels.Count > depth) { levels[^1].RemoveFromHierarchy(); levels.RemoveAt(levels.Count - 1); }
 
             var panel = new VisualElement { userData = depth, style = { left = position.x, top = position.y } };
-            panel.AddToClassList("uia-menu");
+            panel.AddToClassList("kt-menu");
             foreach (var child in item.children)
             {
                 if (child.separator)
                 {
                     var line = new VisualElement();
-                    line.AddToClassList("uia-menu-separator");
+                    line.AddToClassList("kt-menu-separator");
                     panel.Add(line);
                     continue;
                 }
                 var row = new VisualElement();
-                row.AddToClassList("uia-menu-item");
-                row.EnableInClassList("uia-menu-item--disabled", !child.enabled && child.children.Count == 0);
-                row.EnableInClassList("uia-menu-item--danger", child.danger);
+                row.AddToClassList("kt-menu-item");
+                row.EnableInClassList("kt-menu-item--disabled", !child.enabled && child.children.Count == 0);
+                row.EnableInClassList("kt-menu-item--danger", child.danger);
                 row.Add(new Label(child.isChecked ? "✓" : "") { name = "check" });
                 row.Add(new Label(child.label) { name = "label" });
                 row.Add(new Label(child.children.Count > 0 ? "›" : "") { name = "arrow" });
@@ -84,10 +84,10 @@ namespace KeyTweening.Editor
                 var c = child;
                 row.RegisterCallback<PointerEnterEvent>(_ =>
                 {
-                    foreach (var sibling in panel.Children()) sibling.RemoveFromClassList("uia-menu-item--open");
+                    foreach (var sibling in panel.Children()) sibling.RemoveFromClassList("kt-menu-item--open");
                     if (c.children.Count > 0)
                     {
-                        row.AddToClassList("uia-menu-item--open");
+                        row.AddToClassList("kt-menu-item--open");
                         var at = blocker.WorldToLocal(new Vector2(row.worldBound.xMax - 2, row.worldBound.y - 5));
                         Open(blocker, c, at, row, levels);
                     }

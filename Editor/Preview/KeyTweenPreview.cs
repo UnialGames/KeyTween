@@ -29,6 +29,8 @@ namespace KeyTweening.Editor
         readonly AnimationModeDriver _driver;
         readonly List<(KeyTweenTrack track, Vector4 value)> _snapshot = new();
         readonly List<(TMP_Text text, string value)> _texts = new();
+        // Object references a track can replace (a text's material becomes an instance): put back, the instance deleted.
+        readonly List<(UnityEngine.Object owner, string path, UnityEngine.Object value)> _references = new();
         readonly List<(KeyTweenTrack track, Vector4 value)> _childRest = new();   // called child states: their rest before the call   // scramble rewrites text; restored on stop
         double _lastTick;
         float _soundCursor;   // sounds after this time play on the next tick
@@ -75,6 +77,7 @@ namespace KeyTweening.Editor
             _snapshot.Clear();
             _texts.Clear();
             _childRest.Clear();
+            _references.Clear();
             foreach (var s in target.states) SnapshotTracks(s, false);
             // Child KeyTweens called from this one: same snapshot/restore, and their rest is shown until their call.
             foreach (var child in CalledChildren(target))
@@ -112,9 +115,15 @@ namespace KeyTweening.Editor
             foreach (var track in state.tracks)
             {
                 if (track.target == null) continue;
-                var value = KeyTween.Read(track.target, track.property);
+                var value = track.Type.Read(track.target);
                 _snapshot.Add((track, value));
                 if (child) _childRest.Add((track, value));
+                Fields.Clear();
+                track.Type.SerializedFields(track.target, Fields);
+                foreach (var (owner, path) in Fields)
+                    if (new SerializedObject(owner).FindProperty(path) is { propertyType: SerializedPropertyType.ObjectReference } reference
+                        && !_references.Exists(r => r.owner == owner && r.path == path))
+                        _references.Add((owner, path, reference.objectReferenceValue));
                 if (track.target is TMP_Text text) _texts.Add((text, text.text));
             }
         }
@@ -140,7 +149,7 @@ namespace KeyTweening.Editor
         // Children start from their rest pose at every seek, so scrubbing back before a call shows them untouched.
         void EvaluateAt(float t)
         {
-            foreach (var (track, value) in _childRest) KeyTween.Write(track.target, track.property, value);
+            foreach (var (track, value) in _childRest) track.Type.Write(track.target, value);
             KeyTween.EvaluateTree(State, t);
         }
 
@@ -238,6 +247,7 @@ namespace KeyTweening.Editor
             _snapshot.Clear();
             _texts.Clear();
             _childRest.Clear();
+            _references.Clear();
 
             Target = null;
             State = null;
@@ -309,7 +319,19 @@ namespace KeyTweening.Editor
         void WriteOriginals()
         {
             foreach (var (track, value) in _snapshot)
-                if (track.target != null) KeyTween.Write(track.target, track.property, value);
+                if (track.target != null) track.Type.Write(track.target, value);
+            foreach (var (owner, path, value) in _references)
+            {
+                if (owner == null) continue;
+                var so = new SerializedObject(owner);
+                var prop = so.FindProperty(path);
+                var made = prop.objectReferenceValue;
+                if (made == value) continue;
+                prop.objectReferenceValue = value;
+                so.ApplyModifiedPropertiesWithoutUndo();
+                if (made is Material && !EditorUtility.IsPersistent(made) && !_references.Exists(r => r.value == made))
+                    UnityEngine.Object.DestroyImmediate(made);   // the instance the preview made
+            }
             // Scrambled text is restored first; character effects live only in the generated mesh, so regenerate it.
             foreach (var (text, value) in _texts)
                 if (text != null && text.text != value) text.text = value;
@@ -323,95 +345,33 @@ namespace KeyTweening.Editor
             EditorApplication.QueuePlayerLoopUpdate();   // refreshes the Game view and canvases
         }
 
-        // Tells AnimationMode which serialized fields the preview drives, with their original values.
+        // Tells AnimationMode which serialized fields the preview drives, with their original values (the track type lists them).
+        static readonly List<(UnityEngine.Object owner, string path)> Fields = new();
+
         void Register(KeyTween root, KeyTweenTrack track)
         {
-            var target = track.target;
-            switch (track.property)
+            Fields.Clear();
+            track.Type.SerializedFields(track.target, Fields);
+            foreach (var (owner, propertyPath) in Fields)
             {
-                case KeyTweenProperty.Scale:
-                    Add(root, target.transform, "m_LocalScale", "x", "y", "z");
-                    break;
-                case KeyTweenProperty.Rotation:
-                    Add(root, target.transform, "m_LocalRotation", "x", "y", "z", "w");
-                    Add(root, target.transform, "m_LocalEulerAnglesHint", "x", "y", "z");
-                    break;
-                case KeyTweenProperty.SizeDelta:
-                    Add(root, target.transform, "m_SizeDelta", "x", "y");
-                    break;
-                case KeyTweenProperty.AnchoredPosition:
-                    Add(root, target.transform, "m_AnchoredPosition", "x", "y");
-                    break;
-                case KeyTweenProperty.GraphicColor:
-                case KeyTweenProperty.GraphicAlpha:
-                    if (target is TMP_Text)
-                    {
-                        Add(root, target, "m_fontColor", "r", "g", "b", "a");
-                        Add(root, target, "m_fontColor32", "rgba");
-                    }
-                    else if (target is Graphic)
-                        Add(root, target, "m_Color", "r", "g", "b", "a");
-                    break;
-                case KeyTweenProperty.TextReveal:
-                    Add(root, target, "m_maxVisibleCharacters");
-                    Add(root, target, "m_text");   // scramble rewrites the text itself
-                    break;
-                case KeyTweenProperty.TextNumber:
-                    Add(root, target, "m_text");
-                    break;
-                case KeyTweenProperty.FontSize:
-                    Add(root, target, "m_fontSize");
-                    break;
-                case KeyTweenProperty.FillAmount:
-                    Add(root, target, "m_FillAmount");
-                    break;
-                case KeyTweenProperty.CanvasGroupAlpha:
-                    Add(root, target, "m_Alpha");
-                    break;
-                case KeyTweenProperty.AnchorMin:
-                    Add(root, target.transform, "m_AnchorMin", "x", "y");
-                    break;
-                case KeyTweenProperty.AnchorMax:
-                    Add(root, target.transform, "m_AnchorMax", "x", "y");
-                    break;
-                case KeyTweenProperty.Pivot:
-                    Add(root, target.transform, "m_Pivot", "x", "y");
-                    break;
-                case KeyTweenProperty.CameraBackground:
-                    Add(root, target, "m_BackGroundColor", "r", "g", "b", "a");
-                    break;
-                case KeyTweenProperty.CameraOrthoSize:
-                    Add(root, target, "orthographic size");
-                    break;
-                case KeyTweenProperty.Active:
-                    AddOne(new SerializedObject(target.gameObject), target.gameObject,
-                        AnimationUtility.CalculateTransformPath(target.transform, root.transform), "m_IsActive");
-                    break;
-                case KeyTweenProperty.CharacterSpacing:
-                    Add(root, target, "m_characterSpacing");
-                    break;
-                default:
-                    if (KeyTweenExternalProperties.TryGet(track.property, out var external) && !string.IsNullOrEmpty(external.serializedField))
-                    {
-                        if (external.isColor) Add(root, target, external.serializedField, "r", "g", "b", "a");
-                        else Add(root, target, external.serializedField);
-                    }
-                    break;
+                var transform = owner switch { GameObject go => go.transform, Component c => c.transform, _ => null };
+                if (transform == null || !transform.IsChildOf(root.transform)) continue;
+                AddOne(new SerializedObject(owner), owner, AnimationUtility.CalculateTransformPath(transform, root.transform), propertyPath);
             }
-        }
-
-        static void Add(KeyTween root, UnityEngine.Object target, string field, params string[] components)
-        {
-            var so = new SerializedObject(target);
-            var path = AnimationUtility.CalculateTransformPath(((Component)target).transform, root.transform);
-            if (components.Length == 0) AddOne(so, target, path, field);
-            foreach (var c in components) AddOne(so, target, path, field + "." + c);
         }
 
         static void AddOne(SerializedObject so, UnityEngine.Object target, string path, string propertyPath)
         {
             var prop = so.FindProperty(propertyPath);
             if (prop == null) return;
+            if (prop.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                // e.g. a text's material: a material track makes the text use an instance, the preview puts the original back
+                var reference = EditorCurveBinding.PPtrCurve(path, target.GetType(), propertyPath);
+                AnimationMode.AddPropertyModification(reference,
+                    new PropertyModification { target = target, propertyPath = propertyPath, objectReference = prop.objectReferenceValue }, true);
+                return;
+            }
             var value = prop.propertyType switch
             {
                 SerializedPropertyType.Float => prop.floatValue.ToString(System.Globalization.CultureInfo.InvariantCulture),

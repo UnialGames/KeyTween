@@ -92,61 +92,16 @@ namespace KeyTweening.Editor
 
         public float Time => _time;
 
-        public static Color PropertyColor(KeyTweenProperty property) => property switch
-        {
-            KeyTweenProperty.Scale => new Color32(74, 144, 226, 255),
-            KeyTweenProperty.Rotation => new Color32(92, 107, 192, 255),
-            KeyTweenProperty.SizeDelta => new Color32(126, 87, 194, 255),
-            KeyTweenProperty.AnchoredPosition => new Color32(38, 166, 154, 255),
-            KeyTweenProperty.GraphicColor => new Color32(229, 115, 115, 255),
-            KeyTweenProperty.GraphicAlpha => new Color32(230, 160, 60, 255),
-            KeyTweenProperty.FontSize or KeyTweenProperty.CharacterSpacing => new Color32(124, 179, 66, 255),
-            KeyTweenProperty.FillAmount => new Color32(255, 183, 77, 255),
-            KeyTweenProperty.CanvasGroupAlpha => new Color32(230, 160, 60, 255),
-            KeyTweenProperty.AnchorMin or KeyTweenProperty.AnchorMax or KeyTweenProperty.Pivot => new Color32(38, 166, 154, 255),
-            KeyTweenProperty.CameraBackground or KeyTweenProperty.CameraOrthoSize => new Color32(144, 164, 174, 255),
-            KeyTweenProperty.Active => new Color32(189, 189, 189, 255),
-            KeyTweenProperty.TextReveal or KeyTweenProperty.TextNumber => new Color32(171, 207, 92, 255),
-            KeyTweenProperty.CharScale or KeyTweenProperty.CharOffset or KeyTweenProperty.CharRotation => new Color32(77, 182, 172, 255),
-            KeyTweenProperty.CharColor or KeyTweenProperty.CharAlpha => new Color32(240, 98, 146, 255),
-            _ when KeyTweenExternalProperties.TryGet(property, out var external) => external.trackColor,
-            _ => Color.gray,
-        };
+        public static Color PropertyColor(KeyTweenTrack track) => track.Type.TrackColor;
 
         public static readonly Color EventColor = new Color32(255, 183, 77, 255);
         public static readonly Color SoundColor = new Color32(129, 199, 132, 255);
 
-        public static string PropertyName(KeyTweenProperty property) => property switch
-        {
-            KeyTweenProperty.Scale => "Scale",
-            KeyTweenProperty.Rotation => "Rotation",
-            KeyTweenProperty.SizeDelta => "Size",
-            KeyTweenProperty.AnchoredPosition => "Position",
-            KeyTweenProperty.GraphicColor => "Color",
-            KeyTweenProperty.GraphicAlpha => "Alpha",
-            KeyTweenProperty.FontSize => "Font Size",
-            KeyTweenProperty.CharacterSpacing => "Character Spacing",
-            KeyTweenProperty.FillAmount => "Fill Amount",
-            KeyTweenProperty.CanvasGroupAlpha => "Group Alpha",
-            KeyTweenProperty.AnchorMin => "Anchor Min",
-            KeyTweenProperty.AnchorMax => "Anchor Max",
-            KeyTweenProperty.CameraBackground => "Camera Background",
-            KeyTweenProperty.CameraOrthoSize => "Camera Size",
-            KeyTweenProperty.Active => "Active",
-            KeyTweenProperty.TextReveal => "Reveal (Typewriter)",
-            KeyTweenProperty.TextNumber => "Number (Count)",
-            KeyTweenProperty.CharScale => "Char Scale",
-            KeyTweenProperty.CharOffset => "Char Position",
-            KeyTweenProperty.CharRotation => "Char Rotation",
-            KeyTweenProperty.CharColor => "Char Color",
-            KeyTweenProperty.CharAlpha => "Char Alpha",
-            _ when KeyTweenExternalProperties.TryGet(property, out var external) => external.name,
-            _ => property.ToString(),
-        };
+        public static string PropertyName(KeyTweenTrack track) => track.Type.Name;
 
         public KeyTweenTimelineView()
         {
-            AddToClassList("uia-timeline");
+            AddToClassList("kt-timeline");
             focusable = true;   // receives Delete
             RegisterCallback<KeyDownEvent>(e =>
             {
@@ -155,9 +110,9 @@ namespace KeyTweening.Editor
 
             var rulerRow = new VisualElement { style = { flexDirection = FlexDirection.Row } };
             var corner = new VisualElement { style = { width = HeaderWidth } };
-            corner.AddToClassList("uia-header");
+            corner.AddToClassList("kt-header");
             var hint = new Label("Right-click: menu · Ctrl+Wheel: zoom") { pickingMode = PickingMode.Ignore, style = { flexGrow = 1, paddingLeft = 8 } };
-            hint.AddToClassList("uia-zoom-hint");
+            hint.AddToClassList("kt-zoom-hint");
             corner.Add(hint);
             corner.tooltip = "Right-click: add tracks / child calls, remove items\n" +
                              "Wheel over the ruler, Ctrl+Wheel: zoom\n" +
@@ -166,7 +121,7 @@ namespace KeyTweening.Editor
             corner.Add(SmallButton("⤢", "Fit All (F)", FitView));
             rulerRow.Add(corner);
             _ruler = new VisualElement { style = { flexGrow = 1, marginRight = LaneRight } };
-            _ruler.AddToClassList("uia-ruler");
+            _ruler.AddToClassList("kt-ruler");
             _ruler.RegisterCallback<PointerDownEvent>(e => { _ruler.CapturePointer(e.pointerId); Scrubbed?.Invoke(XToTime(e.localPosition.x)); });
             _ruler.RegisterCallback<PointerMoveEvent>(e => { if (_ruler.HasPointerCapture(e.pointerId)) Scrubbed?.Invoke(XToTime(e.localPosition.x)); });
             _ruler.RegisterCallback<PointerUpEvent>(e => _ruler.ReleasePointer(e.pointerId));
@@ -201,18 +156,18 @@ namespace KeyTweening.Editor
             });
 
             _box = new VisualElement { pickingMode = PickingMode.Ignore, style = { display = DisplayStyle.None } };
-            _box.AddToClassList("uia-box");
+            _box.AddToClassList("kt-box");
             Add(_box);
 
             _endShade = new VisualElement { pickingMode = PickingMode.Ignore };
-            _endShade.AddToClassList("uia-end-shade");
+            _endShade.AddToClassList("kt-end-shade");
             Add(_endShade);
             _endMarker = new Label { pickingMode = PickingMode.Ignore };
-            _endMarker.AddToClassList("uia-end-marker");
+            _endMarker.AddToClassList("kt-end-marker");
             _ruler.Add(_endMarker);
 
             _playhead = new VisualElement { pickingMode = PickingMode.Ignore };
-            _playhead.AddToClassList("uia-playhead");
+            _playhead.AddToClassList("kt-playhead");
             Add(_playhead);
 
             RegisterCallback<GeometryChangedEvent>(_ => Layout());
@@ -333,9 +288,9 @@ namespace KeyTweening.Editor
         public void Refresh(object selTrack)
         {
             _selTrack = selTrack;
-            foreach (var (key, el, _) in _keyElements) el.EnableInClassList("uia-key--selected", _selection.Contains(key));
-            foreach (var (header, t) in _headers) header.EnableInClassList("uia-header--selected", t == _selTrack);
-            foreach (var (item, el) in _markerElements) el.EnableInClassList("uia-marker--selected", item == SelectedMarker);
+            foreach (var (key, el, _) in _keyElements) el.EnableInClassList("kt-key--selected", _selection.Contains(key));
+            foreach (var (header, t) in _headers) header.EnableInClassList("kt-header--selected", t == _selTrack);
+            foreach (var (item, el) in _markerElements) el.EnableInClassList("kt-marker--selected", item == SelectedMarker);
             Layout();
         }
 
@@ -442,7 +397,7 @@ namespace KeyTweening.Editor
             _rows.Add(MakeNodeRow(node, depth, collapsed));
             if (collapsed) return;
             foreach (var track in node.markerTracks) _rows.Add(MakeMarkerTrackRow(track, depth + 1));
-            foreach (var track in node.tracks) _rows.Add(MakeRow(track, depth + 1, 0f, PropertyName(track.property)));
+            foreach (var track in node.tracks) _rows.Add(MakeRow(track, depth + 1, 0f, PropertyName(track)));
             foreach (var call in node.calls) AddCallRows(call, depth + 1);
             foreach (var child in node.children) AddNode(child, depth + 1);
         }
@@ -474,12 +429,12 @@ namespace KeyTweening.Editor
         VisualElement Header(int depth, Color? stripe, string title, string titleClass, object track)
         {
             var header = new VisualElement { style = { width = HeaderWidth } };
-            header.AddToClassList("uia-header");
+            header.AddToClassList("kt-header");
             header.Add(Indent(depth));
             if (stripe.HasValue)
             {
                 var bar = new VisualElement { style = { backgroundColor = stripe.Value } };
-                bar.AddToClassList("uia-stripe");
+                bar.AddToClassList("kt-stripe");
                 header.Add(bar);
             }
             var label = new Label(title) { pickingMode = PickingMode.Ignore, style = { flexGrow = 1, flexShrink = 1, overflow = Overflow.Hidden } };
@@ -487,7 +442,7 @@ namespace KeyTweening.Editor
             header.Add(label);
             if (track != null)
             {
-                header.EnableInClassList("uia-header--selected", track == _selTrack);
+                header.EnableInClassList("kt-header--selected", track == _selTrack);
                 header.RegisterCallback<PointerDownEvent>(e =>
                 {
                     if (e.button == 0 && !(e.target is Button)) { TrackSelected?.Invoke(track); e.StopPropagation(); }
@@ -500,17 +455,17 @@ namespace KeyTweening.Editor
         VisualElement MakeNodeRow(Node node, int depth, bool collapsed)
         {
             var row = new VisualElement();
-            row.AddToClassList("uia-node-row");
+            row.AddToClassList("kt-node-row");
 
             var header = new VisualElement { style = { width = HeaderWidth } };
-            header.AddToClassList("uia-header");
-            header.AddToClassList("uia-node-header");
+            header.AddToClassList("kt-header");
+            header.AddToClassList("kt-node-header");
             header.Add(Indent(depth));
             var fold = new Label(collapsed ? "▸" : "▾") { pickingMode = PickingMode.Ignore };
-            fold.AddToClassList("uia-fold");
+            fold.AddToClassList("kt-fold");
             header.Add(fold);
             var name = new Label(node.name) { pickingMode = PickingMode.Ignore, style = { flexGrow = 1, flexShrink = 1, overflow = Overflow.Hidden } };
-            name.AddToClassList("uia-node-name");
+            name.AddToClassList("kt-node-name");
             header.Add(name);
             header.tooltip = node.transform != null ? TargetPath(_root, node.transform) : "";
             header.RegisterCallback<PointerDownEvent>(e =>
@@ -525,7 +480,7 @@ namespace KeyTweening.Editor
 
             // The object's lane: child calls on this object, plus (when folded) a summary of the keys below it.
             var lane = MarkerLane(null, "Double-click: add child call · Drag a bar: move · Delete: remove");
-            lane.AddToClassList("uia-node-lane");
+            lane.AddToClassList("kt-node-lane");
             if (collapsed)
             {
                 var summary = new List<KeyTweenTrack>();
@@ -533,7 +488,7 @@ namespace KeyTweening.Editor
                 lane.generateVisualContent += ctx => DrawSummary(ctx, lane, summary);
                 _repaintLanes.Add(lane);
             }
-            foreach (var call in node.calls) AddMarker(lane, call, new Label($"▶ {call.state}"), "uia-call");
+            foreach (var call in node.calls) AddMarker(lane, call, new Label($"▶ {call.state}"), "kt-call");
             row.Add(lane);
             return row;
         }
@@ -542,23 +497,23 @@ namespace KeyTweening.Editor
         VisualElement MakeMarkerTrackRow(object track, int depth)
         {
             var row = new VisualElement();
-            row.AddToClassList("uia-row");
-            if (_rowCount++ % 2 == 1) row.AddToClassList("uia-row--odd");
+            row.AddToClassList("kt-row");
+            if (_rowCount++ % 2 == 1) row.AddToClassList("kt-row--odd");
 
             VisualElement header;
             VisualElement lane;
             if (track is KeyTweenEventTrack events)
             {
-                header = Header(depth, EventColor, "Animation Events", "uia-track-prop", track);
+                header = Header(depth, EventColor, "Animation Events", "kt-track-prop", track);
                 header.Add(SmallButton("+", "Add animation event at playhead", () => AddEventRequested?.Invoke(events, header.worldBound, _time)));
                 lane = MarkerLane(track, "Double-click: add event · Drag: move · Delete: remove");
                 foreach (var e in events.events)
-                    AddMarker(lane, e, new Label("▼ " + e.name + (string.IsNullOrEmpty(e.dataType) ? "" : " •")), "uia-signal");
+                    AddMarker(lane, e, new Label("▼ " + e.name + (string.IsNullOrEmpty(e.dataType) ? "" : " •")), "kt-signal");
             }
             else
             {
                 var sounds = (KeyTweenSoundTrack)track;
-                header = Header(depth, SoundColor, sounds.source != null ? $"Sound · {sounds.source.name}" : "Sound", "uia-track-prop", track);
+                header = Header(depth, SoundColor, sounds.source != null ? $"Sound · {sounds.source.name}" : "Sound", "kt-track-prop", track);
                 header.Add(SmallButton("+", "Add sound at playhead", () => AddSoundRequested?.Invoke(sounds, _time, null)));
                 lane = MarkerLane(track, "Drop AudioClips or double-click: add sound · Drag: move · Delete: remove");
                 lane.RegisterCallback<DragUpdatedEvent>(_ =>
@@ -574,7 +529,7 @@ namespace KeyTweening.Editor
                     foreach (var clip in clips) AddSoundRequested?.Invoke(sounds, time, clip);
                 });
                 foreach (var sound in sounds.sounds)
-                    AddMarker(lane, sound, new Label("♪ " + (sound.clip != null ? sound.clip.name : "(No Clip)")), "uia-sound");
+                    AddMarker(lane, sound, new Label("♪ " + (sound.clip != null ? sound.clip.name : "(No Clip)")), "kt-sound");
             }
             header.Add(SmallButton("×", "Remove track", () => RemoveRequested?.Invoke(track)));
             ContextMenu(header, menu =>
@@ -591,7 +546,7 @@ namespace KeyTweening.Editor
         VisualElement MarkerLane(object owner, string tooltip)
         {
             var lane = new VisualElement { userData = owner, tooltip = tooltip, style = { flexGrow = 1, marginRight = LaneRight } };
-            lane.AddToClassList("uia-marker-lane");
+            lane.AddToClassList("kt-marker-lane");
             lane.RegisterCallback<PointerDownEvent>(e => OnMarkerDown(lane, e));
             lane.RegisterCallback<PointerMoveEvent>(e => OnMarkerMove(lane, e));
             lane.RegisterCallback<PointerUpEvent>(e => OnMarkerUp(lane, e));
@@ -602,7 +557,7 @@ namespace KeyTweening.Editor
         {
             el.userData = item;
             el.AddToClassList(className);
-            el.EnableInClassList("uia-marker--selected", item == SelectedMarker);
+            el.EnableInClassList("kt-marker--selected", item == SelectedMarker);
             ContextMenu(el, menu =>
             {
                 if (item is KeyTweenChildCall call) CallMenu(menu, call);
@@ -621,13 +576,13 @@ namespace KeyTweening.Editor
             var count = OverriddenCount(call);
 
             var row = new VisualElement();
-            row.AddToClassList("uia-callee-row");
+            row.AddToClassList("kt-callee-row");
             var header = new VisualElement { style = { width = HeaderWidth } };
-            header.AddToClassList("uia-header");
+            header.AddToClassList("kt-header");
             header.Add(Indent(depth));
             var title = new Label($"▶ {call.state}  {(count > 0 ? $"{count} track(s) overridden" : "Original")}")
                 { pickingMode = PickingMode.Ignore, style = { flexGrow = 1, flexShrink = 1, overflow = Overflow.Hidden } };
-            title.AddToClassList(count > 0 ? "uia-callee-own" : "uia-callee-source");
+            title.AddToClassList(count > 0 ? "kt-callee-own" : "kt-callee-source");
             header.Add(title);
             var revertAll = SmallButton("↺", "Revert the outermost overrides (like Unity's Revert All)", () => RevertOverrideRequested?.Invoke(call));
             revertAll.SetEnabled(count > 0);
@@ -641,7 +596,7 @@ namespace KeyTweening.Editor
 
             foreach (var track in target.tracks)
             {
-                var label = $"{(track.target != null ? track.target.name : "(None)")} · {PropertyName(track.property)}";
+                var label = $"{(track.target != null ? track.target.name : "(None)")} · {PropertyName(track)}";
                 var own = LayerOf(call, track).o != null;
                 _rows.Add(MakeRow(track, depth + 1, call.time, label, own ? null : call, own ? call : null));
             }
@@ -657,12 +612,12 @@ namespace KeyTweening.Editor
             var readOnly = readOnlyOf != null;
             var overridden = overrideOf != null;
             var row = new VisualElement();
-            row.AddToClassList("uia-row");
-            row.EnableInClassList("uia-row--readonly", readOnly);
-            if (_rowCount++ % 2 == 1) row.AddToClassList("uia-row--odd");
+            row.AddToClassList("kt-row");
+            row.EnableInClassList("kt-row--readonly", readOnly);
+            if (_rowCount++ % 2 == 1) row.AddToClassList("kt-row--odd");
 
-            var header = Header(depth, PropertyColor(track.property), label, "uia-track-prop", readOnly ? null : track);
-            header.Q<Label>()?.EnableInClassList("uia-track-override", overridden);
+            var header = Header(depth, PropertyColor(track), label, "kt-track-prop", readOnly ? null : track);
+            header.Q<Label>()?.EnableInClassList("kt-track-override", overridden);
             header.tooltip = readOnly ? $"Original track of '{readOnlyOf.state}' on {readOnlyOf.child.name}: click to override just this track in this prefab."
                 : overridden ? $"Overridden in {LayerOf(overrideOf, track).owner.name}. × reverts this override."
                 : track.target != null ? $"{TargetPath(_root, track.target)} · {track.target.GetType().Name}" : "No target";
@@ -675,7 +630,7 @@ namespace KeyTweening.Editor
             row.Add(header);
 
             var lane = new VisualElement { userData = readOnly ? null : track, style = { marginRight = LaneRight } };
-            lane.AddToClassList("uia-lane");
+            lane.AddToClassList("kt-lane");
             lane.generateVisualContent += ctx => DrawTrackLine(ctx, lane, track, offset);
             lane.RegisterCallback<PointerMoveEvent>(e => lane.tooltip = readOnly ? header.tooltip : TailTooltip(track, e.localPosition.x, offset));
             if (readOnly)
@@ -716,7 +671,7 @@ namespace KeyTweening.Editor
             if (track.keys.Count == 0) return;
             var p = ctx.painter2D;
             var y = lane.contentRect.height * 0.5f;
-            var color = PropertyColor(track.property);
+            var color = PropertyColor(track);
 
             var first = track.keys[0].time;
             var last = track.keys[track.keys.Count - 1].time;
@@ -747,8 +702,8 @@ namespace KeyTweening.Editor
         // The end of a character track (where the last character finishes): drag it to change the stagger, like resizing a clip.
         VisualElement MakeTailHandle(KeyTweenTrack track, float offset)
         {
-            var handle = new VisualElement { style = { backgroundColor = PropertyColor(track.property) } };
-            handle.AddToClassList("uia-tail-handle");
+            var handle = new VisualElement { style = { backgroundColor = PropertyColor(track) } };
+            handle.AddToClassList("kt-tail-handle");
             var dragging = false;
             handle.RegisterCallback<PointerDownEvent>(e =>
             {
@@ -818,15 +773,15 @@ namespace KeyTweening.Editor
         static Button SmallButton(string text, string tooltip, Action onClick)
         {
             var b = new Button(onClick) { text = text, tooltip = tooltip };
-            b.AddToClassList("uia-smallbtn");
+            b.AddToClassList("kt-smallbtn");
             return b;
         }
 
         VisualElement MakeKey(KeyTweenKey key, float offset, bool readOnly = false)
         {
             var el = new VisualElement { userData = readOnly ? null : key };
-            el.AddToClassList("uia-key");
-            el.EnableInClassList("uia-key--selected", !readOnly && _selection.Contains(key));
+            el.AddToClassList("kt-key");
+            el.EnableInClassList("kt-key--selected", !readOnly && _selection.Contains(key));
             (readOnly ? _readOnlyKeys : _keyElements).Add((key, el, offset));
             return el;
         }
@@ -848,7 +803,7 @@ namespace KeyTweening.Editor
                 var t = i * step;
                 if (t < ViewStart - 0.0001f) continue;
                 var tick = new Label(t.ToString(step < 0.1f ? "0.00" : step < 1f ? "0.0#" : "0")) { pickingMode = PickingMode.Ignore, style = { left = TimeToX(t) } };
-                tick.AddToClassList("uia-tick");
+                tick.AddToClassList("kt-tick");
                 _ruler.Add(tick);
             }
 
@@ -1053,7 +1008,7 @@ namespace KeyTweening.Editor
         VisualElement FindLane(VisualElement el)
         {
             for (; el != null && el != _rows; el = el.parent)
-                if (el.ClassListContains("uia-lane")) return el;
+                if (el.ClassListContains("kt-lane")) return el;
             return null;
         }
     }

@@ -26,6 +26,9 @@ namespace KeyTweening
             public Color trackColor = new Color32(171, 71, 188, 255);
             public Func<Component, Vector4> read;
             public Action<Component, Vector4> write;
+
+            KeyTweenTrackType _type;
+            internal KeyTweenTrackType Type => _type ??= new KeyTweenBuiltInTracks.External(this);
         }
 
         static readonly Dictionary<KeyTweenProperty, Entry> Entries = new();

@@ -1,6 +1,6 @@
 {
   "name": "com.unialgames.keytween",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "displayName": "KeyTween",
   "description": "Keyframe UI animation for uGUI: animations live in the prefab, authored as keys in a dedicated editor with live preview, recording and per-prefab overrides. Tween-level performance, text effects, scroll lists and screen transitions.",
   "unity": "6000.0",
@@ -8,7 +8,7 @@
   "keywords": ["ui", "ugui", "animation", "tween", "keyframe", "timeline", "textmeshpro", "scroll", "transition"],
   "author": { "name": "UnialGames", "url": "https://github.com/UnialGames" },
   "repository": { "type": "git", "url": "https://github.com/UnialGames/KeyTween.git" },
-  "documentationUrl": "https://github.com/UnialGames/KeyTween#readme",
+  "documentationUrl": "https://unialgames.github.io/KeyTween/",
   "changelogUrl": "https://github.com/UnialGames/KeyTween/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/UnialGames/KeyTween/blob/main/LICENSE.md",
   "dependencies": {

@@ -98,7 +98,7 @@ namespace KeyTweening.Editor
         Button _play, _loop, _record;
         bool _recording;
         // Record mode: changed (target, property) -> the changed fields' previous values, applied once per editor frame.
-        readonly Dictionary<(Component target, KeyTweenProperty property), Dictionary<string, string>> _recorded = new();
+        readonly Dictionary<(Component target, KeyTweenTrackType type), Dictionary<string, string>> _recorded = new();
         bool _applyQueued;
         KeyTweenTimelineView _timeline;
 
@@ -151,15 +151,15 @@ namespace KeyTweening.Editor
         void CreateGUI()
         {
             var root = rootVisualElement;
-            root.AddToClassList("uia-root");
-            if (!EditorGUIUtility.isProSkin) root.AddToClassList("uia-light");
+            root.AddToClassList("kt-root");
+            if (!EditorGUIUtility.isProSkin) root.AddToClassList("kt-light");
             var sheet = LoadStyleSheet();
             if (sheet != null) root.styleSheets.Add(sheet);
 
             var topbar = new VisualElement();
-            topbar.AddToClassList("uia-topbar");
+            topbar.AddToClassList("kt-topbar");
             _targetLabel = new Label();
-            _targetLabel.AddToClassList("uia-target");
+            _targetLabel.AddToClassList("kt-target");
             topbar.Add(_targetLabel);
             _play = IconButton("▶", "Play / Pause (preview without Play Mode)", TogglePlay, accent: true);
             topbar.Add(_play);
@@ -167,7 +167,7 @@ namespace KeyTweening.Editor
             _loop = IconButton("⟲", "Loop", () =>
             {
                 _preview.Loop = !_preview.Loop;
-                _loop.EnableInClassList("uia-iconbtn--accent", _preview.Loop);
+                _loop.EnableInClassList("kt-iconbtn--accent", _preview.Loop);
             });
             topbar.Add(_loop);
             _record = IconButton("●", "Record: what you change in the Scene view or Inspector becomes a key at the playhead", ToggleRecord);
@@ -177,23 +177,23 @@ namespace KeyTweening.Editor
                 speed.menu.AppendAction($"{s}x", _ => { _preview.Speed = s; speed.text = $"{s}x"; });
             topbar.Add(speed);
             _timeLabel = new Label();
-            _timeLabel.AddToClassList("uia-time");
+            _timeLabel.AddToClassList("kt-time");
             topbar.Add(_timeLabel);
             topbar.Add(new VisualElement { style = { flexGrow = 1 } });
             // Auto Save / Save: edits go where this animation lives (its prefab or scene), in every mode.
             _autoSave = new Toggle("Auto Save") { value = KeyTweenSave.AutoSave };
-            _autoSave.AddToClassList("uia-autosave");
+            _autoSave.AddToClassList("kt-autosave");
             _autoSave.RegisterValueChangedCallback(e => KeyTweenSave.AutoSave = e.newValue);
             topbar.Add(_autoSave);
             _saveButton = new Button(() => KeyTweenSave.SaveNow(_target)) { text = "Save" };
             topbar.Add(_saveButton);
             _status = new Label();
-            _status.AddToClassList("uia-status");
+            _status.AddToClassList("kt-status");
             topbar.Add(_status);
             root.Add(topbar);
 
             _tabs = new VisualElement();
-            _tabs.AddToClassList("uia-tabs");
+            _tabs.AddToClassList("kt-tabs");
             root.Add(_tabs);
 
             _body = new VisualElement { style = { flexGrow = 1 } };
@@ -203,7 +203,7 @@ namespace KeyTweening.Editor
             _timeline = new KeyTweenTimelineView();
             WireTimeline();
             _inspector = new ScrollView();
-            _inspector.AddToClassList("uia-inspector");
+            _inspector.AddToClassList("kt-inspector");
             split.Add(_timeline);
             split.Add(_inspector);
             _body.Add(split);
@@ -223,8 +223,8 @@ namespace KeyTweening.Editor
         static Button IconButton(string text, string tooltip, Action onClick, bool accent = false)
         {
             var b = new Button(onClick) { text = text, tooltip = tooltip };
-            b.AddToClassList("uia-iconbtn");
-            if (accent) b.AddToClassList("uia-iconbtn--accent");
+            b.AddToClassList("kt-iconbtn");
+            if (accent) b.AddToClassList("kt-iconbtn--accent");
             return b;
         }
 
@@ -566,21 +566,21 @@ namespace KeyTweening.Editor
         /// <summary>Opens the track picker. <paramref name="retarget"/> changes that track instead of adding any.</summary>
         void ShowPropertyMenu(Rect at, KeyTweenTrack retarget)
         {
-            var used = new HashSet<(Component, KeyTweenProperty)>(CurrentState.tracks.Select(t => (t.target, t.property)));
-            (Component, KeyTweenProperty)? current = retarget != null ? (retarget.target, retarget.property) : null;
+            var used = new HashSet<(Component, KeyTweenTrackType)>(CurrentState.tracks.Select(t => (t.target, t.Type)));
+            (Component, KeyTweenTrackType)? current = retarget != null ? (retarget.target, retarget.Type) : null;
             KeyTweenPropertyPicker.Show(this, at, _target, used, current, picks =>
             {
                 if (retarget == null) AddTracks(picks);
-                else Retarget(retarget, picks[0].component, picks[0].property);
+                else Retarget(retarget, picks[0].component, picks[0].type);
             });
         }
 
-        internal void AddTracks(List<(KeyTweenPickKind kind, Component component, KeyTweenProperty property)> picks) => Modify("Add Track", () =>
+        internal void AddTracks(List<(KeyTweenPickKind kind, Component component, KeyTweenTrackType type)> picks) => Modify("Add Track", () =>
         {
             var state = CurrentState;
             var time = state.Duration > 0f ? state.Duration : 0.2f;
             _selection.Clear();
-            foreach (var (kind, component, property) in picks)
+            foreach (var (kind, component, type) in picks)
             {
                 switch (kind)
                 {
@@ -590,19 +590,20 @@ namespace KeyTweening.Editor
                         _selTrack = events;
                         break;
                     case KeyTweenPickKind.Sound:
-                        var sounds = new KeyTweenSoundTrack { source = component as AudioSource };
+                        var sounds = new KeyTweenSoundTrack();
                         state.soundTracks.Add(sounds);
                         _selTrack = sounds;
                         break;
                     default:
-                        var key = new KeyTweenKey { time = time, value = KeyTween.Read(component, property) };
+                        var key = new KeyTweenKey { time = time, value = type.Read(component) };
                         // Text tracks animate absolute values (reveal 0→1, per-character effects), so they never start from the live value.
                         var track = new KeyTweenTrack
                         {
-                            target = component, property = property, startFromCurrent = !IsTextProperty(property),
-                            stagger = KeyTweenTextChars.IsCharProperty(property) ? 0.05f : 0f,
+                            target = component, startFromCurrent = !IsTextProperty(type.Property),
+                            stagger = KeyTweenTextChars.IsCharProperty(type.Property) ? 0.05f : 0f,
                             keys = { new KeyTweenKey { time = 0f, value = key.value }, key },   // a key at 0, like the Animation window
                         };
+                        KeyTweenTrackTypes.Assign(track, type);
                         state.tracks.Add(track);
                         _selTrack = track;
                         if (picks.Count == 1) _selection.Add(key);
@@ -640,10 +641,10 @@ namespace KeyTweening.Editor
             if (_marker == track) _marker = null;
         });
 
-        void Retarget(KeyTweenTrack track, Component target, KeyTweenProperty property) => Modify("Change Track Target", () =>
+        void Retarget(KeyTweenTrack track, Component target, KeyTweenTrackType type) => Modify("Change Track Target", () =>
         {
             track.target = target;
-            track.property = property;
+            KeyTweenTrackTypes.Assign(track, type);
         });
 
         // Every edited track gets a key at 0 (the Animation window's habit), so a key added before the old first key
@@ -659,7 +660,7 @@ namespace KeyTweening.Editor
             var start = new KeyTweenKey { time = 0f, value = first.value };
             if (track.startFromCurrent && track.target != null)
             {
-                var current = IsOffset(track) ? Vector4.zero : KeyTween.Read(track.target, track.property);
+                var current = IsOffset(track) ? Vector4.zero : track.Type.Read(track.target);
                 start.value = current;
                 if (track.keys.Count > 1) first.value = current;
             }
@@ -676,7 +677,7 @@ namespace KeyTweening.Editor
         {
             var keys = track.keys;
             if (keys.Count == 0)
-                return IsOffset(track) || track.target == null ? Vector4.zero : KeyTween.Read(track.target, track.property);
+                return IsOffset(track) || track.target == null ? Vector4.zero : track.Type.Read(track.target);
             if (time <= keys[0].time) return keys[0].value;
             for (var i = 1; i < keys.Count; i++)
             {
@@ -735,13 +736,13 @@ namespace KeyTweening.Editor
                     _selection.Clear();
                     Rebuild();
                 }) { text = _target.states[i].name, tooltip = $"Play On: {PlayOn(_target.states[i].name)?.evt.ToString() ?? "None (your code)"}" };
-                tab.AddToClassList("uia-tab");
-                tab.EnableInClassList("uia-tab--selected", i == _state);
+                tab.AddToClassList("kt-tab");
+                tab.EnableInClassList("kt-tab--selected", i == _state);
                 _tabs.Add(tab);
             }
             var add = new Button(AddState) { text = "+", tooltip = "Add state" };
-            add.AddToClassList("uia-tab");
-            add.AddToClassList("uia-tab--add");
+            add.AddToClassList("kt-tab");
+            add.AddToClassList("kt-tab--add");
             _tabs.Add(add);
         }
 
@@ -854,7 +855,7 @@ namespace KeyTweening.Editor
                            "\nInspector: map event names to UnityEvents on a KeyTween Event Listener component.\n" +
                            "Complete still raises the remaining events in order; a cancelled playback raises none."));
             var remove = new Button(DeleteSelectedKeys) { text = "Delete Event", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
-            remove.AddToClassList("uia-danger");
+            remove.AddToClassList("kt-danger");
             usage.Add(remove);
             _inspector.Add(usage);
         }
@@ -964,7 +965,7 @@ namespace KeyTweening.Editor
             else section.Add(Hint("Assign a clip, or drop an AudioClip from the Project window onto the sound track."));
             section.Add(Hint("Plays with PlayOneShot on the track's AudioSource; empty uses a shared 2D source, so nothing needs to be added."));
             var remove = new Button(DeleteSelectedKeys) { text = "Delete Sound", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
-            remove.AddToClassList("uia-danger");
+            remove.AddToClassList("kt-danger");
             section.Add(remove);
             _inspector.Add(section);
         }
@@ -996,7 +997,7 @@ namespace KeyTweening.Editor
         Button RemoveTrackButton(object track)
         {
             var remove = new Button(() => RemoveItem(track)) { text = "Remove Track", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
-            remove.AddToClassList("uia-danger");
+            remove.AddToClassList("kt-danger");
             return remove;
         }
 
@@ -1036,7 +1037,7 @@ namespace KeyTweening.Editor
                   "Completing the parent completes the child too; cancelling the parent lets an already started child keep playing."));
 
             var remove = new Button(DeleteSelectedKeys) { text = "Delete Call", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
-            remove.AddToClassList("uia-danger");
+            remove.AddToClassList("kt-danger");
             section.Add(remove);
             _inspector.Add(section);
         }
@@ -1136,13 +1137,13 @@ namespace KeyTweening.Editor
                 RenameBindings(state.name, null);
                 Modify("Remove State", () => { _target.states.Remove(state); _state = 0; });
             }) { text = "Delete State", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
-            remove.AddToClassList("uia-danger");
+            remove.AddToClassList("kt-danger");
             _inspector.Add(remove);
         }
 
         void BuildTrackInspector(KeyTweenTrack track)
         {
-            _inspector.Add(Heading(TrackTitle(track), KeyTweenTimelineView.PropertyColor(track.property)));
+            _inspector.Add(Heading(TrackTitle(track), KeyTweenTimelineView.PropertyColor(track)));
 
             var section = Section("Track");
             var change = new Button { text = $"{TrackTitle(track)}   ▾", tooltip = "Change to another object/property", style = { unityTextAlign = TextAnchor.MiddleLeft } };
@@ -1172,7 +1173,7 @@ namespace KeyTweening.Editor
             }
             // Pointer only makes sense for a position; other properties offer the first two.
             var starts = new List<KeyTweenStart> { KeyTweenStart.KeyValue, KeyTweenStart.Current };
-            if (track.property == KeyTweenProperty.AnchoredPosition || track.start == KeyTweenStart.Pointer) starts.Add(KeyTweenStart.Pointer);
+            if (track.Type.PointerStart || track.start == KeyTweenStart.Pointer) starts.Add(KeyTweenStart.Pointer);
             static string StartLabel(KeyTweenStart s) => s switch
             {
                 KeyTweenStart.KeyValue => "Key Value",
@@ -1189,7 +1190,7 @@ namespace KeyTweening.Editor
             fromCurrent.RegisterValueChangedCallback(e => Modify("Edit Track", () => track.start = e.newValue));
             var relative = new Toggle("Relative To Rest") { value = track.relativeToRest, tooltip = "Key values are added to the rest value. e.g. -14 = 14 smaller than the original." };
             relative.RegisterValueChangedCallback(e => Modify("Edit Track", () => track.relativeToRest = e.newValue));
-            var sized = KeyTween.SizeRelativeApplies(track.property);
+            var sized = KeyTween.SizeRelativeApplies(track);
             var sizeRelative = new Toggle("Size Relative")
             {
                 value = track.sizeRelative,
@@ -1207,7 +1208,7 @@ namespace KeyTweening.Editor
         void BuildKeyInspector(KeyTweenTrack track, KeyTweenKey key)
         {
             var index = track.keys.IndexOf(key);
-            _inspector.Add(Heading($"◆ {TrackTitle(track)}", KeyTweenTimelineView.PropertyColor(track.property)));
+            _inspector.Add(Heading($"◆ {TrackTitle(track)}", KeyTweenTimelineView.PropertyColor(track)));
 
             var section = Section("Key");
             var time = new FloatField("Time (s)") { value = key.time, isDelayed = true };
@@ -1223,14 +1224,14 @@ namespace KeyTweening.Editor
             var value = ValueField(key.IsVibration ? "Strength"
                 : track.start == KeyTweenStart.Pointer ? "Value (press point +)"
                 : track.relativeToRest ? "Value (rest +)"
-                : track.sizeRelative && KeyTween.SizeRelativeApplies(track.property) ? "Value (× own size)" : "Value", track, key);
+                : track.sizeRelative && KeyTween.SizeRelativeApplies(track) ? "Value (× own size)" : "Value", track, key);
             value.SetEnabled(!live);
             section.Add(value);
             var canCapture = !live && !IsOffset(track) && track.target != null && !IsTextProperty(track.property);
             var capture = new Button(() =>
             {
                 _preview.Stop();   // capture the real value, not a previewed one
-                var current = KeyTween.Read(track.target, track.property);
+                var current = track.Type.Read(track.target);
                 Modify("Capture Value", () => key.value = current);
             })
             {
@@ -1250,7 +1251,7 @@ namespace KeyTweening.Editor
 
             // How the track arrives at this key. The first key has no incoming segment unless a lone key starts from current.
             var arrives = index > 0 || (track.startFromCurrent && track.keys.Count == 1 && key.time > 0f);
-            var arrival = ArrivalSection(new[] { key }, KeyTweenTimelineView.PropertyColor(track.property));
+            var arrival = ArrivalSection(new[] { key }, KeyTweenTimelineView.PropertyColor(track));
             if (!arrives)
             {
                 foreach (var child in arrival.Children()) child.SetEnabled(false);
@@ -1265,7 +1266,7 @@ namespace KeyTweening.Editor
             var keys = _selection.ToArray();
             _inspector.Add(ArrivalSection(keys, new Color(0.42f, 0.70f, 1f)));
             var remove = new Button(DeleteSelectedKeys) { text = "Delete Selected Keys (Delete)", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
-            remove.AddToClassList("uia-danger");
+            remove.AddToClassList("kt-danger");
             _inspector.Add(remove);
         }
 
@@ -1306,85 +1307,56 @@ namespace KeyTweening.Editor
             return arrival;
         }
 
-        string TrackTitle(KeyTweenTrack track) => $"{KeyTweenTimelineView.TargetPath(_target, track.target)} · {KeyTweenTimelineView.PropertyName(track.property)}";
+        string TrackTitle(KeyTweenTrack track) => $"{KeyTweenTimelineView.TargetPath(_target, track.target)} · {KeyTweenTimelineView.PropertyName(track)}";
 
         VisualElement ValueField(string label, KeyTweenTrack track, KeyTweenKey key)
         {
             void Set(Vector4 v) => Modify("Edit Key", () => key.value = v, rebuild: false);
             var v = key.value;
-            var relative = track.relativeToRest;
-            switch (track.property)
+            var type = track.Type;
+            var relative = track.relativeToRest;   // an offset: plain numbers, a color can be negative
+            if (track.property is KeyTweenProperty.Scale or KeyTweenProperty.CharScale) return ScaleField(label, v, key, relative, Set);
+            switch (type.Kind)
             {
-                case KeyTweenProperty.Scale:
-                case KeyTweenProperty.CharScale:
-                    return ScaleField(label, v, key, relative, Set);
-                case KeyTweenProperty.Rotation:
-                case KeyTweenProperty.CharOffset:
-                case KeyTweenProperty.CharRotation:
-                {
-                    var f = new Vector3Field(label) { value = v };
-                    f.RegisterValueChangedCallback(e => Set(e.newValue));
-                    return f;
-                }
-                case KeyTweenProperty.CharColor:
-                {
-                    var f = new ColorField(label) { value = v };
-                    f.RegisterValueChangedCallback(e => Set(e.newValue));
-                    return f;
-                }
-                case KeyTweenProperty.CharAlpha:
-                case KeyTweenProperty.TextReveal:
-                {
-                    var f = new Slider(label, 0f, 1f) { value = v.x, showInputField = true };
-                    f.RegisterValueChangedCallback(e => Set(new Vector4(e.newValue, 0, 0, 0)));
-                    return f;
-                }
-                case KeyTweenProperty.SizeDelta:
-                case KeyTweenProperty.AnchoredPosition:
-                case KeyTweenProperty.AnchorMin:
-                case KeyTweenProperty.AnchorMax:
-                case KeyTweenProperty.Pivot:
+                case KeyTweenValueKind.Vector2:
                 {
                     var f = new Vector2Field(label) { value = v };
                     f.RegisterValueChangedCallback(e => Set(e.newValue));
                     return f;
                 }
-                case KeyTweenProperty.GraphicColor when !relative:
-                case KeyTweenProperty.CameraBackground when !relative:
+                case KeyTweenValueKind.Vector3:
+                {
+                    var f = new Vector3Field(label) { value = v };
+                    f.RegisterValueChangedCallback(e => Set(e.newValue));
+                    return f;
+                }
+                case KeyTweenValueKind.Color when !relative:
                 {
                     var f = new ColorField(label) { value = v };
                     f.RegisterValueChangedCallback(e => Set(e.newValue));
                     return f;
                 }
-                case KeyTweenProperty.GraphicColor:
+                case KeyTweenValueKind.Color:
                 {
                     var f = new Vector4Field(label + " (r,g,b,a)") { value = v };
                     f.RegisterValueChangedCallback(e => Set(e.newValue));
                     return f;
                 }
-                case KeyTweenProperty.Active:
+                case KeyTweenValueKind.Vector4:
+                {
+                    var f = new Vector4Field(label) { value = v };
+                    f.RegisterValueChangedCallback(e => Set(e.newValue));
+                    return f;
+                }
+                case KeyTweenValueKind.Toggle:
                 {
                     var f = new Toggle(label) { value = v.x >= 0.5f };
                     f.RegisterValueChangedCallback(e => Set(new Vector4(e.newValue ? 1f : 0f, 0, 0, 0)));
                     return f;
                 }
-                case KeyTweenProperty.FillAmount when !relative:
-                case KeyTweenProperty.CanvasGroupAlpha when !relative:
-                case KeyTweenProperty.GraphicAlpha when !relative:
+                case KeyTweenValueKind.Float when type.Range.y > type.Range.x && !relative:
                 {
-                    var f = new Slider(label, 0f, 1f) { value = v.x, showInputField = true };
-                    f.RegisterValueChangedCallback(e => Set(new Vector4(e.newValue, 0, 0, 0)));
-                    return f;
-                }
-                case var p when KeyTweenExternalProperties.TryGet(p, out var external) && external.isColor && !relative:
-                {
-                    var f = new ColorField(label) { value = v };
-                    f.RegisterValueChangedCallback(e => Set(e.newValue));
-                    return f;
-                }
-                case var p when KeyTweenExternalProperties.TryGet(p, out var external) && external.max > external.min && !relative:
-                {
-                    var f = new Slider(label, external.min, external.max) { value = v.x, showInputField = true };
+                    var f = new Slider(label, type.Range.x, type.Range.y) { value = v.x, showInputField = true };
                     f.RegisterValueChangedCallback(e => Set(new Vector4(e.newValue, 0, 0, 0)));
                     return f;
                 }
@@ -1404,7 +1376,7 @@ namespace KeyTweening.Editor
             var linked = uniform && !_unlinkedScale.Contains(key);
 
             var row = new VisualElement();
-            row.AddToClassList("uia-linkrow");
+            row.AddToClassList("kt-linkrow");
             if (linked)
             {
                 var s = relative
@@ -1430,8 +1402,8 @@ namespace KeyTweening.Editor
                 }
                 RebuildInspector();
             }) { tooltip = linked ? "Edit per axis" : "Edit X/Y/Z together (matches X)" };
-            link.AddToClassList("uia-link");
-            link.EnableInClassList("uia-link--on", linked);
+            link.AddToClassList("kt-link");
+            link.EnableInClassList("kt-link--on", linked);
             var icon = EditorGUIUtility.IconContent(linked ? "Linked" : "Unlinked")?.image as Texture2D;
             if (icon != null) link.style.backgroundImage = icon;
             else link.text = linked ? "⛓" : "⋯";
@@ -1443,14 +1415,14 @@ namespace KeyTweening.Editor
         static VisualElement Section(string title)
         {
             var section = new Foldout { text = title, value = true };
-            section.AddToClassList("uia-section");
+            section.AddToClassList("kt-section");
             return section;
         }
 
         static Label Heading(string text, Color? stripe)
         {
             var l = new Label(text);
-            l.AddToClassList("uia-heading");
+            l.AddToClassList("kt-heading");
             if (stripe.HasValue)
             {
                 l.style.borderLeftWidth = 4;
@@ -1462,7 +1434,7 @@ namespace KeyTweening.Editor
         static Label Hint(string text)
         {
             var l = new Label(text);
-            l.AddToClassList("uia-hint");
+            l.AddToClassList("kt-hint");
             return l;
         }
 
@@ -1471,7 +1443,7 @@ namespace KeyTweening.Editor
         internal void ToggleRecord()
         {
             _recording = !_recording;
-            _record.EnableInClassList("uia-iconbtn--record", _recording);
+            _record.EnableInClassList("kt-iconbtn--record", _recording);
             _record.tooltip = _recording ? "Recording (click to stop): what you change in the Scene view or Inspector becomes a key at the playhead"
                 : "Record: what you change in the Scene view or Inspector becomes a key at the playhead";
             // Changes are shown through the preview: it holds the original values and shows the state at the playhead.
@@ -1490,8 +1462,8 @@ namespace KeyTweening.Editor
                 var obj = change?.target;
                 var transform = obj switch { GameObject go => go.transform, Component c => c.transform, _ => null };
                 if (transform == null || !transform.IsChildOf(_target.transform)) continue;
-                if (!KeyTweenRecorder.TryMap(obj, change.propertyPath, state, out var target, out var property)) continue;
-                if (!_recorded.TryGetValue((target, property), out var previous)) _recorded[(target, property)] = previous = new Dictionary<string, string>();
+                if (!KeyTweenRecorder.TryMap(obj, change.propertyPath, state, out var target, out var type)) continue;
+                if (!_recorded.TryGetValue((target, type), out var previous)) _recorded[(target, type)] = previous = new Dictionary<string, string>();
                 if (!previous.ContainsKey(change.propertyPath)) previous[change.propertyPath] = m.previousValue?.value;   // the first one: before the drag
             }
             if (_recorded.Count > 0 && !_applyQueued)
@@ -1513,29 +1485,30 @@ namespace KeyTweening.Editor
             if (!_recording || state == null) return;
             var previewing = _preview.IsActive && _preview.State == state;
             var t = previewing ? _preview.Time : _timeline.Time;
-            var keys = new List<(KeyTweenTrack track, Component target, KeyTweenProperty property, Vector4 now, Vector4 before)>();
-            foreach (var ((target, property), previous) in changes)
+            var keys = new List<(KeyTweenTrack track, Component target, KeyTweenTrackType type, Vector4 now, Vector4 before)>();
+            foreach (var ((target, type), previous) in changes)
             {
                 if (target == null) continue;
-                var now = KeyTween.Read(target, property);
-                var before = KeyTweenRecorder.Previous(now, property, previous);
-                var track = state.tracks.Find(x => x.target == target && x.property == property);
+                var now = type.Read(target);
+                var before = KeyTweenRecorder.Previous(target, now, type, previous);
+                var track = state.tracks.Find(x => x.target == target && x.Type == type);
                 // A previewed track is put back by the preview itself; anything else would keep the change for real.
-                if (track == null || !previewing) KeyTween.Write(target, property, before);
-                keys.Add((track, target, property, now, before));
+                if (track == null || !previewing) type.Write(target, before);
+                keys.Add((track, target, type, now, before));
             }
             if (keys.Count == 0) return;
 
             Modify("Record", () =>
             {
                 _selection.Clear();
-                foreach (var (existing, target, property, now, before) in keys)
+                foreach (var (existing, target, type, now, before) in keys)
                 {
                     var track = existing;
                     if (track == null)
                     {
                         // Like a picked track: a key at 0 with the value it had, and the new value at the playhead.
-                        track = new KeyTweenTrack { target = target, property = property, startFromCurrent = !IsTextProperty(property) };
+                        track = new KeyTweenTrack { target = target, startFromCurrent = !IsTextProperty(type.Property) };
+                        KeyTweenTrackTypes.Assign(track, type);
                         if (t > 1e-3f) track.keys.Add(new KeyTweenKey { time = 0f, value = before });
                         state.tracks.Add(track);
                     }
@@ -1552,7 +1525,7 @@ namespace KeyTweening.Editor
         {
             if (track.start == KeyTweenStart.Pointer) return null;
             var value = track.relativeToRest ? now - rest : now;
-            if (track.sizeRelative && KeyTween.SizeRelativeApplies(track.property) && track.target != null)
+            if (track.sizeRelative && KeyTween.SizeRelativeApplies(track) && track.target != null)
             {
                 var size = ((RectTransform)track.target.transform).rect.size;
                 if (size.x != 0f) value.x /= size.x;

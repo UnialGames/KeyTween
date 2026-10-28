@@ -32,7 +32,7 @@ namespace KeyTweening
         {
             public double start;
             public float duration, t;
-            public byte loop, reversed, alive;
+            public byte loop, reversed, alive, scaled;   // scaled: on game time (KeyTweenTimer)
             public int laneStart, laneCount, keyStart, keyCount;
         }
 
@@ -66,6 +66,7 @@ namespace KeyTweening
             }
             ref var group = ref _groups[p.group];
             group.start = p.handle.StartTime;
+            group.scaled = (byte)(p.owner.timeMode == KeyTweenTimeMode.Scaled ? 1 : 0);
             group.duration = p.duration;
             group.t = float.NaN;
             group.loop = (byte)(p.state.loop ? 1 : 0);
@@ -123,7 +124,7 @@ namespace KeyTweening
                 _lanes[lane] = new Lane
                 {
                     keyStart = _keyCount, keyCount = track.keys.Count, group = g,
-                    step = (byte)(track.property == KeyTweenProperty.Active ? 1 : 0),
+                    step = (byte)(track.Type.Kind == KeyTweenValueKind.Toggle ? 1 : 0),
                 };
                 _keyCount += track.keys.Count;
                 track.lane = lane;
@@ -143,8 +144,8 @@ namespace KeyTweening
 
         internal static float4 Value(int lane) => _values[lane];
 
-        /// <summary>Computes every live lane at <paramref name="now"/>, the clock the timer uses for this frame.</summary>
-        internal static void Run(double now)
+        /// <summary>Computes every live lane at this frame's real and game time, the clocks the timer uses for this frame.</summary>
+        internal static void Run(double now, double scaledNow)
         {
             if (_groupCount >= _compactAt) Compact();
             if (_groupCount == 0) return;
@@ -152,7 +153,7 @@ namespace KeyTweening
             fixed (Lane* lanes = _lanes)
             fixed (Key* keys = _keys)
             fixed (float4* values = _values)
-                Sample(groups, _groupCount, lanes, _laneCount, keys, values, now);
+                Sample(groups, _groupCount, lanes, _laneCount, keys, values, now, scaledNow);
         }
 
         internal static void Clear()
@@ -215,13 +216,13 @@ namespace KeyTweening
 
         // Same arithmetic as the timer callbacks (KeyTween.StartMotion / Lap), so Ready compares equal floats.
         [BurstCompile]
-        static void Sample(Group* groups, int groupCount, Lane* lanes, int laneCount, Key* keys, float4* values, double now)
+        static void Sample(Group* groups, int groupCount, Lane* lanes, int laneCount, Key* keys, float4* values, double now, double scaledNow)
         {
             for (var g = 0; g < groupCount; g++)
             {
                 ref var group = ref groups[g];
                 if (group.alive == 0) continue;
-                var elapsed = (float)(now - group.start);
+                var elapsed = (float)((group.scaled != 0 ? scaledNow : now) - group.start);
                 float t;
                 if (group.loop != 0)
                 {

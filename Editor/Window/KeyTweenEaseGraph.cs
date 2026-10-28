@@ -17,7 +17,7 @@ namespace KeyTweening.Editor
         {
             _weight = weight;
             _color = color;
-            AddToClassList("uia-easegraph");
+            AddToClassList("kt-easegraph");
             generateVisualContent += Draw;
         }
 
