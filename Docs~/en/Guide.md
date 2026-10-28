@@ -566,7 +566,7 @@ The length of the bar on the timeline matches the length of the clip.
 
 The sound plays through the first AudioSource found in this order, so you do not need to add an AudioSource to every UI object:
 
-1. The track's AudioSource
+1. **Audio Source (optional)** in the sound track's inspector
 2. The `KeyTween`'s Audio Source
 3. If neither exists, a hidden shared 2D AudioSource
 
@@ -797,19 +797,18 @@ The object itself returns to its value before the change, and the view shows the
 
 ### Recorded Properties
 
-* Scale, Rotation, Position, Size
-* Anchor Min/Max, Pivot
-* Active
-* Color, Group Alpha, Fill Amount
-* Font Size, Character Spacing
+A changed field is recorded onto the track that writes its value. Every track except those under "Not Recorded" is recorded (Transform, UI, TextMeshPro, SpriteRenderer, Light, Camera, AudioSource, UIEffect).
 
-If you change only the alpha of a Color and there is an Alpha track, the change is recorded as Alpha.
+* If the state already has a track that writes the value, the key goes on that track. For example, with a World Position track, moving the object is recorded as World Position; with an Offset Min track, changing Position or Size is recorded as Offset Min; with a Scroll Position track, moving the Content is recorded as Scroll Position.
+* Without such a track, the field's default track is created: Position for a position, Color for a color.
+* If you change only the alpha of a Color and there is an Alpha track, the change is recorded as Alpha. With only an Alpha track, changing R, G or B creates a Color track.
+* With a Number track, changing the number in the text is recorded as Number. Changing a text does not create a Number track.
 
 ### Not Recorded
 
-* Camera
-* Reveal, Number and per-character tracks
-* UIEffect
+* Material values: Material tracks and TextMeshPro's Outline Width, Outline Color, Face Dilate and Underlay Color. They change the material asset, not a field of the object.
+* Reveal and per-character tracks
+* Custom tracks that do not list their serialized fields. For details, see [Custom Tracks](API.md#custom-tracks).
 * Tracks whose Start is Pointer
 * Objects outside the `KeyTween` being edited in the window
 

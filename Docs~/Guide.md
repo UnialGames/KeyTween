@@ -566,7 +566,7 @@ struct를 고르면 그 필드를 인스펙터에서 바로 편집할 수 있습
 
 소리는 다음 순서로 찾은 AudioSource에서 재생됩니다. 그래서 UI 오브젝트마다 AudioSource를 붙일 필요가 없습니다.
 
-1. 트랙의 AudioSource
+1. 사운드 트랙 인스펙터의 **Audio Source (optional)**
 2. `KeyTween`의 Audio Source
 3. 둘 다 없으면 숨겨진 공용 2D AudioSource
 
@@ -797,19 +797,18 @@ KeyTween 창에서 고친 내용은 그 `KeyTween`이 있는 곳에 저장됩니
 
 ### 녹화되는 속성
 
-* Scale, Rotation, Position, Size
-* Anchor Min/Max, Pivot
-* Active
-* Color, Group Alpha, Fill Amount
-* Font Size, Character Spacing
+바꾼 필드는 그 값을 쓰는 트랙으로 녹화됩니다. 아래 "녹화되지 않는 것"을 뺀 트랙은 모두 녹화됩니다(Transform, UI, TextMeshPro, SpriteRenderer, Light, Camera, AudioSource, UIEffect).
 
-Color에서 알파만 바꿨고 Alpha 트랙이 있으면 Alpha로 녹화됩니다.
+* 상태에 그 값을 쓰는 트랙이 이미 있으면 그 트랙에 키가 들어갑니다. 예를 들어 World Position 트랙이 있으면 오브젝트를 옮긴 것이 World Position으로, Offset Min 트랙이 있으면 Position·Size를 바꾼 것이 Offset Min으로, Scroll Position 트랙이 있으면 Content를 움직인 것이 Scroll Position으로 녹화됩니다.
+* 그런 트랙이 없으면 그 필드의 기본 트랙이 새로 생깁니다. 위치는 Position, 색은 Color 트랙입니다.
+* Color에서 알파만 바꿨고 Alpha 트랙이 있으면 Alpha로 녹화됩니다. Alpha 트랙만 있을 때 R·G·B를 바꾸면 Color 트랙이 생깁니다.
+* Number 트랙이 있으면 텍스트 속 숫자를 바꾼 것이 Number로 녹화됩니다. 텍스트를 바꿔도 Number 트랙이 새로 생기지는 않습니다.
 
 ### 녹화되지 않는 것
 
-* Camera
-* Reveal, Number, 글자별 트랙
-* UIEffect
+* 재질 값: Material 트랙과 TextMeshPro의 Outline Width, Outline Color, Face Dilate, Underlay Color. 재질 에셋을 바꾸는 것이라 오브젝트의 필드가 바뀌지 않습니다.
+* Reveal과 글자별 트랙
+* 직렬화 필드를 알려 주지 않은 커스텀 트랙. 자세한 내용은 [커스텀 트랙 만들기](API.md#커스텀-트랙-만들기)를 참고하세요.
 * Start가 Pointer인 트랙
 * 창에서 편집 중인 `KeyTween` 밖의 오브젝트
 
