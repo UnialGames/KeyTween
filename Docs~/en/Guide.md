@@ -304,8 +304,8 @@ A key is the value of a track at one point in time. You add and move keys on the
 
 * Click a key to select it.
 * Shift-click or Ctrl-click (Cmd-click on Mac) to add to the selection.
-* Drag on empty space for a box selection.
-* Drag the selected keys to move them.
+* Drag on empty space in the key area to select the keys the box touches, across tracks. You can start on a track's lane, on the event and child call lanes at the top, or in the empty space below the last track. Hold Shift or Ctrl while dragging to add to the selection.
+* Drag one of the selected keys to move all of them by the same time. One Ctrl+Z undoes it.
 
 Keys move in 0.01 s steps and never go below 0 s.
 
