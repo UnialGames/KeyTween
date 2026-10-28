@@ -27,9 +27,13 @@ namespace KeyTweening.Editor
         public Action<List<KeyTweenKey>, bool> BoxSelected;                 // keys inside the box, additive
         public Action SelectionCleared;
         public Action<float> SelectedKeysMoved;                           // delta seconds from drag start (live)
+        public Action<float, float> SelectedKeysScaled;                   // pivot (timeline seconds), factor from drag start (live)
         public Action SelectedKeysDragStarted;
         public Action DragFinished;
         public Action DeleteRequested;
+        public Action CopyRequested;                                      // Ctrl+C (Edit › Copy) on the timeline: the selected keys
+        public Action<float?> PasteRequested;                             // Ctrl+V (Edit › Paste): at the playhead (null) or a timeline time
+        public Func<bool> CanPaste;
         public Action<KeyTweenTrack, float> AddKeyRequested;
         public Action<KeyTweenTrack, float> StaggerDragged;                 // character track, new stagger (live while dragging its end)
         public Action StaggerDragFinished;                // track, time on that track (call offset removed)
@@ -49,7 +53,7 @@ namespace KeyTweening.Editor
         public object SelectedMarker { get; set; }
 
         readonly VisualElement _ruler;
-        readonly VisualElement _rows;
+        readonly VisualElement _rows, _keyArea;
         readonly VisualElement _playhead;
         readonly VisualElement _endShade;   // past the state's end, like the Animation window's area after the clip
         readonly Label _endMarker;
@@ -57,6 +61,8 @@ namespace KeyTweening.Editor
         double _lastDownTime;   // double-click fallback: clickCount isn't reliable after the first click scrubs the preview
         Vector2 _lastDownPos;
         readonly VisualElement _box;
+        readonly VisualElement _span;   // around the selected keys: its end handles stretch them, like the Animation window
+        float _scalePivot, _scaleFrom, _scaleGrab;
         readonly List<(KeyTweenKey key, VisualElement el, float offset)> _keyElements = new();
         readonly List<(KeyTweenKey key, VisualElement el, float offset)> _readOnlyKeys = new();   // positioned like keys, never selected
         readonly List<(VisualElement header, object track)> _headers = new();
@@ -102,10 +108,20 @@ namespace KeyTweening.Editor
         public KeyTweenTimelineView()
         {
             AddToClassList("kt-timeline");
-            focusable = true;   // receives Delete
+            focusable = true;   // receives Delete, Copy and Paste
             RegisterCallback<KeyDownEvent>(e =>
             {
                 if (e.keyCode is KeyCode.Delete or KeyCode.Backspace) { DeleteRequested?.Invoke(); e.StopPropagation(); }
+            });
+            // Ctrl+C / Ctrl+V reach a focused element as Edit › Copy / Paste commands (text fields in the inspector handle their own).
+            RegisterCallback<ValidateCommandEvent>(e =>
+            {
+                if (e.commandName == "Copy" && _selection.Count > 0 || e.commandName == "Paste" && CanPaste?.Invoke() == true) e.StopPropagation();
+            });
+            RegisterCallback<ExecuteCommandEvent>(e =>
+            {
+                if (e.commandName == "Copy") { CopyRequested?.Invoke(); e.StopPropagation(); }
+                else if (e.commandName == "Paste") { PasteRequested?.Invoke(null); e.StopPropagation(); }
             });
 
             var rulerRow = new VisualElement { style = { flexDirection = FlexDirection.Row } };
@@ -130,10 +146,12 @@ namespace KeyTweening.Editor
 
             var scroll = new ScrollView(ScrollViewMode.Vertical) { style = { flexGrow = 1 } };
             _rows = new VisualElement();
-            _rows.RegisterCallback<PointerDownEvent>(OnRowsDown);
-            _rows.RegisterCallback<PointerMoveEvent>(OnRowsMove);
-            _rows.RegisterCallback<PointerUpEvent>(OnRowsUp);
             scroll.Add(_rows);
+            // On the whole key area, like the Animation window: a box can start on the event / call lanes or below the last track.
+            _keyArea = scroll;
+            _keyArea.RegisterCallback<PointerDownEvent>(OnRowsDown);
+            _keyArea.RegisterCallback<PointerMoveEvent>(OnRowsMove);
+            _keyArea.RegisterCallback<PointerUpEvent>(OnRowsUp);
             // Room below the last row: it never hides behind the window edge, and right-click has empty space to land on.
             scroll.Add(new VisualElement { style = { height = 160, flexShrink = 0 } });
             // Anywhere in the track area (rows add their own items above these): add tracks and child calls.
@@ -143,6 +161,8 @@ namespace KeyTweening.Editor
                 var x = this.WorldToLocal(position).x - HeaderWidth;
                 var time = x >= 0f ? XToTime(x) : _time;
                 menu.Separator();
+                menu.Add("Paste Keys at Playhead (Ctrl+V)", () => PasteRequested?.Invoke(null), enabled: CanPaste?.Invoke() == true);
+                if (x >= 0f) menu.Add("Paste Keys Here", () => PasteRequested?.Invoke(time), enabled: CanPaste?.Invoke() == true);   // also after the end
                 menu.Add("Add Track...", () => AddTrackMenuRequested?.Invoke(new Rect(position, Vector2.zero)));
                 PopulateChildCallMenu?.Invoke(menu, time);
             });
@@ -158,6 +178,13 @@ namespace KeyTweening.Editor
             _box = new VisualElement { pickingMode = PickingMode.Ignore, style = { display = DisplayStyle.None } };
             _box.AddToClassList("kt-box");
             Add(_box);
+
+            // Inside the rows, so it scrolls with them; added again after each rebuild.
+            _span = new VisualElement { pickingMode = PickingMode.Ignore, style = { display = DisplayStyle.None } };
+            _span.AddToClassList("kt-span");
+            _span.Add(SpanHandle(left: true));
+            _span.Add(SpanHandle(left: false));
+            _rows.RegisterCallback<GeometryChangedEvent>(_ => LayoutSpan());
 
             _endShade = new VisualElement { pickingMode = PickingMode.Ignore };
             _endShade.AddToClassList("kt-end-shade");
@@ -652,6 +679,9 @@ namespace KeyTweening.Editor
                 {
                     var t = Mathf.Max(0f, XToTime(lane.WorldToLocal(position).x) - offset);
                     menu.Add("Add Key Here", () => AddKeyRequested?.Invoke(track, t));
+                    menu.Add("Copy Selected Keys (Ctrl+C)", () => CopyRequested?.Invoke(), enabled: _selection.Count > 0);
+                    menu.Add("Paste Keys at Playhead (Ctrl+V)", () => PasteRequested?.Invoke(null), enabled: CanPaste?.Invoke() == true);
+                    menu.Add("Paste Keys Here", () => PasteRequested?.Invoke(t + offset), enabled: CanPaste?.Invoke() == true);
                     menu.Add("Delete Selected Keys", () => DeleteRequested?.Invoke(), enabled: _selection.Count > 0, danger: true);
                     menu.Add(overridden ? "Revert Track to Original" : "Remove Track", () => RemoveRequested?.Invoke(track), danger: true);
                 });
@@ -843,8 +873,85 @@ namespace KeyTweening.Editor
                 el.tooltip = $"Ends {offset + track.End:0.00}s · Stagger {track.stagger:0.###}s × {CharCount(track) - 1}\nDrag: change the stagger (character delay)";
             }
             foreach (var lane in _repaintLanes) lane.MarkDirtyRepaint();
+            LayoutSpan();
             LayoutEnd();
             SetTime(_time);
+        }
+
+        /// <summary>Where a track's keys start on this timeline: a called child state's track starts at the call's time.</summary>
+        public float OffsetOf(KeyTweenTrack track) => _lanes.TryGetValue(track, out var lane) ? lane.offset : 0f;
+
+        /// <summary>Where a key is drawn on this timeline: its track's start (a child call's time) is added to its own time.</summary>
+        public float OffsetOf(KeyTweenKey key)
+        {
+            foreach (var (k, _, offset) in _keyElements)
+                if (k == key) return offset;
+            return 0f;
+        }
+
+        // The selected keys' time range on the rows they are on. Shown for two or more keys at different times.
+        void LayoutSpan()
+        {
+            if (_span.parent != _rows) _rows.Add(_span);
+            float from = float.MaxValue, to = float.MinValue, top = float.MaxValue, bottom = float.MinValue;
+            var count = 0;
+            foreach (var (key, el, offset) in _keyElements)
+            {
+                if (!_selection.Contains(key) || el.parent == null) continue;
+                count++;
+                from = Mathf.Min(from, offset + key.time);
+                to = Mathf.Max(to, offset + key.time);
+                var lane = _rows.WorldToLocal(el.parent.worldBound);
+                top = Mathf.Min(top, lane.yMin);
+                bottom = Mathf.Max(bottom, lane.yMax);
+            }
+            // Rows just rebuilt (after a drag the keys are re-sorted) have no layout yet, and the rows' size may not change:
+            // try again on the next frame instead of waiting for a geometry event that does not come.
+            if (count >= 2 && !(bottom > top)) { _span.style.display = DisplayStyle.None; schedule.Execute(LayoutSpan); return; }
+            var show = count >= 2 && to - from >= Snap - 1e-4f;
+            _span.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            if (!show) return;
+            _span.style.left = HeaderWidth + TimeToX(from) - 12f;   // the handles sit just outside the end keys
+            _span.style.width = (to - from) * PxPerSecond + 24f;
+            _span.style.top = top + 2f;
+            _span.style.height = bottom - top - 4f;
+            _span.BringToFront();
+        }
+
+        VisualElement SpanHandle(bool left)
+        {
+            var handle = new VisualElement { tooltip = "Drag: stretch or shrink the selected keys (the other end stays)" };
+            handle.AddToClassList("kt-span-handle");
+            handle.AddToClassList(left ? "kt-span-handle--left" : "kt-span-handle--right");
+            handle.RegisterCallback<PointerDownEvent>(e =>
+            {
+                if (e.button != 0) return;
+                var times = _keyElements.Where(k => _selection.Contains(k.key)).Select(k => k.offset + k.key.time).ToList();
+                (_scaleFrom, _scalePivot) = left ? (times.Min(), times.Max()) : (times.Max(), times.Min());
+                _scaleGrab = this.WorldToLocal(e.position).x - HeaderWidth - TimeToX(_scaleFrom);   // keep the grab point under the pointer
+                _frozenRange = Range;
+                SelectedKeysDragStarted?.Invoke();
+                handle.CapturePointer(e.pointerId);
+                e.StopPropagation();
+            });
+            handle.RegisterCallback<PointerMoveEvent>(e =>
+            {
+                if (!handle.HasPointerCapture(e.pointerId)) return;
+                var edge = XToTime(this.WorldToLocal(e.position).x - HeaderWidth - _scaleGrab);
+                // The handle does not pass the other end: the keys keep their order.
+                edge = left ? Mathf.Min(edge, _scalePivot - Snap) : Mathf.Max(edge, _scalePivot + Snap);
+                SelectedKeysScaled?.Invoke(_scalePivot, (edge - _scalePivot) / (_scaleFrom - _scalePivot));
+                e.StopPropagation();
+            });
+            handle.RegisterCallback<PointerUpEvent>(e =>
+            {
+                if (!handle.HasPointerCapture(e.pointerId)) return;
+                handle.ReleasePointer(e.pointerId);
+                _frozenRange = null;
+                DragFinished?.Invoke();
+                e.StopPropagation();
+            });
+            return handle;
         }
 
         // ---------- marker lanes (event tracks, sound tracks, child calls on object rows) ----------
@@ -911,23 +1018,26 @@ namespace KeyTweening.Editor
 
         static bool IsAdditive(IPointerEvent e) => e.shiftKey || e.actionKey;
 
+        // x in the key column (0 = its left edge), for points that are on no keyframe lane.
+        float LaneX(Vector2 world) => this.WorldToLocal(world).x - HeaderWidth;
+
         void OnRowsDown(PointerDownEvent e)
         {
             if (e.button != 0) return;
             var lane = FindLane(e.target as VisualElement);
-            if (lane == null) return;   // headers and marker lanes handle their own clicks
+            if (lane == null && (LaneX(e.position) < 0f || e.target is Button)) return;   // track headers handle their own clicks
             Focus();
 
             _downWorld = e.position;
-            _downTrack = (KeyTweenTrack)lane.userData;
-            _downKey = (e.target as VisualElement)?.userData as KeyTweenKey;
+            _downTrack = (KeyTweenTrack)lane?.userData;
+            _downKey = lane == null ? null : (e.target as VisualElement)?.userData as KeyTweenKey;
             _downAdditive = IsAdditive(e);
 
             var now = UnityEditor.EditorApplication.timeSinceStartup;
             var doubleClick = e.clickCount == 2 || (now - _lastDownTime < 0.4 && ((Vector2)e.position - _lastDownPos).magnitude < 5f);
             _lastDownTime = doubleClick ? 0 : now;
             _lastDownPos = e.position;
-            if (_downKey == null && doubleClick)
+            if (_downKey == null && doubleClick && _downTrack != null)
             {
                 var offset = _lanes[_downTrack].offset;
                 AddKeyRequested?.Invoke(_downTrack, Mathf.Max(0f, XToTime(lane.WorldToLocal(e.position).x) - offset));
@@ -937,13 +1047,13 @@ namespace KeyTweening.Editor
             if (_downKey != null && !_selection.Contains(_downKey)) KeyClicked?.Invoke(_downKey, _downAdditive);
 
             _gesture = Gesture.Pending;
-            _rows.CapturePointer(e.pointerId);
+            _keyArea.CapturePointer(e.pointerId);
             e.StopPropagation();
         }
 
         void OnRowsMove(PointerMoveEvent e)
         {
-            if (_gesture == Gesture.None || !_rows.HasPointerCapture(e.pointerId)) return;
+            if (_gesture == Gesture.None || !_keyArea.HasPointerCapture(e.pointerId)) return;
             var delta = (Vector2)e.position - _downWorld;
 
             if (_gesture == Gesture.Pending && delta.magnitude > DragThreshold)
@@ -974,7 +1084,7 @@ namespace KeyTweening.Editor
         void OnRowsUp(PointerUpEvent e)
         {
             if (_gesture == Gesture.None) return;
-            _rows.ReleasePointer(e.pointerId);
+            _keyArea.ReleasePointer(e.pointerId);
             var gesture = _gesture;
             _gesture = Gesture.None;
 
@@ -985,8 +1095,7 @@ namespace KeyTweening.Editor
                     else
                     {
                         if (!_downAdditive) SelectionCleared?.Invoke();
-                        var lane = _lanes[_downTrack].lane;
-                        Scrubbed?.Invoke(XToTime(lane.WorldToLocal(_downWorld).x));
+                        Scrubbed?.Invoke(XToTime(_downTrack != null ? _lanes[_downTrack].lane.WorldToLocal(_downWorld).x : LaneX(_downWorld)));
                     }
                     break;
                 case Gesture.DragKeys:
@@ -1007,7 +1116,7 @@ namespace KeyTweening.Editor
 
         VisualElement FindLane(VisualElement el)
         {
-            for (; el != null && el != _rows; el = el.parent)
+            for (; el != null && el != _keyArea; el = el.parent)
                 if (el.ClassListContains("kt-lane")) return el;
             return null;
         }

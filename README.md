@@ -95,7 +95,7 @@ The URL above always points to the latest release. When a new version is out, se
 Add `#` and a version tag to the URL to stay on that version. All versions are listed on the [Releases](https://github.com/UnialGames/KeyTween/releases) page.
 
 ```text
-https://github.com/UnialGames/KeyTween.git#v0.2.0
+https://github.com/UnialGames/KeyTween.git#v0.2.1
 ```
 
 * A pinned version does not change when you click **Update**.

@@ -85,6 +85,8 @@
     border-top-width: 2px;
     border-top-color: rgb(108, 178, 255);
 }
+.kt-tab--dragging { opacity: 0.8; background-color: rgb(56, 58, 64); }
+.kt-tab-rename { width: 140px; height: 24px; margin: 1px 2px 0 2px; }
 .kt-tab--add { padding: 0 10px; background-color: rgba(0, 0, 0, 0); color: rgb(150, 155, 165); }
 
 /* ---------- timeline ---------- */
@@ -234,6 +236,23 @@
     border-color: rgb(110, 170, 255);
     background-color: rgba(80, 140, 230, 0.18);
 }
+.kt-span {
+    position: absolute;
+    border-width: 1px;
+    border-color: rgba(110, 170, 255, 0.6);
+    background-color: rgba(80, 140, 230, 0.08);
+}
+.kt-span-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: rgba(110, 170, 255, 0.55);
+    cursor: resize-horizontal;
+}
+.kt-span-handle:hover { background-color: rgb(110, 170, 255); }
+.kt-span-handle--left { left: 0; }
+.kt-span-handle--right { right: 0; }
 .kt-playhead {
     position: absolute;
     top: 0;

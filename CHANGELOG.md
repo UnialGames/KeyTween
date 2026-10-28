@@ -2,6 +2,21 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-10-29
+
+KeyTween Editor: copy and paste keys, state tabs you can rename, duplicate and reorder, stretch handles for selected keys. The runtime and playback are unchanged.
+
+### Added
+- KeyTween Editor: copy and paste keys (Ctrl+C / Ctrl+V on the timeline, or the context menu). Pasted at the playhead (or where you right-click, **Paste Keys Here**, also after the end) with their spacing, onto the track of the same object and kind (made when missing); in another prefab, onto the object at the same path from the root.
+- KeyTween Editor: state tabs can be renamed (double-click), duplicated, reordered (drag, or Move Left / Right) and deleted from the tab (right-click). A state is not renamed to an empty name or one another state has.
+- KeyTween Editor: selecting two or more keys at different times shows a box around them with a handle at each end. Dragging a handle stretches or shrinks the selected keys around the other end, like the Animation window.
+
+### Removed
+- KeyTween Editor: the key inspector's **Capture Current Value** button. Record (●) puts what you change in the scene into keys.
+
+### Fixed
+- KeyTween Editor: a box selection can start anywhere in the key area (the event and child call lanes, the empty space below the last track), like the Animation window. Before, it started only on a track's lane, so dragging from below the tracks did nothing.
+
 ## [0.2.0] - 2026-10-28
 
 Tracks for game objects (not only UI), custom tracks, and playback that follows `Time.timeScale`. KeyTweens that must keep moving while the game is paused (timeScale 0), such as a pause menu, need **Time** set to `Unscaled` (see Changed).

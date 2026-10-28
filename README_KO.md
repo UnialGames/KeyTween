@@ -95,7 +95,7 @@ https://github.com/UnialGames/KeyTween.git
 주소 뒤에 `#`과 버전 태그를 붙이면 그 버전에 고정됩니다. 버전 목록은 [Releases](https://github.com/UnialGames/KeyTween/releases)에 있습니다.
 
 ```text
-https://github.com/UnialGames/KeyTween.git#v0.2.0
+https://github.com/UnialGames/KeyTween.git#v0.2.1
 ```
 
 * 고정한 버전은 **Update**를 눌러도 바뀌지 않습니다.

@@ -110,6 +110,7 @@ namespace KeyTweening.Editor
         internal Button SaveButton => _saveButton;
         internal Toggle AutoSaveToggle => _autoSave;
         internal bool Recording => _recording;
+        internal IReadOnlyCollection<KeyTweenKey> SelectedKeys => _selection;
 
         KeyTweenState CurrentState => _target != null && _state < _target.states.Count ? _target.states[_state] : null;
         KeyTweenTrack CurrentTrack => _selTrack as KeyTweenTrack;
@@ -347,6 +348,15 @@ namespace KeyTweening.Editor
                     foreach (var (k, start) in _dragStartTimes) k.time = Mathf.Round((start + delta) * 100f) / 100f;
                 }, rebuild: false);
             };
+            _timeline.SelectedKeysScaled = (pivot, factor) => Modify("Scale Keys", () =>
+            {
+                // On the timeline (a called state's keys sit at its call time), from where each key was when the drag started.
+                foreach (var (k, start) in _dragStartTimes)
+                {
+                    var offset = _timeline.OffsetOf(k);
+                    k.time = Mathf.Max(0f, Mathf.Round(((offset + start - pivot) * factor + pivot - offset) * 100f) / 100f);
+                }
+            }, rebuild: false);
             _timeline.DragFinished = () =>
             {
                 // Keys may have passed their neighbours; restore time order inside each track.
@@ -358,6 +368,9 @@ namespace KeyTweening.Editor
                 _dragUndoGroup = -1;
             };
             _timeline.DeleteRequested = DeleteSelectedKeys;
+            _timeline.CopyRequested = CopySelectedKeys;
+            _timeline.PasteRequested = PasteKeys;
+            _timeline.CanPaste = () => Clipboard.Count > 0 && CurrentState != null;
             _timeline.AddKeyRequested = (track, time) => Modify("Add Key", () =>
             {
                 EnsureStartKey(track);
@@ -561,6 +574,83 @@ namespace KeyTweening.Editor
             });
         }
 
+        // ---------- key clipboard (Ctrl+C / Ctrl+V on the timeline), like the Animation window ----------
+
+        // A copied track: where its target is (the object itself, and its path from the copied KeyTween for another prefab),
+        // its settings for a track made on paste, and the keys with their times from the earliest copied key.
+        sealed class CopiedTrack
+        {
+            public Component target;
+            public string path;
+            public Type component;
+            public KeyTweenTrack settings;
+            public List<(float time, KeyTweenKey key)> keys;
+        }
+
+        // ponytail: one clipboard for the editor session, kept in memory (not the system clipboard).
+        static readonly List<CopiedTrack> Clipboard = new();
+
+        internal void CopySelectedKeys()
+        {
+            if (_selection.Count == 0) return;
+            var start = _selection.Min(k => _timeline.OffsetOf(k) + k.time);
+            Clipboard.Clear();
+            foreach (var track in EditableTracks())
+            {
+                if (track.target == null || !track.keys.Exists(_selection.Contains)) continue;
+                var settings = track.Clone();
+                settings.keys.Clear();
+                var offset = _timeline.OffsetOf(track);
+                Clipboard.Add(new CopiedTrack
+                {
+                    target = track.target,
+                    path = AnimationUtility.CalculateTransformPath(track.target.transform, _target.transform),
+                    component = track.target.GetType(),
+                    settings = settings,
+                    keys = track.keys.Where(_selection.Contains).Select(k => (offset + k.time - start, k.Clone())).ToList(),
+                });
+            }
+        }
+
+        // At the playhead (or the given timeline time), keeping the spacing: onto the track with the same target and kind (made
+        // when missing). In another prefab the target is the object at the same path from the KeyTween. A key already at a
+        // pasted time is replaced.
+        internal void PasteKeys(float? time = null)
+        {
+            var state = CurrentState;
+            if (Clipboard.Count == 0 || state == null) return;
+            var at = time ?? (_preview.IsActive && _preview.State == state ? _preview.Time : _timeline.Time);
+            Modify("Paste Keys", () =>
+            {
+                _selection.Clear();
+                foreach (var copied in Clipboard)
+                {
+                    var target = copied.target != null && copied.target.transform.IsChildOf(_target.transform) ? copied.target : Find(copied);
+                    if (target == null) continue;   // no such object here
+                    var probe = copied.settings.Clone();
+                    probe.target = target;
+                    var track = EditableTracks().FirstOrDefault(t => t.SameTarget(probe));
+                    if (track == null) state.tracks.Add(track = probe);
+                    var offset = track == probe ? 0f : _timeline.OffsetOf(track);
+                    foreach (var (time, copiedKey) in copied.keys)
+                    {
+                        var key = copiedKey.Clone();
+                        key.time = Mathf.Max(0f, Mathf.Round((at + time - offset) * 100f) / 100f);
+                        track.keys.RemoveAll(k => Mathf.Abs(k.time - key.time) < 0.005f);
+                        track.keys.Add(key);
+                        _selection.Add(key);
+                    }
+                    track.keys.Sort((a, b) => a.time.CompareTo(b.time));
+                }
+            });
+
+            Component Find(CopiedTrack copied)
+            {
+                var tr = copied.path.Length == 0 ? _target.transform : _target.transform.Find(copied.path);
+                return tr != null ? tr.GetComponent(copied.component) : null;
+            }
+        }
+
         // ---------- property picker: the animated object's hierarchy, like the Animation window's "Add Property" ----------
 
         /// <summary>Opens the track picker. <paramref name="retarget"/> changes that track instead of adding any.</summary>
@@ -727,23 +817,139 @@ namespace KeyTweening.Editor
             for (var i = 0; i < _target.states.Count; i++)
             {
                 var index = i;
+                var state = _target.states[i];
                 var tab = new Button(() =>
                 {
-                    if (index == _state) return;
+                    if (_tabDragged || index == _state) return;
                     _preview.Stop();
                     _state = index;
                     _selTrack = null;
                     _selection.Clear();
                     Rebuild();
-                }) { text = _target.states[i].name, tooltip = $"Play On: {PlayOn(_target.states[i].name)?.evt.ToString() ?? "None (your code)"}" };
+                }) { text = state.name, tooltip = $"Play On: {PlayOn(state.name)?.evt.ToString() ?? "None (your code)"}\nDouble-click: rename · Drag: reorder · Right-click: menu" };
                 tab.AddToClassList("kt-tab");
                 tab.EnableInClassList("kt-tab--selected", i == _state);
+                tab.AddManipulator(new ContextualMenuManipulator(e =>
+                {
+                    e.menu.AppendAction("Rename", _ => StartRenameTab(tab, state));
+                    e.menu.AppendAction("Duplicate", _ => DuplicateState(state));
+                    e.menu.AppendAction("Move Left", _ => MoveState(state, index - 1), index > 0 ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
+                    e.menu.AppendAction("Move Right", _ => MoveState(state, index + 1), index < _target.states.Count - 1 ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
+                    e.menu.AppendSeparator();
+                    e.menu.AppendAction("Delete", _ => DeleteState(state));
+                }));
+                // Trickle-down: before the button's own click handling, so a drag does not also count as a click.
+                tab.RegisterCallback<PointerDownEvent>(e =>
+                {
+                    _tabDragged = false;
+                    if (e.button != 0) return;
+                    if (e.clickCount == 2) { StartRenameTab(tab, state); e.StopPropagation(); return; }
+                    _tabDragStart = e.position.x;
+                }, TrickleDown.TrickleDown);
+                tab.RegisterCallback<PointerMoveEvent>(e =>
+                {
+                    if (!tab.HasPointerCapture(e.pointerId) || !_tabDragStart.HasValue) return;
+                    var dx = e.position.x - _tabDragStart.Value;
+                    if (!_tabDragged && Mathf.Abs(dx) < 6f) return;
+                    _tabDragged = true;
+                    tab.style.translate = new Translate(dx, 0);
+                    tab.AddToClassList("kt-tab--dragging");
+                }, TrickleDown.TrickleDown);
+                tab.RegisterCallback<PointerUpEvent>(e =>
+                {
+                    _tabDragStart = null;
+                    if (!_tabDragged) return;
+                    // The new place: after every other tab whose middle the pointer passed.
+                    var to = 0;
+                    foreach (var other in _tabs.Query<Button>(className: "kt-tab").ToList())
+                        if (other != tab && !other.ClassListContains("kt-tab--add") && e.position.x > other.worldBound.center.x) to++;
+                    MoveState(state, to);
+                }, TrickleDown.TrickleDown);
                 _tabs.Add(tab);
             }
             var add = new Button(AddState) { text = "+", tooltip = "Add state" };
             add.AddToClassList("kt-tab");
             add.AddToClassList("kt-tab--add");
             _tabs.Add(add);
+        }
+
+        bool _tabDragged;
+        float? _tabDragStart;
+
+        // In place of the tab: Enter or leaving the field renames, Esc cancels.
+        internal void StartRenameTab(Button tab, KeyTweenState state)
+        {
+            var field = new TextField { value = state.name, selectAllOnFocus = true };
+            field.AddToClassList("kt-tab-rename");
+            var done = false;
+            void Finish(bool apply)
+            {
+                if (done) return;
+                done = true;
+                if (apply) RenameState(state, field.value);
+                else Rebuild();
+            }
+            field.RegisterCallback<KeyDownEvent>(e =>
+            {
+                if (e.keyCode is KeyCode.Return or KeyCode.KeypadEnter) { Finish(true); e.StopPropagation(); }
+                else if (e.keyCode == KeyCode.Escape) { Finish(false); e.StopPropagation(); }
+            }, TrickleDown.TrickleDown);
+            field.RegisterCallback<FocusOutEvent>(_ => Finish(true));
+            _tabs.Insert(_tabs.IndexOf(tab), field);
+            tab.style.display = DisplayStyle.None;
+            field.schedule.Execute(() => field.Q(TextField.textInputUssName)?.Focus());
+        }
+
+        // A state's name is how code and Play On find it: an empty name or one another state has is not taken.
+        internal void RenameState(KeyTweenState state, string name)
+        {
+            name = name?.Trim();
+            if (string.IsNullOrEmpty(name) || name == state.name || _target.states.Exists(s => s != state && s.name == name))
+            {
+                if (!string.IsNullOrEmpty(name) && name != state.name) Debug.LogWarning($"[KeyTween] '{_target.name}' already has a state '{name}'.", _target);
+                Rebuild();
+                return;
+            }
+            RenameBindings(state.name, name);   // the Play On binding follows the name
+            Modify("Rename State", () => state.name = name);
+        }
+
+        // Right after the state, selected, as "Name Copy". Its Play On is not copied: one event plays one state.
+        internal void DuplicateState(KeyTweenState state)
+        {
+            var name = $"{state.name} Copy";
+            for (var n = 2; _target.states.Exists(s => s.name == name); n++) name = $"{state.name} Copy {n}";
+            Modify("Duplicate State", () =>
+            {
+                var copy = state.Clone();
+                copy.name = name;
+                _target.states.Insert(_target.states.IndexOf(state) + 1, copy);
+                _state = _target.states.IndexOf(copy);
+                _selTrack = null;
+                _selection.Clear();
+            });
+        }
+
+        internal void MoveState(KeyTweenState state, int to)
+        {
+            var from = _target.states.IndexOf(state);
+            to = Mathf.Clamp(to, 0, _target.states.Count - 1);
+            if (from < 0 || to == from) { Rebuild(); return; }
+            var current = CurrentState;
+            Modify("Move State", () =>
+            {
+                _target.states.RemoveAt(from);
+                _target.states.Insert(to, state);
+                _state = _target.states.IndexOf(current);   // the open state stays open
+            });
+        }
+
+        void DeleteState(KeyTweenState state)
+        {
+            if (!EditorUtility.DisplayDialog("Delete State", $"Delete the state '{state.name}'?", "Delete", "Cancel")) return;
+            _preview.Stop();
+            RenameBindings(state.name, null);
+            Modify("Remove State", () => { _target.states.Remove(state); _state = 0; });
         }
 
         // ---------- current-prefab overrides of called child states ----------
@@ -1112,11 +1318,7 @@ namespace KeyTweening.Editor
 
             var info = Section("State");
             var name = new TextField("Name") { value = state.name, isDelayed = true };
-            name.RegisterValueChangedCallback(e =>
-            {
-                RenameBindings(state.name, e.newValue);   // the Play On binding follows the name
-                Modify("Rename State", () => state.name = e.newValue);
-            });
+            name.RegisterValueChangedCallback(e => RenameState(state, e.newValue));
             info.Add(name);
             var loop = new Toggle("Loop")
             {
@@ -1130,13 +1332,7 @@ namespace KeyTweening.Editor
             _inspector.Add(info);
             _inspector.Add(PlayOnSection(state));
 
-            var remove = new Button(() =>
-            {
-                if (!EditorUtility.DisplayDialog("Delete State", $"Delete the state '{state.name}'?", "Delete", "Cancel")) return;
-                _preview.Stop();
-                RenameBindings(state.name, null);
-                Modify("Remove State", () => { _target.states.Remove(state); _state = 0; });
-            }) { text = "Delete State", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
+            var remove = new Button(() => DeleteState(state)) { text = "Delete State", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
             remove.AddToClassList("kt-danger");
             _inspector.Add(remove);
         }
@@ -1227,21 +1423,6 @@ namespace KeyTweening.Editor
                 : track.sizeRelative && KeyTween.SizeRelativeApplies(track) ? "Value (× own size)" : "Value", track, key);
             value.SetEnabled(!live);
             section.Add(value);
-            var canCapture = !live && !IsOffset(track) && track.target != null && !IsTextProperty(track.property);
-            var capture = new Button(() =>
-            {
-                _preview.Stop();   // capture the real value, not a previewed one
-                var current = track.Type.Read(track.target);
-                Modify("Capture Value", () => key.value = current);
-            })
-            {
-                text = "Capture Current Value",
-                tooltip = canCapture ? "Pose the object in the scene, then press this."
-                    : live ? "This key's value is set when playback starts."
-                    : "Only for absolute values (not offsets from the rest value or press point, not text tracks).",
-            };
-            capture.SetEnabled(canCapture);
-            section.Add(capture);
             if (live)
                 section.Add(Hint((track.start == KeyTweenStart.Pointer
                                      ? "Set when playback starts: where the pointer pressed."
