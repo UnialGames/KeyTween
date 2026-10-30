@@ -561,7 +561,7 @@ KeyTween does not depend on any third-party library. When one of the libraries b
 | Library | Package | Adds |
 |---|---|---|
 | UniTask | `com.cysharp.unitask` 2.0+ | `PlayUniTaskAsync`, `PlayReversedUniTaskAsync`, `WaitEventUniTaskAsync` |
-| R3 | `com.cysharp.r3` 1.0+ | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable` |
+| R3 | `com.cysharp.r3` 1.0+ | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable`, `StateStartedAsObservable`, `StateCompletedAsObservable`, `StateCanceledAsObservable` |
 | UIEffect | `com.coffee.ui-effect` 5.0+ | 14 tracks |
 
 ### Awaiting with UniTask

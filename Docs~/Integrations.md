@@ -6,8 +6,8 @@ LitMotion과 VContainer가 UniTask 연동을 제공하는 방식과 같습니다
 
 | 라이브러리 | 켜지는 조건 (asmdef versionDefines) | 추가되는 것 |
 |---|---|---|
-| UniTask | `com.cysharp.unitask` 2.0.0 이상 → `KEYTWEEN_UNITASK` | 확장 메서드 3개 |
-| R3 | `com.cysharp.r3` 1.0.0 이상 → `KEYTWEEN_R3` | 확장 메서드 3개 |
+| UniTask | `com.cysharp.unitask` 2.0.0 이상 → `KEYTWEEN_UNITASK` | 확장 메서드 (재생·이벤트를 UniTask로) |
+| R3 | `com.cysharp.r3` 1.0.0 이상 → `KEYTWEEN_R3` | 확장 메서드 (재생·이벤트·상태 알림을 Observable로) |
 | UIEffect | `com.coffee.ui-effect` 5.0.0 이상 → `KEYTWEEN_UIEFFECT` | 트랙 14종 (어셈블리 `KeyTween.UIEffect`) |
 
 ## UniTask
@@ -17,7 +17,9 @@ UniTask(`com.cysharp.unitask` 2.0.0 이상)를 설치하면, 재생과 이벤트
 | 메서드 | 내용 |
 |---|---|
 | `PlayUniTaskAsync(stateName, ct)` | `PlayAsync`의 UniTask 버전입니다. |
-| `PlayReversedUniTaskAsync(stateName, ct)` | 상태를 역재생합니다. |
+| `PlayUniTaskAsync(stateName, time, ct)` | 그 시간(초)부터 재생합니다. |
+| `PlayReversedUniTaskAsync(stateName, ct)`, `(stateName, time, ct)` | 상태를 역재생합니다. |
+| `play.PlayUniTaskAsync(ct)`, `play.PlayReversedUniTaskAsync(ct)` | `With`로 설정한 재생(`KeyTweenPlay`)을 UniTask로 기다립니다. |
 | `WaitEventUniTaskAsync(eventName, ct)` | 다음 애니메이션 이벤트가 발생할 때까지 기다립니다. |
 
 ### 여러 재생을 함께 기다리기
@@ -65,11 +67,12 @@ await popup.PlayUniTaskAsync("Open", destroyCancellationToken);
 
 ### 중간부터 재생, With, Build
 
-확장 메서드는 상태 이름으로 처음부터 재생하는 것만 있습니다. 시간을 지정한 재생과 `With`, `Build`의 재생은 `Awaitable`을 돌려주므로 UniTask의 `AsUniTask()`로 바꿉니다. 확장 메서드도 내부에서 이렇게 합니다.
+시간을 주거나 `With`로 설정한 재생도 UniTask로 기다립니다. `Build`로 만든 상태는 `.With()`로 이어서 씁니다.
 
 ```csharp
-await anim.PlayAsync("Intro", 1.5f, destroyCancellationToken).AsUniTask();
-await popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayAsync(destroyCancellationToken).AsUniTask();
+await anim.PlayUniTaskAsync("Intro", 1.5f, destroyCancellationToken);   // 1.5초부터
+await popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayUniTaskAsync(destroyCancellationToken);
+await anim.Build("Pop").Track(icon.transform, KeyTweenProperty.Scale).Key(0f, Vector3.zero).Key(0.2f, Vector3.one).With().PlayUniTaskAsync();
 ```
 
 ## R3
@@ -81,6 +84,8 @@ R3(`com.cysharp.r3` 1.0.0 이상)를 설치하면, 재생과 애니메이션 이
 | `PlayAsObservable(stateName)` | 구독하면 재생을 시작하고, 재생이 끝나면 `Unit` 하나를 내보낸 뒤 완료됩니다. |
 | `EventsAsObservable()` | 모든 애니메이션 이벤트를 내보냅니다. |
 | `EventAsObservable(eventName)` | 이름이 같은 이벤트만 내보냅니다. |
+| `PlayAsObservable(stateName, time)`, `play.PlayAsObservable()` | 그 시간부터 재생, `With`로 설정한 재생(`KeyTweenPlay`). 끝나는 규칙은 `PlayAsObservable(stateName)`과 같습니다. |
+| `StateStartedAsObservable()`, `StateCompletedAsObservable()`, `StateCanceledAsObservable()` | 상태가 시작하거나, 끝에 닿거나, 끝까지 못 갔을 때 그 상태 이름을 내보냅니다. |
 
 ### R3 설치하기
 
@@ -128,17 +133,17 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 
 ### With 재생과 상태 알림
 
-`PlayAsObservable`은 상태 이름으로 처음부터 재생하는 것만 있습니다. `With`나 시간을 지정한 재생은 R3의 `Observable.FromAsync`로 감쌉니다. 구독을 해제하면 토큰이 취소되어 재생이 멈춥니다.
+`With`로 설정한 재생도 구독하면 재생을 시작합니다. 구독을 해제하면 재생이 그 자리에서 멈춥니다.
 
 ```csharp
 var open = popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
-Observable.FromAsync(async ct => await open.PlayAsync(ct)).Subscribe().AddTo(this);
+openButton.OnClickAsObservable().SelectMany(_ => open.PlayAsObservable()).Subscribe().AddTo(this);
 ```
 
-어느 상태가 시작하고 끝났는지는 `StateStarted`, `StateCompleted`, `StateCanceled` 이벤트를 `Observable.FromEvent`로 받습니다.
+어느 상태가 시작하고 끝났는지는 상태 알림으로 받습니다. 상태 이름이 값으로 옵니다.
 
 ```csharp
-Observable.FromEvent<string>(h => popup.StateCompleted += h, h => popup.StateCompleted -= h)
+popup.StateCompletedAsObservable()
     .Where(state => state == "Open")
     .Subscribe(_ => EnableInput()).AddTo(this);
 ```

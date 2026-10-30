@@ -25,6 +25,8 @@
 * Extra Prefabs 중 어떤 종류를 쓸지는 코드의 `prefabOf(index)`로 고릅니다. 종류마다 따로 재사용합니다.
 * Measure Items는 글이 길면 커지는 말풍선에 씁니다.
 
+![Scroll List 인스펙터. 위에서부터 Item Prefab, Layout 같은 배치 칸, Scrolling(Snap, Stick To End 등), Animation(Entry State = Show, Appear State = Appear, Scrub State), Preview(Items, Show, Play Entry)가 있습니다.](media/scroll/scroll-list-inspector.png)
+
 ### Layout 고르기
 
 Layout마다 쓸 수 있는 설정은 다음과 같습니다.

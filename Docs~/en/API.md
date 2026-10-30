@@ -518,9 +518,9 @@ When the following libraries are installed, KeyTween gains extra extension metho
 | Library | Extension methods |
 |---|---|
 | UniTask | `PlayUniTaskAsync`, `PlayReversedUniTaskAsync`, `WaitEventUniTaskAsync` |
-| R3 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable` |
+| R3 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable`, `StateStartedAsObservable`, `StateCompletedAsObservable`, `StateCanceledAsObservable` |
 
-An integration turns on automatically when its library is installed, with nothing to configure. Wrap plays from a given time and the plays of `With` and `Build` with `AsUniTask()` or `Observable.FromAsync`. For details, see [Integrations](Integrations.md).
+An integration turns on automatically when its library is installed, with nothing to configure. The same methods also take a start time, and work on a `With` play. For details, see [Integrations](Integrations.md).
 
 ## Other Components
 

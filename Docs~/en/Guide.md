@@ -351,6 +351,8 @@ A key is the value of a track at one point in time. You add and move keys on the
 * Drag one of the selected keys to move all of them by the same time. One Ctrl+Z undoes it.
 * When two or more keys at different times are selected, a box spans them. Drag its right handle to stretch or shrink the keys around the left end, or its left handle to do it around the right end; the spacing between the keys scales evenly. A handle stops before the other end, so the keys keep their order. One Ctrl+Z undoes it.
 
+![Five keys selected on the Scale, Color and Rotation tracks. A box spans the selected keys with a stretch handle at each end, and the key inspector shows 5 Keys Selected.](../media/editor/editor-box-select.png)
+
 Keys move in 0.01 s steps and never go below 0 s.
 
 ### Adding and Deleting Keys
@@ -656,6 +658,8 @@ Char Scale, Char Position, Char Rotation, Char Color and Char Alpha are per-char
 
 On the timeline, the faint tail after the last key is the span in which the later characters play. Drag the end of the tail to change Stagger.
 
+![The Intro state of Title, with a Reveal track and a Char Position track. A faint tail runs on after Char Position's last key, and the track inspector shows Stagger 0.05 and Duration per Char.](../media/editor/editor-text-chars.png)
+
 ### Combining Per-Character Tracks
 
 When the same text has several per-character tracks, their results are combined.
@@ -697,6 +701,8 @@ When you choose a struct, you can edit its fields right in the inspector. These 
 * Vector2/3
 * Color
 * enum
+
+![The Open state of Popup. The Animation Events row has the Popup Sound and Shown events, and the Sound row a PopupOpen bar as long as the clip. The Popup Sound event is selected, and the inspector's Event Type shows its Clip and Volume fields.](../media/editor/editor-events.png)
 
 ### Receiving Events
 
@@ -802,9 +808,9 @@ An override changes the child's animation per track, and only inside the current
 1. Click a dimmed track under the child call. **Only that track** is overridden.
 2. Edit its keys. The edits go into the override, and the original prefab is not changed.
 
-In the screenshot below, the Popup prefab overrides the Color key of the Hover state on the nested OkButton prefab with yellow. The button in the Game view keeps its original red, while the Scene view and the KeyTween window show the popup's override.
+In the screenshot below, Popup's Open state calls OkButton's Hover at 0.2 s and overrides OkButton's Color track inside the popup only. The overridden Color track has a blue name and an **×**. The Scale track, not overridden, is dimmed. The child call's heading shows how many tracks are overridden and a **↺**.
 
-![A Popup prefab with a nested OkButton prefab. The Game view shows the button's original red, and the Scene view and the KeyTween window show the popup's override: a yellow Color key on OkButton's Hover state.](../media/editor/editor-override.png)
+![The Open state of Popup. The OkButton row has a Hover child call bar; below it are the heading Hover 1 track(s) overridden with a ↺, a dimmed OkButton · Scale track, and an OkButton · Color track with a blue name.](../media/editor/editor-override.png)
 
 ### Editing the Original Prefab
 
@@ -942,6 +948,8 @@ With recording on, you can create keys simply by changing an object in the Scene
 3. Change an object in the Scene view or the Inspector. The new value becomes a key.
 
 The object itself returns to its value before the change, and the view shows the new key through preview. Each change is one Undo step.
+
+![The KeyTween window while recording. The ● button in the top bar is red, and a Scale key has appeared at 0.1 s, where the playhead is. The key inspector shows Time 0.1 and Value 1.04.](../media/editor/editor-record.png)
 
 ### How Recording Creates Keys
 

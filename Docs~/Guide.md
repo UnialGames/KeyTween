@@ -351,6 +351,8 @@ Start 옵션은 [트랙 옵션](#8-트랙-옵션-트랙-인스펙터)을 참고�
 * 선택한 키 하나를 드래그하면 선택한 키가 모두 같은 시간만큼 옮겨집니다. Ctrl+Z 한 번으로 되돌립니다.
 * 시간이 다른 키를 둘 이상 고르면 그 범위에 사각형이 생깁니다. 사각형의 오른쪽 손잡이를 끌면 왼쪽 끝을 기준으로, 왼쪽 손잡이를 끌면 오른쪽 끝을 기준으로 키 간격이 같은 비율로 늘거나 줄어듭니다. 손잡이는 반대쪽 끝을 넘지 않으므로 키 순서는 바뀌지 않습니다. 이것도 Ctrl+Z 한 번으로 되돌립니다.
 
+![Scale, Color, Rotation 세 트랙에서 키 5개를 고른 모습. 고른 키들을 감싸는 사각형의 양 끝에 늘이기 손잡이가 있고, 키 인스펙터에는 5 Keys Selected가 보입니다.](media/editor/editor-box-select.png)
+
 키는 0.01초 단위로 움직이며, 0초보다 앞으로는 가지 않습니다.
 
 ### 키 추가하고 삭제하기
@@ -656,6 +658,8 @@ Char Scale, Char Position, Char Rotation, Char Color, Char Alpha가 글자별 �
 
 타임라인에서 마지막 키 뒤에 이어지는 연한 꼬리가 뒤쪽 글자들이 재생되는 구간입니다. 꼬리 끝을 끌면 Stagger가 바뀝니다.
 
+![Title의 Intro 상태. Reveal 트랙과 Char Position 트랙이 있고, Char Position의 마지막 키 뒤로 연한 꼬리가 이어집니다. 트랙 인스펙터에 Stagger 0.05와 Duration per Char가 보입니다.](media/editor/editor-text-chars.png)
+
 ### 글자별 트랙 합치기
 
 같은 텍스트에 글자별 트랙이 여러 개 있으면 결과가 합쳐집니다.
@@ -697,6 +701,8 @@ struct를 고르면 그 필드를 인스펙터에서 바로 편집할 수 있습
 * Vector2/3
 * Color
 * enum
+
+![Popup의 Open 상태. Animation Events 줄에 Popup Sound와 Shown 이벤트가, Sound 줄에 클립 길이만큼의 PopupOpen 막대가 있습니다. Popup Sound 이벤트를 골라 인스펙터의 Event Type에 Clip과 Volume 필드가 보입니다.](media/editor/editor-events.png)
 
 ### 이벤트 받기
 
@@ -802,9 +808,9 @@ anim.Play("Press");
 1. 자식 호출 아래의 흐린 트랙을 클릭합니다. **그 트랙만** 오버라이드됩니다.
 2. 키를 편집합니다. 편집은 오버라이드에 들어가고, 원본 Prefab은 바뀌지 않습니다.
 
-아래 화면에서 Popup Prefab은 안에 든 OkButton Prefab의 Hover 상태에서 Color 키를 노란색으로 오버라이드했습니다. Game 뷰의 버튼은 원본의 빨간색 그대로이고, Scene 뷰와 KeyTween 창에는 팝업의 오버라이드가 보입니다.
+아래 화면에서 Popup의 Open 상태는 0.2초에 OkButton의 Hover를 부르고, OkButton의 Color 트랙을 팝업 안에서만 오버라이드했습니다. 오버라이드한 Color 트랙은 이름이 파란색이고 **×**가 있습니다. 오버라이드하지 않은 Scale 트랙은 흐리게 보입니다. 자식 호출 제목에는 오버라이드한 트랙 수와 **↺**가 있습니다.
 
-![OkButton Prefab이 들어 있는 Popup Prefab. Game 뷰는 버튼의 원래 빨간색을, Scene 뷰와 KeyTween 창은 OkButton의 Hover 상태에 넣은 노란색 Color 키 오버라이드를 보여 줍니다.](media/editor/editor-override.png)
+![Popup의 Open 상태. OkButton 줄에 Hover 자식 호출 막대가 있고, 그 아래 Hover 1 track(s) overridden 제목과 ↺, 흐린 OkButton · Scale 트랙, 파란 이름의 OkButton · Color 트랙이 보입니다.](media/editor/editor-override.png)
 
 ### 원본 Prefab을 고쳤을 때
 
@@ -942,6 +948,8 @@ KeyTween 창에서 고친 내용은 그 `KeyTween`이 있는 곳에 저장됩니
 3. Scene 뷰나 Inspector에서 오브젝트를 바꿉니다. 그 값이 키가 됩니다.
 
 오브젝트 자체는 바꾸기 전 값으로 돌아가고, 화면에는 미리보기로 새 키가 반영된 모습이 보입니다. 변경 한 번이 Undo 한 번입니다.
+
+![녹화 중인 KeyTween 창. 상단 바의 ● 버튼이 빨갛고, 재생 막대가 있는 0.1초에 Scale 키가 생겼습니다. 키 인스펙터에 Time 0.1, Value 1.04가 보입니다.](media/editor/editor-record.png)
 
 ### 녹화로 키가 생기는 방식
 

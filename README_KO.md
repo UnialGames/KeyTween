@@ -561,7 +561,7 @@ KeyTween은 서드파티 라이브러리 없이 동작합니다. 아래 라이�
 | 라이브러리 | 패키지 | 추가되는 것 |
 |---|---|---|
 | UniTask | `com.cysharp.unitask` 2.0 이상 | `PlayUniTaskAsync`, `PlayReversedUniTaskAsync`, `WaitEventUniTaskAsync` |
-| R3 | `com.cysharp.r3` 1.0 이상 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable` |
+| R3 | `com.cysharp.r3` 1.0 이상 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable`, `StateStartedAsObservable`, `StateCompletedAsObservable`, `StateCanceledAsObservable` |
 | UIEffect | `com.coffee.ui-effect` 5.0 이상 | 트랙 14종 |
 
 ### UniTask로 기다리기

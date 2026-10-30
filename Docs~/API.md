@@ -518,9 +518,9 @@ KeyTween.Write(label, KeyTweenProperty.TextNumber, new Vector4(1234, 0, 0, 0)); 
 | 라이브러리 | 확장 메서드 |
 |---|---|
 | UniTask | `PlayUniTaskAsync`, `PlayReversedUniTaskAsync`, `WaitEventUniTaskAsync` |
-| R3 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable` |
+| R3 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable`, `StateStartedAsObservable`, `StateCompletedAsObservable`, `StateCanceledAsObservable` |
 
-라이브러리를 설치하면 연동이 자동으로 켜지며, 따로 설정할 것은 없습니다. 시간을 지정한 재생과 `With`, `Build`의 재생은 `AsUniTask()`나 `Observable.FromAsync`로 감쌉니다. 자세한 내용은 [Integrations](Integrations.md)를 참고하세요.
+라이브러리를 설치하면 연동이 자동으로 켜지며, 따로 설정할 것은 없습니다. 시간을 지정한 재생과 `With`의 재생에도 같은 메서드가 있습니다. 자세한 내용은 [Integrations](Integrations.md)를 참고하세요.
 
 ## 그 밖의 컴포넌트
 

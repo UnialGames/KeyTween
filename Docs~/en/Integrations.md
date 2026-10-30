@@ -6,8 +6,8 @@ This is the same approach that LitMotion and VContainer take for their UniTask i
 
 | Library | Turned on when (asmdef versionDefines) | Adds |
 |---|---|---|
-| UniTask | `com.cysharp.unitask` 2.0.0 or later → `KEYTWEEN_UNITASK` | 3 extension methods |
-| R3 | `com.cysharp.r3` 1.0.0 or later → `KEYTWEEN_R3` | 3 extension methods |
+| UniTask | `com.cysharp.unitask` 2.0.0 or later → `KEYTWEEN_UNITASK` | Extension methods (plays and events as UniTasks) |
+| R3 | `com.cysharp.r3` 1.0.0 or later → `KEYTWEEN_R3` | Extension methods (plays, events and state notifications as observables) |
 | UIEffect | `com.coffee.ui-effect` 5.0.0 or later → `KEYTWEEN_UIEFFECT` | 14 tracks (assembly `KeyTween.UIEffect`) |
 
 ## UniTask
@@ -17,7 +17,9 @@ When UniTask (`com.cysharp.unitask` 2.0.0 or later) is installed, KeyTween gains
 | Method | Description |
 |---|---|
 | `PlayUniTaskAsync(stateName, ct)` | The UniTask version of `PlayAsync`. |
-| `PlayReversedUniTaskAsync(stateName, ct)` | Plays the state reversed. |
+| `PlayUniTaskAsync(stateName, time, ct)` | Plays from that time (in seconds). |
+| `PlayReversedUniTaskAsync(stateName, ct)`, `(stateName, time, ct)` | Plays the state reversed. |
+| `play.PlayUniTaskAsync(ct)`, `play.PlayReversedUniTaskAsync(ct)` | Awaits a play set up with `With` (`KeyTweenPlay`) as a UniTask. |
 | `WaitEventUniTaskAsync(eventName, ct)` | Waits until the next animation event is raised. |
 
 ### Awaiting Several Plays Together
@@ -65,11 +67,12 @@ await popup.PlayUniTaskAsync("Open", destroyCancellationToken);
 
 ### From a Given Time, With, Build
 
-The extension methods play a state by name from the start only. Plays from a given time and the plays of `With` and `Build` return an `Awaitable`, so turn it into a UniTask with UniTask's `AsUniTask()`. The extension methods do the same inside.
+Plays from a given time and plays set up with `With` are awaited as UniTasks too. For a state made with `Build`, carry on with `.With()`.
 
 ```csharp
-await anim.PlayAsync("Intro", 1.5f, destroyCancellationToken).AsUniTask();
-await popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayAsync(destroyCancellationToken).AsUniTask();
+await anim.PlayUniTaskAsync("Intro", 1.5f, destroyCancellationToken);   // from 1.5 s
+await popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayUniTaskAsync(destroyCancellationToken);
+await anim.Build("Pop").Track(icon.transform, KeyTweenProperty.Scale).Key(0f, Vector3.zero).Key(0.2f, Vector3.one).With().PlayUniTaskAsync();
 ```
 
 ## R3
@@ -81,6 +84,8 @@ When R3 (`com.cysharp.r3` 1.0.0 or later) is installed, KeyTween gains extension
 | `PlayAsObservable(stateName)` | Starts playing on subscribe, emits one `Unit` when the play ends, and completes. |
 | `EventsAsObservable()` | Emits every animation event. |
 | `EventAsObservable(eventName)` | Emits only the events with that name. |
+| `PlayAsObservable(stateName, time)`, `play.PlayAsObservable()` | Plays from that time, or a play set up with `With` (`KeyTweenPlay`). They end like `PlayAsObservable(stateName)`. |
+| `StateStartedAsObservable()`, `StateCompletedAsObservable()`, `StateCanceledAsObservable()` | Emit a state's name when it starts, reaches its end, or does not reach it. |
 
 ### Installing R3
 
@@ -128,17 +133,17 @@ popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
 
 ### With Plays and State Notifications
 
-`PlayAsObservable` plays a state by name from the start only. Wrap a `With` play or a play from a given time in R3's `Observable.FromAsync`. Disposing the subscription cancels the token, which stops the play.
+A play set up with `With` also starts when subscribed. Disposing the subscription stops it where it is.
 
 ```csharp
 var open = popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
-Observable.FromAsync(async ct => await open.PlayAsync(ct)).Subscribe().AddTo(this);
+openButton.OnClickAsObservable().SelectMany(_ => open.PlayAsObservable()).Subscribe().AddTo(this);
 ```
 
-To observe which state started or ended, take the `StateStarted`, `StateCompleted` and `StateCanceled` events with `Observable.FromEvent`.
+Which state started or ended comes from the state notifications, with the state's name as the value.
 
 ```csharp
-Observable.FromEvent<string>(h => popup.StateCompleted += h, h => popup.StateCompleted -= h)
+popup.StateCompletedAsObservable()
     .Where(state => state == "Open")
     .Subscribe(_ => EnableInput()).AddTo(this);
 ```

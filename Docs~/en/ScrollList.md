@@ -25,6 +25,8 @@ This section explains how to set the item prefabs and the layout. The list's ins
 * You pick the kind from Extra Prefabs in code with `prefabOf(index)`. Each kind is pooled separately.
 * Use Measure Items for a chat bubble that grows with long text.
 
+![The Scroll List inspector. From the top: layout fields such as Item Prefab and Layout, Scrolling (Snap, Stick To End and so on), Animation (Entry State = Show, Appear State = Appear, Scrub State) and Preview (Items, Show, Play Entry).](../media/scroll/scroll-list-inspector.png)
+
 ### Choosing a Layout
 
 Each layout has the following settings.
