@@ -43,7 +43,7 @@ KeyTween에서는 Animator 클립을 만들 때처럼 타임라인에 키를 놓
 - [애니메이션 이벤트](#애니메이션-이벤트)
 - [코드 없이 재생 (Play On)](#코드-없이-재생-play-on)
 - [중첩 Prefab: 자식 호출과 오버라이드](#중첩-prefab-자식-호출과-오버라이드)
-- [샘플링, 값 읽고 쓰기](#샘플링-값-읽고-쓰기)
+- [특정 시간의 모습, 값 읽고 쓰기](#특정-시간의-모습-값-읽고-쓰기)
 - [스크롤 리스트](#스크롤-리스트)
 - [화면 전환](#화면-전환)
 - [연동 (UniTask, R3, UIEffect)](#연동-unitask-r3-uieffect)
@@ -206,19 +206,33 @@ float length = anim.Duration("Open");              // 오버라이드를 반영�
 
 `PlayAsync`가 끝나는 방식은 경우마다 다릅니다.
 
-| 경우 | `PlayAsync` | 남은 이벤트 | 남은 사운드 |
-|---|---|---|---|
-| 끝에 도달 | 완료 | 모두 발생 | 모두 재생 |
-| `Complete` | 완료 | 순서대로 발생 | 재생 안 함 |
-| 다른 상태가 속성을 모두 가져감 | **취소** | 발생 안 함 | 재생 안 함 |
-| 같은 상태를 다시 재생 | 이전 재생 **취소** | 발생 안 함 | 재생 안 함 |
-| 오브젝트 비활성화, `Stop`, 토큰 취소 | **취소** | 발생 안 함 | 재생 안 함 |
+| 경우 | `PlayAsync` | 콜백 | 남은 이벤트 | 남은 사운드 |
+|---|---|---|---|---|
+| 끝에 도달 | 완료 | On Complete | 모두 발생 | 모두 재생 |
+| `Complete` | 완료 | On Complete | 순서대로 발생 | 재생 안 함 |
+| 다른 상태가 속성을 모두 가져감 | **취소** | On Cancel | 발생 안 함 | 재생 안 함 |
+| 같은 상태를 다시 재생 | 이전 재생 **취소** | 이전 재생의 On Cancel | 발생 안 함 | 재생 안 함 |
+| 오브젝트 비활성화, `Stop`, 토큰 취소 | **취소** | On Cancel | 발생 안 함 | 재생 안 함 |
 
 * 취소된 재생은 `OperationCanceledException`을 던집니다.
 * 따라서 `await` 뒤의 코드는 상태가 정말 끝까지 재생됐을 때만 실행됩니다. 대부분의 경우 이것이 원하는 동작입니다.
 * 반복 상태의 `PlayAsync`는 `Complete`나 `Stop`을 호출해야만 끝납니다.
 
 자세한 내용은 [끝나는 경우](Docs~/API.md#끝나는-경우)를 참고하세요.
+
+### 시작과 끝 콜백
+
+`await` 없이도 재생의 시작과 끝을 받을 수 있습니다. 에디터에서는 상태마다 **Callbacks**(On Start, On Complete, On Cancel)에 Button의 OnClick처럼 함수를 연결합니다. 코드에서는 모든 상태의 알림을 컴포넌트의 이벤트로 받습니다.
+
+```csharp
+anim.StateCompleted += state => { if (state == "Close") gameObject.SetActive(false); };
+anim.StateCanceled += state => Debug.Log($"{state} 중단");
+```
+
+* 재생 한 번은 On Start로 시작해서 On Complete와 On Cancel 중 **정확히 하나**로 끝납니다.
+* 재생 하나에만 거는 콜백은 `With(...).WithOnComplete(...)`로 겁니다.
+
+자세한 내용은 [시작과 끝 콜백](Docs~/API.md#시작과-끝-콜백)을 참고하세요.
 
 ### 예: 대사창
 
@@ -395,7 +409,7 @@ Button의 `OnClick` 같은 UnityEvent에서도 상태를 재생할 수 있습니
 
 전체 과정은 [팝업 안의 버튼만 바꾸기](https://youtu.be/rXO_kNexiGc) 영상에서 볼 수 있습니다. 자세한 내용은 [Guide §12](Docs~/Guide.md#12-자식-호출과-오버라이드-중첩-prefab)를 참고하세요.
 
-## 샘플링, 값 읽고 쓰기
+## 특정 시간의 모습, 값 읽고 쓰기
 
 상태를 재생하지 않고 모습을 정하거나, 속성 하나를 직접 읽고 쓰는 방법을 설명합니다.
 
@@ -664,7 +678,7 @@ KeyTween과 다른 애니메이션 도구의 비용을 비교한 결과입니다
 | [설치](https://unialgames.github.io/KeyTween/articles/ko/installation.html) | 요구 사항, Package Manager 설치, 버전 고정, 샘플 가져오기 |
 | [빠른 시작](https://unialgames.github.io/KeyTween/articles/ko/quick-start.html) | 에디터에서 첫 호버 연출 만들기, 코드에서 재생하기 |
 | [에디터](https://unialgames.github.io/KeyTween/articles/ko/concepts.html) | KeyTween 창, 상태·트랙·키, Play On, 중첩 Prefab, 미리보기, 저장, 녹화 |
-| [코드에서 쓰기](https://unialgames.github.io/KeyTween/articles/ko/playing-and-awaiting.html) | 상태 재생과 기다리기, 실행 중 끝 값, 애니메이션 이벤트, 값 읽고 쓰기 |
+| [코드에서 쓰기](https://unialgames.github.io/KeyTween/articles/ko/playing-and-awaiting.html) | 상태 재생과 기다리기, 시작과 끝 콜백, [코드에서 재생 설정하기(With)](https://unialgames.github.io/KeyTween/articles/ko/with.html), [코드로 상태 만들기(Build)](https://unialgames.github.io/KeyTween/articles/ko/build.html), 애니메이션 이벤트, 값 읽고 쓰기 |
 | [스크롤 리스트](https://unialgames.github.io/KeyTween/articles/ko/scroll-list.html) | 가상화 스크롤 리스트, 아이템 연출, 도우미 컴포넌트 |
 | [화면 전환](https://unialgames.github.io/KeyTween/articles/ko/screens.html) | 페이지, 모달, 시트 컨테이너, 생명주기, 공유 요소 |
 | [연동](https://unialgames.github.io/KeyTween/articles/ko/unitask.html) | UniTask, R3, UIEffect |

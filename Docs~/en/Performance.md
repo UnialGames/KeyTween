@@ -79,7 +79,16 @@ A KeyTween that is not playing does nothing each frame. Even with many KeyTweens
 
 ### GC Allocation While Playing
 
-Playing allocates no GC memory. This holds for looping states and for playing the same state again and again.
+Playing allocates no GC memory. This holds for looping states and for playing the same state again and again, and for states with child calls.
+
+The exception is a state that calls a child state whose tracks an outer prefab overrides. Each time such a state plays, working out its length merges the overridden child state anew.
+
+### With and Build
+
+`With(state)` and `Build(state)` make new objects each time they are called. So calling `With(...)` again for every play allocates that much.
+
+* Keep the `KeyTweenPlay` that `With` returns in a field and play it again. Reused, it allocates nothing when it plays.
+* Call `Build` once to make the state, then play it with `Play("name")`.
 
 ### Tracks Evaluated with Burst
 
@@ -112,3 +121,5 @@ Changing the text often while it plays costs a layout each time.
 ### Allocation on First Use
 
 The first time a KeyTween plays, it reserves arrays for the Burst evaluation once. For 2,000 states this is about 1.2–1.4MB; after that, playing allocates nothing.
+
+The setup allocation in the [benchmarks](Benchmarks.md#setup-allocation) (about 6.6MB for 2,000 KeyTweens) is a different number, because that measurement includes making the states in code.

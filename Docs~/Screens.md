@@ -27,11 +27,25 @@ KeyTween에는 게임 UI의 화면 흐름을 관리하는 컴포넌트가 들어
 
 * 페이지 컨테이너에서는 값이 높은 페이지가 위에 그려집니다.
 * 값이 같으면 넣은 순서대로 쌓입니다.
-* 모달 컨테이너와 시트 컨테이너에서는 항상 나중에 넣은 화면이 위에 옵니다.
+* 모달 컨테이너에서는 나중에 띄운 모달이, 시트 컨테이너에서는 마지막으로 `Show`한 시트가 위에 옵니다.
 
 ### 연출 없이 전환하기
 
 `animated: false`로 전환하면 연출 없이 상태의 끝 모습으로 바로 바뀝니다.
+
+게임을 시작하거나 저장된 화면을 복원할 때처럼, 사용자가 전환을 볼 필요가 없을 때 씁니다.
+
+```csharp
+await pages.Push(homePrefab, animated: false);   // 첫 화면은 슬라이드 없이 바로
+```
+
+이때는 상태를 재생하지 않고 끝 모습만 쓰므로, 전환 상태의 On Start와 On Complete가 불리지 않습니다. 생명주기 메서드(`WillEnter`, `DidEnter` 등)는 그대로 불립니다.
+
+### 전환 상태의 콜백
+
+전환은 상태를 `PlayAsync`로 재생합니다. 그래서 전환 상태의 On Start와 On Complete가 불립니다.
+
+전환 상태가 끝까지 가지 못하면(그 상태의 On Start에서 `Stop`을 부르거나, 다른 상태가 같은 속성을 가져가는 경우) `Push`, `Pop`, `Show`가 `OperationCanceledException`을 던집니다. 이때 화면은 중간 모습으로 남고 생명주기의 `Did...`는 불리지 않습니다. 전환 상태는 전환 중에 멈추지 마세요.
 
 ## 2. 컨테이너
 
@@ -42,6 +56,21 @@ KeyTween에는 게임 UI의 화면 흐름을 관리하는 컴포넌트가 들어
 | `KeyTweenPageContainer` | 쌓고 뒤로 가는 페이지 | 화면 한 폭만큼 슬라이드(Size Relative), OutQuart |
 | `KeyTweenModalContainer` | 위에 띄우는 모달 | 크기 0.3 → 1과 알파(OutQuart), 배경은 알파 페이드(Linear) |
 | `KeyTweenSheetContainer` | 바꿔 보여 주는 시트 | 알파 페이드(Linear) |
+
+### 컨테이너 추가하기
+
+1. Canvas 안에 화면이 들어갈 영역이 될 오브젝트를 만듭니다. 보통 Canvas를 꽉 채우는 RectTransform입니다.
+2. **Add Component > KeyTween > Page Container**(또는 **Modal Container**, **Sheet Container**)를 선택합니다. `CanvasGroup`이 함께 붙습니다.
+3. 코드에서 이 컨테이너에 화면 Prefab을 넘겨 엽니다.
+
+```csharp
+[SerializeField] KeyTweenPageContainer pages;
+[SerializeField] KeyTweenScreen shopPrefab;
+
+public async void OpenShop() => await pages.Push(shopPrefab);
+```
+
+컨테이너가 화면을 만들 때 컨테이너 영역을 꽉 채우도록 맞춥니다. 페이지와 모달을 함께 쓰려면 컨테이너를 둘 만들고, 모달 컨테이너를 Hierarchy에서 아래(위에 그려지는 쪽)에 둡니다.
 
 ### 페이지 — `KeyTweenPageContainer`
 
@@ -109,6 +138,14 @@ await sheets.Show(tab);                         // 높은 번호로 가면 Enter
 * `PagePushEnter` 등
 * `Slide`
 * `FadeIn` / `FadeOut`
+
+모두 `KeyTweenScreen`을 받아 새 `KeyTweenState`를 돌려주는 함수입니다. 이름을 붙여 `AddState`로 넣으면 다른 상태처럼 재생할 수 있습니다.
+
+```csharp
+var fade = KeyTweenDefaultTransitions.FadeIn(screen);
+fade.name = "FadeIn";
+screen.Animation.AddState(fade);
+```
 
 ## 3. 입력 막기
 

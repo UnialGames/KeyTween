@@ -138,6 +138,10 @@ OnAnimationEnded += Play
 | 이벤트·사운드 트랙 | ✅ | 이벤트 ✅ | 콜백(코드) | 콜백(코드) | ✅ 이벤트·사운드 단계 |
 | 화면 전환 컨테이너 | ✅ Page·Modal·Sheet | ❌ | ❌ | ❌ | ❌ |
 | await | ✅ `Awaitable`, UniTask 선택 | ❌ | ✅ (`AsyncWaitForCompletion`) | ✅ | ❌ |
+| 시작·끝 콜백 | ✅ 에디터(상태의 Callbacks) + 코드(`StateCompleted` 등, `WithOnComplete`) | 확인 안 함 | 코드(`OnComplete` 등) | 코드(`WithOnComplete` 등) | 확인 안 함 |
+| 코드로 연출 만들기 | ✅ `Build(state).Track(...).Key(...)` | 확인 안 함 | ✅ 기본 방식 | ✅ 기본 방식 | 확인 안 함 |
+| 중간 시간부터 재생 | ✅ `Play(state, time)` | 확인 안 함 | 확인 안 함 | 확인 안 함 | 확인 안 함 |
+| 일시 정지와 무관한 시간 | ✅ Time = Unscaled | ✅ Update Mode | 확인 안 함 | 확인 안 함 | 확인 안 함 |
 | 필요한 패키지 | Unity 공식만(uGUI·Mathematics·Burst) | 내장 | DOTween (Pro는 유료) | LitMotion (+ Burst·Collections) | AnimationUI 소스 |
 
 ## 4. 고칠 때 드는 일
@@ -167,6 +171,8 @@ OnAnimationEnded += Play
 * 글자 단위 연출
 * await
 
+재생할 때마다 달라지는 값(끝 값, 이징, 시작 시간, 콜백)은 코드에서 `With`로 정하고, 코드만으로 상태를 만들 때는 `Build`를 씁니다. 그래서 코드 트윈처럼 코드로 쓰는 방식도 함께 쓸 수 있습니다.
+
 ### 성능
 
 IL2CPP 빌드에서 맥박 2,000개의 자체 비용을 비교했습니다. 자체 비용은 같은 값을 스크립트로 직접 넣는 경우보다 더 드는 시간입니다.
@@ -186,7 +192,7 @@ KeyTween은 DOTween Pro, LitMotion과 같은 수준이며, Animator와 Animation
 
 ### 코드 트윈 (LitMotion, DOTween)
 
-재생을 시작하는 비용은 LitMotion이 가장 낮습니다. 다만 연출이 코드 안에 있으므로, 미리 보거나 고칠 때마다 컴파일이 필요합니다.
+재생을 시작하는 비용은 LitMotion이 가장 낮습니다. 다만 연출이 코드 안에 있으므로, 미리 보거나 고칠 때마다 컴파일이 필요합니다. KeyTween에서는 움직임을 에디터에 두고, 바뀌는 값만 `With`로 코드에서 정하는 식으로 나눌 수 있습니다.
 
 ### Animator
 

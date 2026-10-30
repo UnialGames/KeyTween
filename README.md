@@ -43,7 +43,7 @@ To see KeyTween in action, watch these videos:
 - [Animation Events](#animation-events)
 - [Playing Without Code (Play On)](#playing-without-code-play-on)
 - [Nested Prefabs: Child Calls and Overrides](#nested-prefabs-child-calls-and-overrides)
-- [Sampling, Reading and Writing Values](#sampling-reading-and-writing-values)
+- [Posing at a Time, Reading and Writing Values](#posing-at-a-time-reading-and-writing-values)
 - [Scroll List](#scroll-list)
 - [Screen Transitions](#screen-transitions)
 - [Integrations (UniTask, R3, UIEffect)](#integrations-unitask-r3-uieffect)
@@ -206,19 +206,33 @@ float length = anim.Duration("Open");              // includes overrides; 0 if t
 
 A `PlayAsync` call ends differently in each case:
 
-| Case | `PlayAsync` | Remaining events | Remaining sounds |
-|---|---|---|---|
-| Reaches the end | completes | all raised | all played |
-| `Complete` | completes | raised in order | not played |
-| Another state takes all of its properties | **canceled** | not raised | not played |
-| The same state is played again | earlier play **canceled** | not raised | not played |
-| Object disabled, `Stop`, token canceled | **canceled** | not raised | not played |
+| Case | `PlayAsync` | Callback | Remaining events | Remaining sounds |
+|---|---|---|---|---|
+| Reaches the end | completes | On Complete | all raised | all played |
+| `Complete` | completes | On Complete | raised in order | not played |
+| Another state takes all of its properties | **canceled** | On Cancel | not raised | not played |
+| The same state is played again | earlier play **canceled** | the earlier play's On Cancel | not raised | not played |
+| Object disabled, `Stop`, token canceled | **canceled** | On Cancel | not raised | not played |
 
 * A canceled play throws `OperationCanceledException`.
 * As a result, the code after an `await` runs only when the state has really finished. This is usually what you want.
 * A looping state's `PlayAsync` ends only when you call `Complete` or `Stop`.
 
 For details, see [How a Play Ends](Docs~/en/API.md#how-a-play-ends).
+
+### Start and End Callbacks
+
+You can receive the start and end of a play without `await`. In the editor, connect functions per state in **Callbacks** (On Start, On Complete, On Cancel), as with a Button's OnClick. In code, the component's events tell you about every state.
+
+```csharp
+anim.StateCompleted += state => { if (state == "Close") gameObject.SetActive(false); };
+anim.StateCanceled += state => Debug.Log($"{state} was cut short");
+```
+
+* Each play starts with On Start and ends with **exactly one** of On Complete and On Cancel.
+* For a callback on one play only, use `With(...).WithOnComplete(...)`.
+
+For details, see [Start and End Callbacks](Docs~/en/API.md#start-and-end-callbacks).
 
 ### Example: A Dialogue Box
 
@@ -395,7 +409,7 @@ In the image below, a popup overrides the Color track of its nested `OkButton`. 
 
 For a walkthrough, watch [Overriding a button inside a popup](https://youtu.be/rXO_kNexiGc). For details, see [Guide §12](Docs~/en/Guide.md#12-child-calls-and-overrides-nested-prefabs).
 
-## Sampling, Reading and Writing Values
+## Posing at a Time, Reading and Writing Values
 
 This section shows how to set a state's pose without playing it, and how to read and write a single property directly.
 
@@ -664,7 +678,7 @@ The full documentation is on the [documentation site](https://unialgames.github.
 | [Installation](https://unialgames.github.io/KeyTween/articles/en/installation.html) | Requirements, Package Manager install, pinning a version, importing samples |
 | [Quick Start](https://unialgames.github.io/KeyTween/articles/en/quick-start.html) | Your first hover animation in the editor, and playing it from code |
 | [Editor](https://unialgames.github.io/KeyTween/articles/en/concepts.html) | The KeyTween window, states, tracks and keys, Play On, nested prefabs, preview, saving, recording |
-| [Scripting](https://unialgames.github.io/KeyTween/articles/en/playing-and-awaiting.html) | Playing and awaiting states, runtime end values, animation events, reading and writing values |
+| [Scripting](https://unialgames.github.io/KeyTween/articles/en/playing-and-awaiting.html) | Playing and awaiting states, start and end callbacks, [setting up a play in code (With)](https://unialgames.github.io/KeyTween/articles/en/with.html), [making a state in code (Build)](https://unialgames.github.io/KeyTween/articles/en/build.html), animation events, reading and writing values |
 | [Scroll List](https://unialgames.github.io/KeyTween/articles/en/scroll-list.html) | The virtualized scroll list, item animations and helper components |
 | [Screen Transitions](https://unialgames.github.io/KeyTween/articles/en/screens.html) | Page, modal and sheet containers, lifecycle, shared elements |
 | [Integrations](https://unialgames.github.io/KeyTween/articles/en/unitask.html) | UniTask, R3, UIEffect |

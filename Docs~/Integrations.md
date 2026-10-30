@@ -63,6 +63,15 @@ var info = await anim.WaitEventUniTaskAsync("Shown");
 await popup.PlayUniTaskAsync("Open", destroyCancellationToken);
 ```
 
+### 중간부터 재생, With, Build
+
+확장 메서드는 상태 이름으로 처음부터 재생하는 것만 있습니다. 시간을 지정한 재생과 `With`, `Build`의 재생은 `Awaitable`을 돌려주므로 UniTask의 `AsUniTask()`로 바꿉니다. 확장 메서드도 내부에서 이렇게 합니다.
+
+```csharp
+await anim.PlayAsync("Intro", 1.5f, destroyCancellationToken).AsUniTask();
+await popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayAsync(destroyCancellationToken).AsUniTask();
+```
+
 ## R3
 
 R3(`com.cysharp.r3` 1.0.0 이상)를 설치하면, 재생과 애니메이션 이벤트를 Observable로 다루는 확장 메서드가 추가됩니다.
@@ -115,6 +124,23 @@ close.OnClickAsObservable()
 
 ```csharp
 popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
+```
+
+### With 재생과 상태 알림
+
+`PlayAsObservable`은 상태 이름으로 처음부터 재생하는 것만 있습니다. `With`나 시간을 지정한 재생은 R3의 `Observable.FromAsync`로 감쌉니다. 구독을 해제하면 토큰이 취소되어 재생이 멈춥니다.
+
+```csharp
+var open = popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+Observable.FromAsync(async ct => await open.PlayAsync(ct)).Subscribe().AddTo(this);
+```
+
+어느 상태가 시작하고 끝났는지는 `StateStarted`, `StateCompleted`, `StateCanceled` 이벤트를 `Observable.FromEvent`로 받습니다.
+
+```csharp
+Observable.FromEvent<string>(h => popup.StateCompleted += h, h => popup.StateCompleted -= h)
+    .Where(state => state == "Open")
+    .Subscribe(_ => EnableInput()).AddTo(this);
 ```
 
 ## UIEffect

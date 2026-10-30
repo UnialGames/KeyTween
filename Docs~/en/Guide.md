@@ -78,7 +78,7 @@ Expand **Raw Data (read-only)** in the inspector to see the serialized data as i
 
 When nothing is being edited, you can add a `KeyTween` right from the window.
 
-1. Select an object with a RectTransform.
+1. Select an object in the Hierarchy. It does not have to be a UI object (a SpriteRenderer, a 3D object and so on).
 2. Click the **Add KeyTween to 'name'** button that appears in the window.
 
 If another `KeyTween` is already being edited, the window keeps that target. In that case, add the component with **Add Component** instead.
@@ -167,7 +167,7 @@ In **Callbacks** in the state settings, connect functions to call when a play st
 
 | Field | When it is called |
 |---|---|
-| **On Start** | When a play starts with `Play`, `PlayAsync` or `PlayReversed`. After the first pose, before the animation events at the start time |
+| **On Start** | When a play starts (any play method: `Play`, `PlayAsync`, `PlayReversed`, `With(...).Play` and so on). After the first pose, before the animation events at the start time |
 | **On Complete** | When the play reaches its end, or `Complete` skips there. After the animation events at the end, before `PlayAsync` completes |
 | **On Cancel** | When the play does not reach its end: `Stop`, another state took everything it animates, the object was disabled, the same state was played again, or the `PlayAsync` token was canceled |
 
@@ -213,10 +213,21 @@ Choosing an event adds a `KeyTweenTrigger` component automatically.
 
 For playing from code, see [API](API.md).
 
+### Example: A Hover Button
+
+A button that grows when the mouse is over it and shrinks back when it leaves takes two states.
+
+1. A `Hover` state: a Scale track from 1 to 1.08, with Play On set to `PointerEnter`.
+2. An `Unhover` state: a Scale track from 1.08 to 1, with Play On set to `PointerExit`.
+3. Set Start to **Current Value** on both tracks, so that if the mouse leaves while the button is still growing, it shrinks back from where it is.
+
+No code is needed. When the moment depends on the game (the score changed, a screen opened), leave Play On at `None` and play the state from code.
+
 ### Things to Note
 
 * A warning appears when two states would play at the same moment. For example, `OnEnable` and `Start` are both called on Instantiate.
 * A Selectable whose `interactable` is off ignores input events. `OnEnable` and `Start` still play in that case.
+* Pointer events come from the EventSystem. For an object that is not UI (a SpriteRenderer, a 3D object) to get them, the camera needs a `Physics2DRaycaster` or `PhysicsRaycaster` and the object a Collider.
 
 ### Playing from a UnityEvent
 
@@ -255,7 +266,8 @@ The left side of the Add Track window shows the object tree of the prefab. The r
 
 * A new track gets a key at 0 s and a key at the state's end time. Both keys hold the current value.
 * If the state is empty, the end key is placed at 0.2 s.
-* Start is **Current Value**. Only text tracks start with Key Value.
+* Start is **Current Value**. Only Reveal and per-character tracks start with Key Value.
+* The end key arrives with the Ease `OutSine`.
 * A new per-character track's Stagger is 0.05 s.
 
 For the Start option, see [Track Options](#8-track-options-track-inspector).
@@ -400,7 +412,7 @@ In the Key section, set the key's **Time (s)** and value. The value field is lab
 
 How you edit the value depends on its kind:
 
-* Scale is edited with one linked slider (0 to 2). A button switches to per-axis editing.
+* Scale is edited with one linked slider (0 to 2, or −1 to 1 on a Relative To Rest track). A button switches to per-axis editing.
 * Colors use a color field.
 * Active uses a checkbox.
 
@@ -535,7 +547,7 @@ anim.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).
 anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 20f, damping: 0.5f).Play();
 ```
 
-When you make a state in code, set it per key with `Key(time, value, ease)`, `KeyCurve`, `KeyPunch` and `KeyShake`. For details, see the [API](API.md#setting-up-a-play-in-code-with).
+When you make a state in code, set it per key with `Key(time, value, ease)`, `KeyCurve`, `KeyPunch` and `KeyShake`. For details, see the [API](API.md#making-a-state-in-code-build).
 
 ### Notes
 
@@ -553,19 +565,24 @@ Track options decide where the first key's value comes from and what the key val
 
 Sets where the first key's value comes from.
 
+The problem this option deals with is a play that is cut short. Say a button is growing from 1 to 1.08 and the mouse leaves halfway (at 1.04), so Unhover plays. If Unhover's first key is the written value (1.08), the size jumps from 1.04 to 1.08 and then shrinks. If the first key is the value at the moment the play starts (1.04), the motion carries on from there.
+
 | Value | Meaning |
 |---|---|
 | `Key Value` | The value written in the key |
 | `Current Value` | The value at the moment playback starts |
-| `Pointer (press position)` | Where the pointer that played the state was pressed. Position tracks only |
+| `Pointer (press position)` | Where the pointer that played the state was pressed. Only on the Position track of a UI object (RectTransform), and only when Play On is a pointer event |
 
 * With `Current Value`, the value does not jump even when playback is cut short. This suits hover and unhover, or open and close.
+* Use `Key Value` when the motion must start from the same place every time, such as an entrance that starts from 0.
 * If the first key of a `Current Value` track is placed after 0 s, the track waits that long before it starts moving.
 * With `Pointer`, the later keys are relative to the press point, so `(0,0)` means "the spot that was pressed". Use it for button ripples.
 
 ### Relative To Rest
 
-Adds the key values to the original value. For example, use it to change a button's size by −(34, 17) while it is pressed.
+Adds the key values to the original value.
+
+An example is one "shrink a little when pressed" motion used on buttons of different sizes. Writing a value such as (200, 80) in a Size track fits only a button of that size. With Relative To Rest on and −(34, 17) written, every button shrinks by 34×17 from its own size.
 
 The original value is:
 
@@ -574,7 +591,7 @@ The original value is:
 
 ### Size Relative
 
-Key values are read as multiples of the target's own size, so x = 1 means its own width. This option is for Position and Size tracks only.
+Key values are read as multiples of the target's own size, so x = 1 means its own width. This option is for the Position and Size tracks of a UI object (RectTransform) only.
 
 The motion therefore keeps the same proportions at any resolution. For example, a screen can slide in from one screen width to the right (x = 1) to 0.
 
@@ -584,13 +601,28 @@ The options above belong to keyframe tracks. Text tracks have different options.
 
 * A Reveal track has only Scramble.
 * Per-character tracks have only Stagger and Duration per Char.
-* The Start of a text track is always Key Value.
+* The Start of Reveal and per-character tracks is always Key Value. A Number track has Start and Relative To Rest like any other track.
 
 For details, see [Text Tracks](#9-text-tracks).
 
 ## 9. Text Tracks
 
 Text tracks animate the characters of a TMP_Text. You can reveal characters one after another, count a number, or move each character on its own.
+
+They are used for things like these:
+
+* A typewriter in a dialogue box, one character at a time: Reveal
+* Gold counting up from 0 on a reward screen: Number
+* A title whose letters hop up one after another in a wave: per-character Position, Scale
+
+Open the card of an object with a TMP_Text in the Add Track window to find these tracks.
+
+In code: to count to a different number each time, give the end value with `With`. To skip the typewriter on a click, call `Complete`.
+
+```csharp
+anim.With("Count").WithEndValue(goldText, KeyTweenProperty.TextNumber, gold).Play();
+anim.Complete("Type");   // shows the whole line at once
+```
 
 ### Reveal (Typewriter)
 
@@ -642,11 +674,13 @@ A state with text tracks reads the character count again when it plays. If you c
 
 A state can signal your code or play a sound at a set time. Both are added as tracks from the Add Track window.
 
+Use them to keep the game logic in time with the motion. For example, put a `Hit` event at 0.3 s of a sword swing (the moment the blade lands), and the code deals the damage and spawns the particles then. When the keys move, you move the event with them; there is no wait time in the code to fix.
+
 ### Adding an Event
 
 1. Choose `Animation Events` in the Add Track window. An event track is created.
-2. Click **+** on the track header, or double-click the row, to add an event.
-3. In the inspector, set the **Name**, **Time** and **Type**.
+2. Click **+** on the track header, or double-click the row. Choose `Name Only` or a data struct in the menu, and the event is created.
+3. In the inspector, set the **Name** and **Time (s)**. The kind can be changed later in the **Event Type** section below them.
 
 Drag an event to move it.
 
@@ -669,6 +703,12 @@ When you choose a struct, you can edit its fields right in the inspector. These 
 Receive events in either of these ways:
 
 * In code. For details, see [API](API.md#animation-events).
+
+  ```csharp
+  anim.EventRaised += (in KeyTweenEventInfo e) => { if (e.Name == "Hit") DealDamage(); };
+  await anim.WaitEventAsync("Hit");   // or wait for it once
+  ```
+
 * With the `KeyTween Event Listener` component, which connects a UnityEvent to each event name.
 
 ### Adding a Sound
@@ -685,7 +725,7 @@ The length of the bar on the timeline matches the length of the clip.
 The sound plays through the first AudioSource found in this order, so you do not need to add an AudioSource to every UI object:
 
 1. **Audio Source (optional)** in the sound track's inspector
-2. The `KeyTween`'s Audio Source
+2. `KeyTween.audioSource`, set in code (it cannot be edited in the inspector)
 3. If neither exists, a hidden shared 2D AudioSource
 
 ### Sounds and State Length
@@ -919,7 +959,7 @@ A changed field is recorded onto the track that writes its value. Every track ex
 
 * If the state already has a track that writes the value, the key goes on that track. For example, with a World Position track, moving the object is recorded as World Position; with an Offset Min track, changing Position or Size is recorded as Offset Min; with a Scroll Position track, moving the Content is recorded as Scroll Position.
 * Without such a track, the field's default track is created: Position for a position, Color for a color.
-* If you change only the alpha of a Color and there is an Alpha track, the change is recorded as Alpha. With only an Alpha track, changing R, G or B creates a Color track.
+* If you change only the alpha of a Color and the same Graphic has an Alpha track but no Color track, the change is recorded as Alpha. With only an Alpha track, changing R, G or B creates a Color track.
 * With a Number track, changing the number in the text is recorded as Number. Changing a text does not create a Number track.
 
 ### Not Recorded

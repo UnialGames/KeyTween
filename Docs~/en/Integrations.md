@@ -63,6 +63,15 @@ In every case, pass `destroyCancellationToken` so that the work is cleaned up wh
 await popup.PlayUniTaskAsync("Open", destroyCancellationToken);
 ```
 
+### From a Given Time, With, Build
+
+The extension methods play a state by name from the start only. Plays from a given time and the plays of `With` and `Build` return an `Awaitable`, so turn it into a UniTask with UniTask's `AsUniTask()`. The extension methods do the same inside.
+
+```csharp
+await anim.PlayAsync("Intro", 1.5f, destroyCancellationToken).AsUniTask();
+await popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayAsync(destroyCancellationToken).AsUniTask();
+```
+
 ## R3
 
 When R3 (`com.cysharp.r3` 1.0.0 or later) is installed, KeyTween gains extension methods that expose plays and animation events as observables.
@@ -115,6 +124,23 @@ close.OnClickAsObservable()
 
 ```csharp
 popup.EventAsObservable("Shown").Subscribe(e => Debug.Log(e.Time)).AddTo(this);
+```
+
+### With Plays and State Notifications
+
+`PlayAsObservable` plays a state by name from the start only. Wrap a `With` play or a play from a given time in R3's `Observable.FromAsync`. Disposing the subscription cancels the token, which stops the play.
+
+```csharp
+var open = popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+Observable.FromAsync(async ct => await open.PlayAsync(ct)).Subscribe().AddTo(this);
+```
+
+To observe which state started or ended, take the `StateStarted`, `StateCompleted` and `StateCanceled` events with `Observable.FromEvent`.
+
+```csharp
+Observable.FromEvent<string>(h => popup.StateCompleted += h, h => popup.StateCompleted -= h)
+    .Where(state => state == "Open")
+    .Subscribe(_ => EnableInput()).AddTo(this);
 ```
 
 ## UIEffect

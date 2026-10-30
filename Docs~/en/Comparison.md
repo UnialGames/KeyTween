@@ -138,6 +138,10 @@ Only features checked directly in this repository are listed.
 | Event and sound tracks | ✅ | Events ✅ | Callbacks (code) | Callbacks (code) | ✅ Event and sound steps |
 | Screen transition containers | ✅ Page, Modal, Sheet | ❌ | ❌ | ❌ | ❌ |
 | await | ✅ `Awaitable`, UniTask optional | ❌ | ✅ (`AsyncWaitForCompletion`) | ✅ | ❌ |
+| Start and end callbacks | ✅ Editor (the state's Callbacks) + code (`StateCompleted` and so on, `WithOnComplete`) | Not checked | Code (`OnComplete` and so on) | Code (`WithOnComplete` and so on) | Not checked |
+| Making an effect in code | ✅ `Build(state).Track(...).Key(...)` | Not checked | ✅ The usual way | ✅ The usual way | Not checked |
+| Playing from a given time | ✅ `Play(state, time)` | Not checked | Not checked | Not checked | Not checked |
+| Time that ignores pausing | ✅ Time = Unscaled | ✅ Update Mode | Not checked | Not checked | Not checked |
 | Required packages | Unity packages only (uGUI, Mathematics, Burst) | Built in | DOTween (Pro is paid) | LitMotion (+ Burst, Collections) | AnimationUI source |
 
 ## 4. Work when changing it
@@ -167,6 +171,8 @@ You build effects in the KeyTween window without writing code, and you can previ
 * Per-character effects
 * await
 
+What changes from play to play (the end value, the ease, the start time, callbacks) is set in code with `With`, and `Build` makes a state in code alone. So the code-first style of a code tween is there too.
+
 ### Performance
 
 The own cost of 2,000 pulses was compared in an IL2CPP build. The own cost is the time a method takes beyond setting the same values directly from a script.
@@ -186,7 +192,7 @@ For details, see [Performance](Performance.md).
 
 ### Code Tweens (LitMotion, DOTween)
 
-LitMotion has the lowest cost for starting a play. However, because the effect lives in code, every preview or change requires a compile.
+LitMotion has the lowest cost for starting a play. However, because the effect lives in code, every preview or change requires a compile. With KeyTween you can split the two: keep the motion in the editor and set only the values that change in code with `With`.
 
 ### Animator
 

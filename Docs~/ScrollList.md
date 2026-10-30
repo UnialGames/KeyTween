@@ -82,10 +82,10 @@ list.SetCount(48, (RectTransform item, int index) => ...);               // Pref
 
 ### 개수만 바꾸고 다시 바인딩하기
 
-바인딩 콜백 없이 개수만 바꾸면 스크롤 위치와 남은 아이템이 그대로 유지됩니다.
+바인딩 콜백 없이 개수만 바꾸면 스크롤 위치가 유지됩니다. 남은 아이템은 오브젝트를 그대로 둔 채 다시 바인딩하고, Appear는 다시 재생하지 않습니다.
 
 ```csharp
-list.SetCount(10);      // 개수만 변경: 스크롤 위치와 남은 아이템은 그대로, 새로 보이는 아이템만 Appear
+list.SetCount(10);      // 개수만 변경: 스크롤 위치 유지, 남은 아이템은 다시 바인딩만, 새로 보이는 아이템만 Appear
 list.Refresh();         // 보이는 아이템을 전부 다시 바인딩 (Measure Items면 크기도 다시 잼)
 list.RefreshItem(5);
 ```
@@ -217,13 +217,20 @@ Entry State, Stagger, Play On Fill을 함께 씁니다. 처음 채울 때(또는
 
 ### 위치에 따른 연출 — Scrub State
 
-아이템이 뷰포트 안에서 어디에 있는지를 상태의 시간으로 써서 그 시점의 모습을 적용합니다(`Sample`).
+아이템이 뷰포트 안에서 어디에 있는지를 상태의 시간으로 써서 그 시점의 모습을 적용합니다(`Stop(state, time)`).
 
 * 0 = 시작 가장자리
 * 0.5 = 가운데
 * 1 = 끝
 
+이 값은 상태 길이에 대한 비율입니다. 그래서 키는 0초, 상태 길이의 절반, 상태 길이에 둡니다. 예를 들어 길이 1초인 상태에서 가운데에서 커지는 캐러셀은 Scale 키를 0초 = 0.8, 0.5초 = 1.1, 1초 = 0.8로 둡니다.
+
 캐러셀의 가운데 확대, 휠 피커의 기울기, 페이지 패럴랙스에 씁니다.
+
+### 콜백
+
+* Entry와 Appear는 재생이므로 그 상태의 On Start, On Complete가 불립니다. 재생 중에 아이템이 화면 밖으로 나가 오브젝트가 재사용되면 On Cancel이 불립니다.
+* Scrub은 재생하지 않고 모습만 맞추므로 콜백을 부르지 않습니다.
 
 ### 예: 랭킹 목록
 
@@ -267,7 +274,11 @@ Entry State, Stagger, Play On Fill을 함께 씁니다. 처음 채울 때(또는
 
 ### 접히는 헤더 — `KeyTweenScrollScrub`
 
-스크롤한 거리(0 ~ Distance px)를 상태의 시간으로 씁니다.
+스크롤한 거리(0 ~ Distance px)를 상태의 시간으로 씁니다. 0px이면 상태의 시작, Distance만큼 스크롤하면 상태의 끝 모습입니다. 리스트가 스크롤되면서 헤더가 접히거나 툴바가 나타나는 연출에 씁니다.
+
+1. 아무 오브젝트에나 **Add Component > KeyTween > Scroll Scrub**을 붙입니다.
+2. **List**에 리스트를, **Target**에 헤더의 `KeyTween`을, **State**에 접히는 상태 이름을 넣습니다.
+3. **Distance**에 다 접힐 때까지의 스크롤 거리(px)를 넣습니다.
 
 ### 당겨서 새로고침 — `KeyTweenPullToRefresh`
 
@@ -278,13 +289,22 @@ Entry State, Stagger, Play On Fill을 함께 씁니다. 처음 채울 때(또는
 3. 새로고침하는 동안 Refreshing 상태를 반복 재생하고 위쪽을 열어 둡니다(`Refreshing` = true).
 4. `EndRefresh()`를 부르면 닫힙니다.
 
+```csharp
+pull.onRefresh.AddListener(async () =>
+{
+    var items = await LoadItemsAsync();
+    list.SetData(items, (ItemView view, Item item, int index) => view.Bind(item));
+    pull.EndRefresh();
+});
+```
+
 ## 7. 만들 수 있는 형태
 
 리스트 설정과 상태로 만들 수 있는 형태를 정리합니다.
 
 ### 예시 씬 열기
 
-**UI Components** 샘플(**Package Manager > KeyTween > Samples**)의 `Scenes/Scroll.unity`에 18가지 예시가 들어 있습니다. 자세한 내용은 Development를 참고하세요.
+**UI Components** 샘플(**Package Manager > KeyTween > Samples**)의 `Scenes/Scroll.unity`에 18가지 예시가 들어 있습니다.
 
 ### 형태별 설정
 

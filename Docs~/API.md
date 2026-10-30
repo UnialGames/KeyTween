@@ -94,6 +94,7 @@ await anim.PlayReversedAsync("Open");   // 열기를 시작한 자리로 돌아�
 * 이벤트, 사운드, 자식 호출도 거꾸로 한 번씩 발생합니다.
 * 자식 상태도 역재생됩니다.
 * Start = Current Value 트랙은 마지막 정방향 재생이 잡아 둔 값을 다시 씁니다. 그래서 되돌리기 연출이 열기를 시작한 자리로 정확히 돌아갑니다.
+* 끝 값도 마지막 정방향 재생의 값을 되짚습니다. 정방향을 `With(...).WithEndValue(...)`로 재생했다면 그냥 `PlayReversed`는 그 끝 값에서 돌아옵니다. 역재생에 다른 끝 값을 주려면 `With(...).WithEndValue(...).PlayReversed()`를 씁니다.
 
 ### 끝으로 건너뛰기
 
@@ -285,18 +286,30 @@ await popup.With("Open")
 
 | 메서드 | 바꾸는 것 |
 |---|---|
-| `WithEndValue(target, property, value)` | 마지막 키의 값 |
+| `WithEndValue(target, property, value)` | 마지막 키의 값. `float`를 받는 것은 내장 속성용이고 x만 바꿉니다 |
 | `WithEase(target, property, ease)` | 마지막 키의 도착 방식을 Ease로, 그 Ease |
 | `WithCurve(target, property, curve)` | 도착 방식을 Curve로, 그 AnimationCurve |
-| `WithPunch(target, property, frequency, damping)`, `WithShake(...)` | 도착 방식을 Punch / Shake로, 진동 값 |
+| `WithPunch(target, property, frequency = 10, damping = 1)`, `WithShake(...)` | 도착 방식을 Punch / Shake로, 진동 값. 세기는 키에 적힌 값 그대로입니다 |
 | `WithTime(time)` | 그 시간(초)부터 재생 (`Play(state, time)`과 같음) |
-| `WithEventsBefore()` | `WithTime`과 함께: 그 시간 이전의 애니메이션 이벤트도 시작할 때 순서대로 발생 (사운드, 자식 호출은 건너뜀) |
+| `WithEventsBefore(raise = true)` | `WithTime`과 함께: 그 시간 이전의 애니메이션 이벤트도 시작할 때 순서대로 발생 (사운드, 자식 호출은 건너뜀) |
 | `WithOnStart`, `WithOnComplete`, `WithOnCancel` | 이 재생에만 거는 콜백. 상태의 On Start 등 다음에 불림 |
 | `WithOnLoop` | 반복 상태에서 한 바퀴가 끝날 때마다 |
 
 * Material 트랙은 `WithEase(renderer, "_BaseColor", ease)`처럼 셰이더 속성 이름으로, 커스텀 트랙은 `WithEase<MyTrack>(target, ease)`처럼 트랙 클래스로 찾습니다.
 * 넘긴 값은 키 값과 똑같이 해석됩니다. Relative To Rest와 Size Relative 설정이 반영됩니다.
 * 맞는 트랙이 없으면 경고 로그를 남기고 그 항목만 건너뜁니다. 재생은 합니다.
+* `With`에는 `PointerEventData`를 넘기는 재생이 없습니다. Start = Pointer 트랙이 있는 상태는 `Play(state, eventData)`로 재생합니다.
+
+`WithTime`, `WithEventsBefore`, `WithOnLoop`는 이렇게 씁니다.
+
+```csharp
+// 저장한 게임을 불러올 때: 0.8초 지점부터 이어서 재생하고, 그 전의 이벤트("DoorOpened" 등)도 순서대로 받아 상태를 맞춤
+door.With("Open").WithTime(0.8f).WithEventsBefore().Play();
+
+// 반복 상태가 한 바퀴 돌 때마다 횟수를 셈
+int laps = 0;
+wheel.With("Spin").WithOnLoop(() => laps++).Play();
+```
 
 ### 이번 재생에만 적용됩니다
 
@@ -319,6 +332,8 @@ Play On이나 화면 전환처럼 내 코드가 아닌 곳이 재생하는 상�
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value);
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, float value);   // x만 바꿉니다
 ```
+
+`SetEndValue`는 내장 속성 트랙만 찾습니다. Material 트랙과 커스텀 트랙의 끝 값은 `With`로 바꿉니다.
 
 ```csharp
 // 결과 화면: 화면 전환이 "Enter"를 재생할 때 금화가 이 숫자까지 올라감
@@ -370,11 +385,23 @@ var info = await anim.WaitEventAsync("Shown");
 
 `KeyTweenEventInfo`는 readonly struct이며, `in`으로 전달됩니다. 다음 멤버를 제공합니다.
 
-* `Animation`
-* `State`
-* `Name`
-* `Time`
-* `TryGetData<T>(out T)`
+| 멤버 | 형식 | 내용 |
+|---|---|---|
+| `Animation` | `KeyTween` | 이벤트를 낸 KeyTween |
+| `State` | `string` | 재생 중이던 상태 이름 |
+| `Name` | `string` | 이벤트 이름 |
+| `Time` | `float` | 상태 안에서 이벤트의 시간(초) |
+| `TryGetData<T>(out T)` | `bool` | 이벤트 데이터가 `T`이면 꺼내고 `true` |
+
+이벤트 하나를 여러 데이터 형식 중 하나로 처리할 때 `TryGetData`를 씁니다.
+
+```csharp
+anim.EventRaised += (in KeyTweenEventInfo e) =>
+{
+    if (e.TryGetData(out PopupSoundEvent sound)) audio.PlayOneShot(Load(sound.clip), sound.volume);
+    else if (e.Name == "Shown") EnableInput();
+};
+```
 
 ### 코드 없이 받기
 
@@ -407,9 +434,9 @@ anim.Build("Pop")
 | 메서드 | 하는 일 |
 |---|---|
 | `Track(target, property)` | 내장 속성의 트랙을 시작합니다. Material 트랙은 `Track(renderer, "_BaseColor")`, 커스텀 트랙은 `Track<MyTrack>(target)` |
-| `From(start)` | 트랙의 Start. 기본은 Key Value(첫 키)이고, Current Value(재생할 때의 값), Pointer를 고를 수 있습니다 |
+| `From(start)` | 트랙의 Start. 기본은 `KeyTweenStart.KeyValue`(첫 키)이고, `KeyTweenStart.Current`(재생할 때의 값), `KeyTweenStart.Pointer`를 고를 수 있습니다 |
 | `Key(time, value, ease)` | 키 하나. `ease`는 이 키로 오는 구간의 도착 방식(기본 OutSine, 에디터와 같음). 값은 `Vector4`나 `float`이고 `Vector3`, `Vector2`, `Color`도 넘길 수 있습니다 |
-| `KeyCurve`, `KeyPunch`, `KeyShake` | 도착 방식이 Curve, Punch, Shake인 키 |
+| `KeyCurve(time, value, curve)`, `KeyPunch(time, strength, frequency = 10, damping = 1)`, `KeyShake(...)` | 도착 방식이 Curve, Punch, Shake인 키. 값은 `Vector4`(`Vector3`, `Vector2`, `Color`도 됨)이고, Punch와 Shake의 값은 도착할 곳이 아니라 흔들리는 세기입니다 |
 | `Event(time, name)`, `Sound(time, clip, volume)` | 애니메이션 이벤트와 사운드 |
 | `Loop()` | 반복 상태로 |
 | `OnStart`, `OnComplete`, `OnCancel` | 상태의 콜백 (이 상태의 모든 재생) |
@@ -430,6 +457,18 @@ anim.Build("Pop")
 public void AddState(KeyTweenState state);
 ```
 
+이미 만들어진 상태 객체를 받는 곳에 씁니다. 예를 들어 기본 전환 연출을 이름을 붙여 다른 화면에도 넣을 수 있습니다.
+
+```csharp
+var fade = KeyTweenDefaultTransitions.FadeIn(screen);
+fade.name = "FadeIn";
+screen.Animation.AddState(fade);
+screen.Animation.Play("FadeIn");
+```
+
+* 같은 이름의 상태가 있으면 바꿉니다. 그 상태가 재생 중이면 멈추고 On Cancel을 부릅니다.
+* 다른 KeyTween의 상태를 바탕으로 만들 때는 `state.Clone()`으로 복사본을 넣습니다. 같은 객체를 두 곳에 넣으면 한쪽에서 고친 것이 다른 쪽에도 바뀝니다. 복사본의 트랙도 원래 대상(Component)을 그대로 가리킵니다.
+
 ## 값 읽고 쓰기
 
 트랙이 움직이는 속성 하나를, 재생 없이 코드에서 직접 읽고 쓸 수 있습니다.
@@ -441,6 +480,13 @@ public void AddState(KeyTweenState state);
 ```csharp
 public static Vector4 KeyTween.Read(Component target, KeyTweenProperty property);
 public static void KeyTween.Write(Component target, KeyTweenProperty property, Vector4 value);
+```
+
+속성마다 다른 Unity API(`Image.color`, `RectTransform.anchoredPosition`, 텍스트 속 숫자 등)를 한 형식으로 다룰 때 씁니다. 예를 들어 저장해 둔 값을 되돌리거나, 커스텀 도구에서 트랙과 같은 값을 읽을 때입니다.
+
+```csharp
+Vector4 color = KeyTween.Read(image, KeyTweenProperty.GraphicColor);
+KeyTween.Write(label, KeyTweenProperty.TextNumber, new Vector4(1234, 0, 0, 0));   // "1,234"
 ```
 
 ### 값의 해석
@@ -458,7 +504,7 @@ public static void KeyTween.Write(Component target, KeyTweenProperty property, V
 
 ### AudioSource 정하기
 
-인스펙터의 **Audio Source**(`KeyTween.audioSource`)로 정합니다.
+코드에서 `KeyTween.audioSource`로 정합니다. 인스펙터에서는 이 칸을 고칠 수 없습니다(Raw Data에만 보입니다).
 
 * 지정하면 그 소스로 재생합니다.
 * 비워 두면 숨겨진 공용 2D AudioSource 하나로 재생합니다(`PlayOneShot`).
@@ -474,7 +520,7 @@ public static void KeyTween.Write(Component target, KeyTweenProperty property, V
 | UniTask | `PlayUniTaskAsync`, `PlayReversedUniTaskAsync`, `WaitEventUniTaskAsync` |
 | R3 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable` |
 
-라이브러리를 설치하면 연동이 자동으로 켜지며, 따로 설정할 것은 없습니다. 자세한 내용은 [Integrations](Integrations.md)를 참고하세요.
+라이브러리를 설치하면 연동이 자동으로 켜지며, 따로 설정할 것은 없습니다. 시간을 지정한 재생과 `With`, `Build`의 재생은 `AsUniTask()`나 `Observable.FromAsync`로 감쌉니다. 자세한 내용은 [Integrations](Integrations.md)를 참고하세요.
 
 ## 그 밖의 컴포넌트
 

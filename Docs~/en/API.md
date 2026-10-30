@@ -94,6 +94,7 @@ await anim.PlayReversedAsync("Open");   // returns to where the forward play sta
 * Events, sounds and child calls are each raised once, in reverse order.
 * Child states also play reversed.
 * Start = Current Value tracks reuse the value captured by the last forward play. So a reversed play returns exactly to where the forward play started.
+* The end values are also those of the last forward play. If the forward play was `With(...).WithEndValue(...)`, a plain `PlayReversed` comes back from that end value. To give a reversed play another end value, use `With(...).WithEndValue(...).PlayReversed()`.
 
 ### Completing a Play
 
@@ -285,18 +286,30 @@ The track is found by state name, target and property, and what changes is its *
 
 | Method | Changes |
 |---|---|
-| `WithEndValue(target, property, value)` | The last key's value |
+| `WithEndValue(target, property, value)` | The last key's value. The `float` overload is for built-in properties and sets x only |
 | `WithEase(target, property, ease)` | The last key's arrival becomes Ease, with that ease |
 | `WithCurve(target, property, curve)` | The arrival becomes Curve, with that AnimationCurve |
-| `WithPunch(target, property, frequency, damping)`, `WithShake(...)` | The arrival becomes Punch / Shake, with those values |
+| `WithPunch(target, property, frequency = 10, damping = 1)`, `WithShake(...)` | The arrival becomes Punch / Shake, with those values. The strength stays the value written in the key |
 | `WithTime(time)` | Plays from that time in seconds (the same as `Play(state, time)`) |
-| `WithEventsBefore()` | With `WithTime`: the animation events before that time are raised too, in order, at the start (sounds and child calls are skipped) |
+| `WithEventsBefore(raise = true)` | With `WithTime`: the animation events before that time are raised too, in order, at the start (sounds and child calls are skipped) |
 | `WithOnStart`, `WithOnComplete`, `WithOnCancel` | Callbacks for this play only, called after the state's On Start and so on |
 | `WithOnLoop` | For a looping state, each time a lap ends |
 
 * A Material track is found by its shader property name, as in `WithEase(renderer, "_BaseColor", ease)`, and a custom track by its class, as in `WithEase<MyTrack>(target, ease)`.
 * A value is interpreted exactly like a key value, so the Relative To Rest and Size Relative settings apply.
 * If no track matches, it logs a warning and skips that change. The state still plays.
+* `With` has no play that takes a `PointerEventData`. Play a state with a Start = Pointer track with `Play(state, eventData)`.
+
+`WithTime`, `WithEventsBefore` and `WithOnLoop` are used like this:
+
+```csharp
+// Loading a saved game: carry on from 0.8 s, and get the events before it ("DoorOpened" and so on) in order to catch up
+door.With("Open").WithTime(0.8f).WithEventsBefore().Play();
+
+// Count the laps of a looping state
+int laps = 0;
+wheel.With("Spin").WithOnLoop(() => laps++).Play();
+```
 
 ### For That Play Only
 
@@ -319,6 +332,8 @@ You cannot use `With` for a state that something other than your code plays, suc
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value);
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, float value);   // sets x only
 ```
+
+`SetEndValue` finds built-in property tracks only. Change the end value of a Material or custom track with `With`.
 
 ```csharp
 // Result screen: when the screen transition plays "Enter", the gold counts up to this number
@@ -370,11 +385,23 @@ var info = await anim.WaitEventAsync("Shown");
 
 `KeyTweenEventInfo` is a readonly struct, passed with `in`. It provides the following members.
 
-* `Animation`
-* `State`
-* `Name`
-* `Time`
-* `TryGetData<T>(out T)`
+| Member | Type | What it is |
+|---|---|---|
+| `Animation` | `KeyTween` | The KeyTween that raised the event |
+| `State` | `string` | The name of the state that was playing |
+| `Name` | `string` | The event's name |
+| `Time` | `float` | The event's time in the state, in seconds |
+| `TryGetData<T>(out T)` | `bool` | If the event's data is a `T`, gets it and returns `true` |
+
+Use `TryGetData` when one handler deals with events of several data types.
+
+```csharp
+anim.EventRaised += (in KeyTweenEventInfo e) =>
+{
+    if (e.TryGetData(out PopupSoundEvent sound)) audio.PlayOneShot(Load(sound.clip), sound.volume);
+    else if (e.Name == "Shown") EnableInput();
+};
+```
 
 ### Receiving Events Without Code
 
@@ -407,9 +434,9 @@ anim.Build("Pop")
 | Method | What it does |
 |---|---|
 | `Track(target, property)` | Starts a track of a built-in property. A Material track is `Track(renderer, "_BaseColor")`, a custom track `Track<MyTrack>(target)` |
-| `From(start)` | The track's Start. Key Value (the first key) by default; Current Value (the value when it plays) or Pointer |
+| `From(start)` | The track's Start. `KeyTweenStart.KeyValue` (the first key) by default; `KeyTweenStart.Current` (the value when it plays) or `KeyTweenStart.Pointer` |
 | `Key(time, value, ease)` | One key. `ease` is how the segment arriving at this key moves (OutSine by default, as in the editor). The value is a `Vector4` or a `float`; a `Vector3`, `Vector2` or `Color` works too |
-| `KeyCurve`, `KeyPunch`, `KeyShake` | A key whose arrival is Curve, Punch or Shake |
+| `KeyCurve(time, value, curve)`, `KeyPunch(time, strength, frequency = 10, damping = 1)`, `KeyShake(...)` | A key whose arrival is Curve, Punch or Shake. The value is a `Vector4` (a `Vector3`, `Vector2` or `Color` works too); for Punch and Shake it is the strength of the shake, not a place to arrive at |
 | `Event(time, name)`, `Sound(time, clip, volume)` | An animation event and a sound |
 | `Loop()` | Makes it a looping state |
 | `OnStart`, `OnComplete`, `OnCancel` | The state's callbacks (every play of it) |
@@ -430,6 +457,18 @@ You can also make a `KeyTweenState` yourself and add it with `AddState`. `Build`
 public void AddState(KeyTweenState state);
 ```
 
+Use it where you already have a state object. For example, a default transition can be added to another screen under a name:
+
+```csharp
+var fade = KeyTweenDefaultTransitions.FadeIn(screen);
+fade.name = "FadeIn";
+screen.Animation.AddState(fade);
+screen.Animation.Play("FadeIn");
+```
+
+* A state with the same name is replaced. If that state is playing, it stops and its On Cancel is called.
+* To base a state on another KeyTween's state, add a copy made with `state.Clone()`. One object added in two places changes in both when one is edited. The copy's tracks still point at the original targets (components).
+
 ## Reading and Writing Values
 
 You can read and write a single property that a track animates directly from code, without playing anything.
@@ -441,6 +480,13 @@ You can read and write a single property that a track animates directly from cod
 ```csharp
 public static Vector4 KeyTween.Read(Component target, KeyTweenProperty property);
 public static void KeyTween.Write(Component target, KeyTweenProperty property, Vector4 value);
+```
+
+They handle the different Unity APIs behind each property (`Image.color`, `RectTransform.anchoredPosition`, the number in a text and so on) in one form. For example, to put back a saved value, or to read the same value a track would in a custom tool.
+
+```csharp
+Vector4 color = KeyTween.Read(image, KeyTweenProperty.GraphicColor);
+KeyTween.Write(label, KeyTweenProperty.TextNumber, new Vector4(1234, 0, 0, 0));   // "1,234"
 ```
 
 ### How Values Are Interpreted
@@ -458,7 +504,7 @@ This setting decides which AudioSource plays the sounds of sound tracks.
 
 ### Choosing the AudioSource
 
-Set it with **Audio Source** in the inspector (`KeyTween.audioSource`).
+Set it in code with `KeyTween.audioSource`. The inspector does not edit this field (it shows only under Raw Data).
 
 * If it is set, sounds play through that source.
 * If it is empty, sounds play through one shared, hidden 2D AudioSource (`PlayOneShot`).
@@ -474,7 +520,7 @@ When the following libraries are installed, KeyTween gains extra extension metho
 | UniTask | `PlayUniTaskAsync`, `PlayReversedUniTaskAsync`, `WaitEventUniTaskAsync` |
 | R3 | `PlayAsObservable`, `EventsAsObservable`, `EventAsObservable` |
 
-An integration turns on automatically when its library is installed, with nothing to configure. For details, see [Integrations](Integrations.md).
+An integration turns on automatically when its library is installed, with nothing to configure. Wrap plays from a given time and the plays of `With` and `Build` with `AsUniTask()` or `Observable.FromAsync`. For details, see [Integrations](Integrations.md).
 
 ## Other Components
 

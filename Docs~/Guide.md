@@ -78,7 +78,7 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 
 편집 중인 대상이 없을 때는 창에서 바로 `KeyTween`을 붙일 수 있습니다.
 
-1. RectTransform이 있는 오브젝트를 고릅니다.
+1. Hierarchy에서 오브젝트를 고릅니다. UI 오브젝트가 아니어도 됩니다(SpriteRenderer, 3D 오브젝트 등).
 2. 창에 나타난 **Add KeyTween to '이름'** 버튼을 누릅니다.
 
 이미 다른 `KeyTween`을 편집하고 있으면 편집 대상이 바뀌지 않습니다. 이때는 **Add Component**로 컴포넌트를 붙입니다.
@@ -167,7 +167,7 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 
 | 칸 | 불리는 때 |
 |---|---|
-| **On Start** | `Play`, `PlayAsync`, `PlayReversed`로 재생을 시작할 때. 첫 모습을 쓴 다음, 시작 시간의 애니메이션 이벤트보다 먼저 |
+| **On Start** | 재생을 시작할 때(`Play`, `PlayAsync`, `PlayReversed`, `With(...).Play` 등 모든 재생 함수). 첫 모습을 쓴 다음, 시작 시간의 애니메이션 이벤트보다 먼저 |
 | **On Complete** | 끝에 닿았을 때, 또는 `Complete`로 끝으로 건너뛰었을 때. 끝의 애니메이션 이벤트 다음, `PlayAsync`가 끝나기 전 |
 | **On Cancel** | 끝까지 못 갔을 때: `Stop`, 다른 상태가 값을 모두 가져감, 오브젝트 비활성화, 같은 상태를 다시 재생, `PlayAsync`의 토큰 취소 |
 
@@ -213,10 +213,21 @@ Play On은 상태가 코드 없이 저절로 재생되는 시점입니다.
 
 코드에서 재생하는 방법은 [API](API.md)를 참고하세요.
 
+### 예: 호버하는 버튼
+
+마우스를 올리면 커지고 내리면 돌아오는 버튼은 상태 둘로 만듭니다.
+
+1. `Hover` 상태: Scale 트랙을 1 → 1.08로 두고 Play On을 `PointerEnter`로 고릅니다.
+2. `Unhover` 상태: Scale 트랙을 1.08 → 1로 두고 Play On을 `PointerExit`로 고릅니다.
+3. 두 트랙의 Start를 **Current Value**로 둡니다. 그래야 커지는 도중에 마우스가 나가도 그 자리에서 돌아옵니다.
+
+코드 없이 끝납니다. 재생 시점이 게임 흐름에 달려 있으면(점수가 바뀌었을 때, 화면이 열릴 때) Play On을 `None`으로 두고 코드에서 재생합니다.
+
 ### 주의할 점
 
 * 같은 순간에 재생되는 상태가 둘 있으면 경고가 나옵니다. 예를 들어 `OnEnable`과 `Start`는 Instantiate할 때 둘 다 호출됩니다.
 * `interactable`이 꺼진 Selectable은 입력 이벤트를 무시합니다. 이때도 `OnEnable`과 `Start`는 재생됩니다.
+* 포인터 이벤트는 EventSystem이 보내 줍니다. UI가 아닌 오브젝트(SpriteRenderer, 3D)에서 받으려면 카메라에 `Physics2DRaycaster`나 `PhysicsRaycaster`를, 오브젝트에 Collider를 붙여야 합니다.
 
 ### UnityEvent에서 재생하기
 
@@ -255,7 +266,8 @@ Button의 OnClick 같은 UnityEvent에서도 상태를 재생할 수 있습니�
 
 * 0초 키와 상태 끝 시간의 키가 생깁니다. 두 키 모두 지금 값을 가집니다.
 * 상태가 비어 있으면 끝 키는 0.2초에 생깁니다.
-* Start는 **Current Value**입니다. 텍스트 트랙만 Key Value로 생깁니다.
+* Start는 **Current Value**입니다. Reveal과 글자별 트랙만 Key Value로 생깁니다.
+* 끝 키의 도착 방식은 Ease `OutSine`입니다.
 * 글자별 트랙의 Stagger는 0.05초입니다.
 
 Start 옵션은 [트랙 옵션](#8-트랙-옵션-트랙-인스펙터)을 참고하세요.
@@ -400,7 +412,7 @@ Key 섹션에서 키의 시간(**Time (s)**)과 값을 정합니다. 값 칸의 
 
 값의 종류에 따라 편집 방식이 다릅니다.
 
-* Scale은 하나로 묶인 슬라이더(0~2)로 편집합니다. 버튼을 누르면 축별 편집으로 바뀝니다.
+* Scale은 하나로 묶인 슬라이더(0~2, Relative To Rest 트랙은 −1~1)로 편집합니다. 버튼을 누르면 축별 편집으로 바뀝니다.
 * 색은 색 칸으로 편집합니다.
 * Active는 체크 박스로 편집합니다.
 
@@ -535,7 +547,7 @@ anim.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).
 anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 20f, damping: 0.5f).Play();
 ```
 
-코드로 상태를 만들 때는 `Key(time, value, ease)`, `KeyCurve`, `KeyPunch`, `KeyShake`로 키마다 정합니다. 자세한 내용은 [API](API.md#코드에서-재생-설정하기-with)를 참고하세요.
+코드로 상태를 만들 때는 `Key(time, value, ease)`, `KeyCurve`, `KeyPunch`, `KeyShake`로 키마다 정합니다. 자세한 내용은 [API](API.md#코드로-상태-만들기-build)를 참고하세요.
 
 ### 알아 둘 점
 
@@ -553,19 +565,24 @@ anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 2
 
 첫 키의 값을 어디서 가져올지 정합니다.
 
+이 옵션이 다루는 문제는 "재생이 중간에 끊길 때"입니다. 버튼이 1 → 1.08로 커지는 도중(1.04)에 마우스가 나가면 Unhover가 재생됩니다. 이때 Unhover의 첫 키가 적힌 값(1.08)이면 크기가 1.04에서 1.08로 튀었다가 줄어듭니다. 첫 키를 재생을 시작하는 순간의 값(1.04)으로 하면 그 자리에서 이어집니다.
+
 | 값 | 뜻 |
 |---|---|
 | `Key Value` | 키에 적힌 값 |
 | `Current Value` | 재생을 시작하는 순간의 값 |
-| `Pointer (press position)` | 상태를 재생시킨 포인터를 누른 위치. Position 트랙에서만 쓸 수 있습니다 |
+| `Pointer (press position)` | 상태를 재생시킨 포인터를 누른 위치. UI(RectTransform)의 Position 트랙에서만 쓸 수 있고, Play On이 포인터 이벤트일 때 동작합니다 |
 
 * `Current Value`는 재생이 중간에 끊겨도 값이 튀지 않습니다. 그래서 호버와 언호버, 열기와 닫기에 씁니다.
+* `Key Value`는 매번 같은 곳에서 출발해야 할 때 씁니다. 예를 들어 0에서 시작하는 등장 연출입니다.
 * `Current Value` 트랙의 첫 키를 0초보다 뒤에 두면 그 시간만큼 기다렸다가 출발합니다.
 * `Pointer`에서는 뒤의 키들이 누른 자리를 기준으로 합니다. 그래서 `(0,0)`이 "누른 그 자리"입니다. 버튼 리플 효과에 씁니다.
 
 ### Relative To Rest
 
-키 값을 원래 값에 더합니다. 예를 들어 버튼을 누를 때 크기를 −(34, 17)만큼 바꾸는 데 씁니다.
+키 값을 원래 값에 더합니다.
+
+크기가 다른 버튼 여러 개에 같은 "누르면 조금 작아지는" 연출을 쓰는 경우가 예입니다. Size 트랙에 (200, 80) 같은 값을 적으면 그 크기의 버튼에만 맞습니다. Relative To Rest를 켜고 −(34, 17)을 적으면 버튼마다 자기 크기에서 34×17만큼 줄어듭니다.
 
 원래 값은 다음과 같습니다.
 
@@ -574,7 +591,7 @@ anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 2
 
 ### Size Relative
 
-키 값을 대상 자신의 크기에 대한 배수로 읽습니다. x = 1이면 자기 폭만큼입니다. Position과 Size 트랙에서만 쓸 수 있습니다.
+키 값을 대상 자신의 크기에 대한 배수로 읽습니다. x = 1이면 자기 폭만큼입니다. UI(RectTransform)의 Position과 Size 트랙에서만 쓸 수 있습니다.
 
 그래서 해상도가 달라도 같은 비율로 움직입니다. 예를 들어 화면이 오른쪽으로 한 화면 떨어진 곳(x = 1)에서 0으로 들어오게 할 수 있습니다.
 
@@ -584,13 +601,28 @@ anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 2
 
 * Reveal 트랙에는 Scramble만 있습니다.
 * 글자별 트랙에는 Stagger와 Duration per Char만 있습니다.
-* 텍스트 트랙의 Start는 항상 Key Value입니다.
+* Reveal과 글자별 트랙의 Start는 항상 Key Value입니다. Number 트랙은 보통 트랙처럼 Start, Relative To Rest를 고를 수 있습니다.
 
 자세한 내용은 [텍스트 트랙](#9-텍스트-트랙)을 참고하세요.
 
 ## 9. 텍스트 트랙
 
 텍스트 트랙은 TMP_Text의 글자를 움직입니다. 글자를 차례로 드러내거나, 숫자를 세거나, 글자마다 따로 움직이게 할 수 있습니다.
+
+이런 곳에 씁니다.
+
+* 대사창에 글자가 한 자씩 나오는 타자기: Reveal
+* 보상 화면에서 골드가 0부터 올라가는 숫자: Number
+* 제목 글자가 물결처럼 차례로 튀어 오르는 연출: 글자별 Position, Scale
+
+트랙 추가 창에서 TMP_Text가 있는 오브젝트의 카드를 열면 이 트랙들이 나옵니다.
+
+코드에서는 이렇게 씁니다. 숫자를 그때그때 다른 값까지 세려면 `With`로 끝 값을 줍니다. 타자기를 클릭으로 건너뛰려면 `Complete`를 부릅니다.
+
+```csharp
+anim.With("Count").WithEndValue(goldText, KeyTweenProperty.TextNumber, gold).Play();
+anim.Complete("Type");   // 대사를 끝까지 바로 보여 줍니다
+```
 
 ### Reveal (Typewriter)
 
@@ -642,11 +674,13 @@ Char Scale, Char Position, Char Rotation, Char Color, Char Alpha가 글자별 �
 
 상태의 정해진 시간에 코드에 신호를 보내거나 소리를 낼 수 있습니다. 둘 다 트랙 추가 창에서 트랙으로 추가합니다.
 
+연출과 게임 로직의 타이밍을 맞출 때 씁니다. 예를 들어 칼을 휘두르는 상태의 0.3초(칼이 닿는 순간)에 `Hit` 이벤트를 두면, 코드는 그때 대미지를 주고 파티클을 띄웁니다. 연출의 키를 옮겨도 이벤트만 같이 옮기면 되고, 코드의 대기 시간을 고칠 필요가 없습니다.
+
 ### 이벤트 추가하기
 
 1. 트랙 추가 창에서 `Animation Events`를 고릅니다. 이벤트 트랙이 생깁니다.
-2. 트랙 머리의 **+** 버튼을 누르거나 줄을 더블클릭해 이벤트를 추가합니다.
-3. 인스펙터에서 **Name**, **Time**, **Type**을 정합니다.
+2. 트랙 머리의 **+** 버튼을 누르거나 줄을 더블클릭합니다. 메뉴에서 `Name Only`나 데이터 struct를 고르면 이벤트가 생깁니다.
+3. 인스펙터에서 **Name**과 **Time (s)**을 정합니다. 종류는 아래 **Event Type** 칸에서 바꿀 수 있습니다.
 
 이벤트는 드래그해서 옮깁니다.
 
@@ -669,6 +703,12 @@ struct를 고르면 그 필드를 인스펙터에서 바로 편집할 수 있습
 이벤트는 다음 두 방법으로 받습니다.
 
 * 코드에서 받습니다. 자세한 내용은 [API](API.md#애니메이션-이벤트)를 참고하세요.
+
+  ```csharp
+  anim.EventRaised += (in KeyTweenEventInfo e) => { if (e.Name == "Hit") DealDamage(); };
+  await anim.WaitEventAsync("Hit");   // 또는 한 번만 기다리기
+  ```
+
 * `KeyTween Event Listener` 컴포넌트로 받습니다. 이 컴포넌트는 이벤트 이름마다 UnityEvent를 연결합니다.
 
 ### 사운드 추가하기
@@ -685,7 +725,7 @@ struct를 고르면 그 필드를 인스펙터에서 바로 편집할 수 있습
 소리는 다음 순서로 찾은 AudioSource에서 재생됩니다. 그래서 UI 오브젝트마다 AudioSource를 붙일 필요가 없습니다.
 
 1. 사운드 트랙 인스펙터의 **Audio Source (optional)**
-2. `KeyTween`의 Audio Source
+2. 코드에서 정한 `KeyTween.audioSource` (인스펙터에서는 고칠 수 없습니다)
 3. 둘 다 없으면 숨겨진 공용 2D AudioSource
 
 ### 사운드와 상태 길이
@@ -919,7 +959,7 @@ KeyTween 창에서 고친 내용은 그 `KeyTween`이 있는 곳에 저장됩니
 
 * 상태에 그 값을 쓰는 트랙이 이미 있으면 그 트랙에 키가 들어갑니다. 예를 들어 World Position 트랙이 있으면 오브젝트를 옮긴 것이 World Position으로, Offset Min 트랙이 있으면 Position·Size를 바꾼 것이 Offset Min으로, Scroll Position 트랙이 있으면 Content를 움직인 것이 Scroll Position으로 녹화됩니다.
 * 그런 트랙이 없으면 그 필드의 기본 트랙이 새로 생깁니다. 위치는 Position, 색은 Color 트랙입니다.
-* Color에서 알파만 바꿨고 Alpha 트랙이 있으면 Alpha로 녹화됩니다. Alpha 트랙만 있을 때 R·G·B를 바꾸면 Color 트랙이 생깁니다.
+* Color에서 알파만 바꿨고 같은 Graphic에 Alpha 트랙만 있으면(Color 트랙은 없으면) Alpha로 녹화됩니다. Alpha 트랙만 있을 때 R·G·B를 바꾸면 Color 트랙이 생깁니다.
 * Number 트랙이 있으면 텍스트 속 숫자를 바꾼 것이 Number로 녹화됩니다. 텍스트를 바꿔도 Number 트랙이 새로 생기지는 않습니다.
 
 ### 녹화되지 않는 것

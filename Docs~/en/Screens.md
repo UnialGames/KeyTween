@@ -27,11 +27,25 @@ A screen created by a container fills the container.
 
 * In a page container, a page with a higher value draws on top.
 * Pages with equal values stack in the order they were added.
-* In modal and sheet containers, the screen added last is always on top.
+* In a modal container the modal opened last is on top; in a sheet container, the sheet passed to `Show` last.
 
 ### Transitioning Without Animation
 
 A transition with `animated: false` skips the animation and jumps straight to the state's end pose.
+
+Use it when nobody needs to see the transition, such as when the game starts or a saved screen is restored.
+
+```csharp
+await pages.Push(homePrefab, animated: false);   // the first screen, without the slide
+```
+
+The state is not played then, only its end pose is written, so the transition state's On Start and On Complete are not called. The lifecycle methods (`WillEnter`, `DidEnter` and so on) are called as usual.
+
+### Callbacks of Transition States
+
+A transition plays its state with `PlayAsync`, so the transition state's On Start and On Complete are called.
+
+If a transition state does not reach its end (its On Start calls `Stop`, or another state takes the same properties), `Push`, `Pop` and `Show` throw `OperationCanceledException`. The screens are then left in a middle pose and the lifecycle's `Did...` methods are not called. Do not stop a transition state during a transition.
 
 ## 2. Containers
 
@@ -42,6 +56,21 @@ Screens are created and managed by a container. There are three kinds of contain
 | `KeyTweenPageContainer` | Pages you stack and go back from | Slide by one screen width (Size Relative), OutQuart |
 | `KeyTweenModalContainer` | Modals shown on top | Scale 0.3 → 1 with alpha (OutQuart); the backdrop fades its alpha (Linear) |
 | `KeyTweenSheetContainer` | Sheets you switch between | Alpha fade (Linear) |
+
+### Adding a Container
+
+1. Inside the Canvas, make the object that will be the screens' area, usually a RectTransform that fills the Canvas.
+2. Choose **Add Component > KeyTween > Page Container** (or **Modal Container**, **Sheet Container**). A `CanvasGroup` is added with it.
+3. In code, open screens by handing screen prefabs to this container.
+
+```csharp
+[SerializeField] KeyTweenPageContainer pages;
+[SerializeField] KeyTweenScreen shopPrefab;
+
+public async void OpenShop() => await pages.Push(shopPrefab);
+```
+
+A screen the container makes is fitted to fill the container's area. To use pages and modals together, make two containers and put the modal container lower in the Hierarchy (the side drawn on top).
 
 ### Pages — `KeyTweenPageContainer`
 
@@ -109,6 +138,14 @@ The default values match UnityScreenNavigator's defaults. You can also use them 
 * `PagePushEnter` and so on
 * `Slide`
 * `FadeIn` / `FadeOut`
+
+Each is a function that takes a `KeyTweenScreen` and returns a new `KeyTweenState`. Name it and add it with `AddState`, and it plays like any other state.
+
+```csharp
+var fade = KeyTweenDefaultTransitions.FadeIn(screen);
+fade.name = "FadeIn";
+screen.Animation.AddState(fade);
+```
 
 ## 3. Input Blocking
 

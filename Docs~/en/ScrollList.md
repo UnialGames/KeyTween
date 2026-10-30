@@ -11,7 +11,7 @@ To add it, select the object that has the `ScrollRect` and choose **Add Componen
 
 ## 1. Items and Layout
 
-This page explains how to set the item prefabs and the layout. The list's inspector is organized like a Unity Layout Group.
+This section explains how to set the item prefabs and the layout. The list's inspector is organized like a Unity Layout Group.
 
 ### Setting the Item Prefabs
 
@@ -54,7 +54,7 @@ Item positions are computed once whenever the layout changes, without a `LayoutG
 
 ## 2. Binding Data
 
-This page explains how to connect data to the list. You bind data with callbacks, as with UI Toolkit's `ListView`.
+This section explains how to connect data to the list. You bind data with callbacks, as with UI Toolkit's `ListView`.
 
 ### Binding with Callbacks
 
@@ -82,10 +82,10 @@ list.SetCount(48, (RectTransform item, int index) => ...);               // with
 
 ### Changing the Count and Rebinding
 
-Changing only the count, without bindings, keeps the scroll position and the remaining items.
+Changing only the count, without bindings, keeps the scroll position. The remaining items keep their objects and are bound again, without playing Appear again.
 
 ```csharp
-list.SetCount(10);      // count only: keeps the scroll position and the remaining items; only newly visible ones Appear
+list.SetCount(10);      // count only: keeps the scroll position, rebinds the remaining items, only newly visible ones Appear
 list.Refresh();         // rebinds every visible item (and re-measures with Measure Items)
 list.RefreshItem(5);
 ```
@@ -104,7 +104,7 @@ The guild chat in the RPG sample only raises the count when a message arrives.
 
 ## 3. Position and Scrolling
 
-This page explains how to read the list's current state, move to a specific item and set how the list scrolls.
+This section explains how to read the list's current state, move to a specific item and set how the list scrolls.
 
 ### Reading the State
 
@@ -188,7 +188,7 @@ The quest list in the RPG sample pins its section headers with Sticky Header.
 
 ## 4. Item Animation
 
-This page explains the animations items play when they come in and as they scroll. You pick the states from the item prefab's `KeyTween`.
+This section explains the animations items play when they come in and as they scroll. You pick the states from the item prefab's `KeyTween`.
 
 ### Editing States
 
@@ -217,13 +217,20 @@ A reused object may still look like its previous index. So when an item becomes 
 
 ### Position-Driven Animation — Scrub State
 
-Uses the item's position in the viewport as the state time and applies the pose at that time (`Sample`).
+Uses the item's position in the viewport as the state time and applies the pose at that time (`Stop(state, time)`).
 
 * 0 = start edge
 * 0.5 = center
 * 1 = end
 
+These values are fractions of the state's length, so put the keys at 0 s, half the state's length and its full length. For example, a carousel whose center item grows, with a state 1 s long, has Scale keys at 0 s = 0.8, 0.5 s = 1.1 and 1 s = 0.8.
+
 Use it for carousel zoom, wheel picker tilt and page parallax.
+
+### Callbacks
+
+* Entry and Appear are plays, so their states' On Start and On Complete are called. If an item leaves the view while playing and its object is reused, On Cancel is called.
+* Scrub only sets the pose without playing, so it calls no callbacks.
 
 ### Example: Ranking List
 
@@ -250,7 +257,7 @@ The laid-out items are temporary objects that are not saved.
 
 ## 6. Helper Components
 
-This page covers three components that work together with the list. Their animations are also `KeyTween` states, and the **Edit** / **Create** buttons on their state fields open the KeyTween Editor directly.
+This section covers three components that work together with the list. Their animations are also `KeyTween` states, and the **Edit** / **Create** buttons on their state fields open the KeyTween Editor directly.
 
 | Component | Use | States |
 |---|---|---|
@@ -267,7 +274,11 @@ This page covers three components that work together with the list. Their animat
 
 ### Collapsing Header — `KeyTweenScrollScrub`
 
-Uses the scroll distance (0 to Distance px) as the state time.
+Uses the scroll distance (0 to Distance px) as the state time. At 0 px the state is at its start; scrolled by Distance, it shows its end pose. Use it for a header that collapses or a toolbar that appears as the list scrolls.
+
+1. Add **Add Component > KeyTween > Scroll Scrub** to any object.
+2. Put the list in **List**, the header's `KeyTween` in **Target** and the name of the collapsing state in **State**.
+3. Set **Distance** to the scroll distance (px) at which it is fully collapsed.
 
 ### Pull to Refresh — `KeyTweenPullToRefresh`
 
@@ -278,13 +289,22 @@ Add it to the same object as the list. It works with vertical lists only.
 3. While refreshing, it loops the Refreshing state and keeps the top open (`Refreshing` = true).
 4. Calling `EndRefresh()` closes it.
 
+```csharp
+pull.onRefresh.AddListener(async () =>
+{
+    var items = await LoadItemsAsync();
+    list.SetData(items, (ItemView view, Item item, int index) => view.Bind(item));
+    pull.EndRefresh();
+});
+```
+
 ## 7. What You Can Build
 
-This page lists the patterns you can build from the list's settings and states.
+This section lists the patterns you can build from the list's settings and states.
 
 ### Opening the Example Scene
 
-The **UI Components** sample (**Package Manager > KeyTween > Samples**) contains 18 examples in `Scenes/Scroll.unity`. For details, see Development.
+The **UI Components** sample (**Package Manager > KeyTween > Samples**) contains 18 examples in `Scenes/Scroll.unity`.
 
 ### Settings for Each Pattern
 
