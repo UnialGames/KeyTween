@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>UniTask | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="UniTask | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/unitask.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="unitask">UniTask</h1>
+
+<p>KeyTween 패키지는 서드파티 라이브러리 없이 동작합니다. 아래 라이브러리가 프로젝트에 <strong>설치돼 있으면</strong> 해당 연동 코드가 자동으로 컴파일됩니다. 설치돼 있지 않으면 연동 코드는 컴파일에서 빠지며, 따로 설정할 것은 없습니다.</p>
+<p>LitMotion과 VContainer가 UniTask 연동을 제공하는 방식과 같습니다.</p>
+<table>
+<thead>
+<tr>
+<th>라이브러리</th>
+<th>켜지는 조건 (asmdef versionDefines)</th>
+<th>추가되는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniTask</td>
+<td><code>com.cysharp.unitask</code> 2.0.0 이상 → <code>KEYTWEEN_UNITASK</code></td>
+<td>확장 메서드 (재생·이벤트를 UniTask로)</td>
+</tr>
+<tr>
+<td>R3</td>
+<td><code>com.cysharp.r3</code> 1.0.0 이상 → <code>KEYTWEEN_R3</code></td>
+<td>확장 메서드 (재생·이벤트·상태 알림을 Observable로)</td>
+</tr>
+<tr>
+<td>UIEffect</td>
+<td><code>com.coffee.ui-effect</code> 5.0.0 이상 → <code>KEYTWEEN_UIEFFECT</code></td>
+<td>트랙 14종 (어셈블리 <code>KeyTween.UIEffect</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>UniTask(<code>com.cysharp.unitask</code> 2.0.0 이상)를 설치하면, 재생과 이벤트를 UniTask로 기다리는 확장 메서드가 추가됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PlayUniTaskAsync(stateName, ct)</code></td>
+<td><code>PlayAsync</code>의 UniTask 버전입니다.</td>
+</tr>
+<tr>
+<td><code>PlayUniTaskAsync(stateName, time, ct)</code></td>
+<td>그 시간(초)부터 재생합니다.</td>
+</tr>
+<tr>
+<td><code>PlayReversedUniTaskAsync(stateName, ct)</code>, <code>(stateName, time, ct)</code></td>
+<td>상태를 역재생합니다.</td>
+</tr>
+<tr>
+<td><code>play.PlayUniTaskAsync(ct)</code>, <code>play.PlayReversedUniTaskAsync(ct)</code></td>
+<td><code>With</code>로 설정한 재생(<code>KeyTweenPlay</code>)을 UniTask로 기다립니다.</td>
+</tr>
+<tr>
+<td><code>WaitEventUniTaskAsync(eventName, ct)</code></td>
+<td>다음 애니메이션 이벤트가 발생할 때까지 기다립니다.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="여러-재생을-함께-기다리기">여러 재생을 함께 기다리기</h2>
+<p>팝업을 열 때는 <code>WhenAll</code>로 팝업과 배경을 함께 재생합니다.</p>
+<pre><code class="lang-csharp">await UniTask.WhenAll(popup.PlayUniTaskAsync(&quot;Open&quot;), dim.PlayUniTaskAsync(&quot;Show&quot;));
+</code></pre>
+<p>완료와 취소 규칙은 <code>PlayAsync</code>와 같습니다(<a href="playing-and-awaiting.html#%EB%81%9D%EB%82%98%EB%8A%94-%EA%B2%BD%EC%9A%B0">API</a>). 내부에서는 <code>Awaitable</code>을 <code>AsUniTask()</code>로 변환합니다.</p>
+<h2 id="취소를-값으로-받기">취소를 값으로 받기</h2>
+<p>팝업을 닫을 때는 <code>SuppressCancellationThrow</code>로 취소를 예외 대신 값으로 받습니다.</p>
+<pre><code class="lang-csharp">var canceled = await popup.PlayUniTaskAsync(&quot;Close&quot;).SuppressCancellationThrow();
+</code></pre>
+<h2 id="시간-제한-걸기">시간 제한 걸기</h2>
+<p>오래 걸리는 상태는 <code>Timeout</code>을 건 뒤, 시간이 지나면 <code>Complete</code>를 부릅니다.</p>
+<pre><code class="lang-csharp">try { await anim.PlayUniTaskAsync(&quot;Intro&quot;).Timeout(TimeSpan.FromSeconds(3)); }
+catch (TimeoutException) { anim.Complete(&quot;Intro&quot;); }
+</code></pre>
+<h2 id="이벤트-기다리기">이벤트 기다리기</h2>
+<p>애니메이션 이벤트는 <code>WaitEventUniTaskAsync</code>로 기다립니다.</p>
+<pre><code class="lang-csharp">var info = await anim.WaitEventUniTaskAsync(&quot;Shown&quot;);
+</code></pre>
+<h2 id="오브젝트와-함께-정리하기">오브젝트와 함께 정리하기</h2>
+<p>어느 경우든 <code>destroyCancellationToken</code>을 넘겨 두면, 오브젝트가 사라질 때 함께 정리됩니다.</p>
+<pre><code class="lang-csharp">await popup.PlayUniTaskAsync(&quot;Open&quot;, destroyCancellationToken);
+</code></pre>
+<h2 id="중간부터-재생-with-build">중간부터 재생, With, Build</h2>
+<p>시간을 주거나 <code>With</code>로 설정한 재생도 UniTask로 기다립니다. <code>Build</code>로 만든 상태는 <code>.With()</code>로 이어서 씁니다.</p>
+<pre><code class="lang-csharp">await anim.PlayUniTaskAsync(&quot;Intro&quot;, 1.5f, destroyCancellationToken);   // 1.5초부터
+await popup.With(&quot;Open&quot;).WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).PlayUniTaskAsync(destroyCancellationToken);
+await anim.Build(&quot;Pop&quot;).Track(icon.transform, KeyTweenProperty.Scale).Key(0f, Vector3.zero).Key(0.2f, Vector3.one).With().PlayUniTaskAsync();
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

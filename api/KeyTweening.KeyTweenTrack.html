@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Class KeyTweenTrack | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class KeyTweenTrack | KeyTween ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/new/main/apiSpec/new?filename=KeyTweening_KeyTweenTrack.md&amp;value=---%0Auid%3A%20KeyTweening.KeyTweenTrack%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KeyTweening.KeyTweenTrack">
+
+
+
+  <h1 id="KeyTweening_KeyTweenTrack" data-uid="KeyTweening.KeyTweenTrack" class="text-break">
+Class KeyTweenTrack  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="KeyTweening.html">KeyTweening</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>KeyTween.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Serializable]
+public sealed class KeyTweenTrack</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">KeyTweenTrack</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_durationPerChar" data-uid="KeyTweening.KeyTweenTrack.durationPerChar">
+  durationPerChar
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Per-character tracks only: when above 0, character i plays the keys over i x this many seconds (character 0 stays still).&quot;)]
+public float durationPerChar</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_keys" data-uid="KeyTweening.KeyTweenTrack.keys">
+  keys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;KeyTweenKey&gt; keys</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="KeyTweening.KeyTweenKey.html">KeyTweenKey</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_property" data-uid="KeyTweening.KeyTweenTrack.property">
+  property
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenProperty property</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenProperty.html">KeyTweenProperty</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_relativeToRest" data-uid="KeyTweening.KeyTweenTrack.relativeToRest">
+  relativeToRest
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Key values are added to the value the property had on Awake (e.g. -14 = 14 smaller than the original size).&quot;)]
+public bool relativeToRest</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_scramble" data-uid="KeyTweening.KeyTweenTrack.scramble">
+  scramble
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Text Reveal only: characters not yet revealed are shown as random characters (LitMotion WithScrambleChars).&quot;)]
+public KeyTweenScramble scramble</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenScramble.html">KeyTweenScramble</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_shaderProperty" data-uid="KeyTweening.KeyTweenTrack.shaderProperty">
+  shaderProperty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Material tracks: the shader property it animates, e.g. _BaseColor.&quot;)]
+public string shaderProperty</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_sizeRelative" data-uid="KeyTweening.KeyTweenTrack.sizeRelative">
+  sizeRelative
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Position / Size only: key values are multiples of the target&#39;s own size (x = 1 is one width), read when the state starts. e.g. a screen sliding in from x = 1.&quot;)]
+public bool sizeRelative</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_stagger" data-uid="KeyTweening.KeyTweenTrack.stagger">
+  stagger
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Per-character tracks only: each character starts this many seconds after the previous one.&quot;)]
+public float stagger</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_start" data-uid="KeyTweening.KeyTweenTrack.start">
+  start
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Where the first key&#39;s value comes from when the state starts: the key itself, the current value (no jump when interrupted), or the pointer position (Position only).&quot;)]
+[FormerlySerializedAs(&quot;startFromCurrent&quot;)]
+public KeyTweenStart start</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStart.html">KeyTweenStart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_target" data-uid="KeyTweening.KeyTweenTrack.target">
+  target
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Component target</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.html">Component</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenTrack_typeName" data-uid="KeyTweening.KeyTweenTrack.typeName">
+  typeName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Custom tracks: the KeyTweenTrackType class (\&quot;Namespace.Type, Assembly\&quot;).&quot;)]
+public string typeName</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="KeyTweening_KeyTweenTrack_End_" data-uid="KeyTweening.KeyTweenTrack.End*"></a>
+
+  <h3 id="KeyTweening_KeyTweenTrack_End" data-uid="KeyTweening.KeyTweenTrack.End">
+  End
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float End { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenTrack_Type_" data-uid="KeyTweening.KeyTweenTrack.Type*"></a>
+
+  <h3 id="KeyTweening_KeyTweenTrack_Type" data-uid="KeyTweening.KeyTweenTrack.Type">
+  Type
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>What this track animates (read every frame, so it is looked up once and again only after a change).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenTrackType Type { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenTrackType.html">KeyTweenTrackType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenTrack_startFromCurrent_" data-uid="KeyTweening.KeyTweenTrack.startFromCurrent*"></a>
+
+  <h3 id="KeyTweening_KeyTweenTrack_startFromCurrent" data-uid="KeyTweening.KeyTweenTrack.startFromCurrent">
+  startFromCurrent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The first key is a live value (current or pointer) rather than the value written in it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool startFromCurrent { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="KeyTweening_KeyTweenTrack_SameTarget_" data-uid="KeyTweening.KeyTweenTrack.SameTarget*"></a>
+
+  <h3 id="KeyTweening_KeyTweenTrack_SameTarget_KeyTweening_KeyTweenTrack_" data-uid="KeyTweening.KeyTweenTrack.SameTarget(KeyTweening.KeyTweenTrack)">
+  SameTarget(KeyTweenTrack)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Data/KeyTweenTrack.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The same property of the same object (how overrides and runtime end values find a track).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SameTarget(KeyTweenTrack other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="KeyTweening.KeyTweenTrack.html">KeyTweenTrack</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

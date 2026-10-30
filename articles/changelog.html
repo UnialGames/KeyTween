@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Changelog | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Changelog | KeyTween ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="en/toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/changelog.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="changelog">Changelog</h1>
+
+<p>All notable changes to this package are documented here. The format follows <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a> and the package uses <a href="https://semver.org/">Semantic Versioning</a>.</p>
+<h2 id="030---2026-10-31">[0.3.0] - 2026-10-31</h2>
+<p>Play from a given time and stop at a time, start and end callbacks per state, <code>With</code> to set up a play in code and <code>Build</code> to make a state in code, and the same for UniTask and R3. <code>Sample</code> is deprecated (use <code>Stop(state, time)</code>).</p>
+<h3 id="added">Added</h3>
+<ul>
+<li>Play from a given time: <code>Play(state, time)</code>, <code>PlayAsync(state, time, token)</code>, <code>PlayReversed(state, time)</code>, <code>PlayReversedAsync(state, time, token)</code>. Time is in seconds on the state's timeline; the pose at that time is written at once, and events, sounds and child calls before it are not raised.</li>
+<li><code>Stop(state, time)</code>: stops the state if it is playing (a pending <code>PlayAsync</code> is canceled) and shows its pose at that time, without playing.</li>
+<li>Start and end callbacks per state: <strong>On Start</strong>, <strong>On Complete</strong> and <strong>On Cancel</strong> (UnityEvents in the state settings of the KeyTween Editor, saved in the prefab), and the component events <code>StateStarted</code>, <code>StateCompleted</code>, <code>StateCanceled</code> (with the state's name). Each play starts with On Start and ends with exactly one of the other two, at the same moments as <code>PlayAsync</code> completes or is canceled. The editor preview and <code>Stop(state, time)</code> on a state that is not playing call none.</li>
+<li><code>With(state)</code>: set up a play in code and play it (<code>.Play()</code>, <code>.PlayAsync()</code>, …): the end value or arrival of a track's last key (<code>WithEndValue</code>, <code>WithEase</code>, <code>WithCurve</code>, <code>WithPunch</code>, <code>WithShake</code>; built-in, Material and custom tracks), the start time (<code>WithTime</code>, <code>WithEventsBefore</code>), callbacks for that play (<code>WithOnStart</code>, <code>WithOnComplete</code>, <code>WithOnCancel</code>, <code>WithOnLoop</code>). The changes hold for that play only, and the returned <code>KeyTweenPlay</code> can be kept and played again without allocating.</li>
+<li><code>Build(state)</code>: make a state in code (<code>Track</code>, <code>Key</code>, <code>KeyCurve</code>, <code>KeyPunch</code>, <code>KeyShake</code>, <code>From</code>, <code>Event</code>, <code>Sound</code>, <code>Loop</code>, <code>OnStart</code> / <code>OnComplete</code> / <code>OnCancel</code>), then <code>Add()</code> it as a runtime state or play it at once.</li>
+<li>UniTask integration: <code>PlayUniTaskAsync</code> / <code>PlayReversedUniTaskAsync</code> from a given time, and on a <code>With</code> play (<code>KeyTweenPlay</code>).</li>
+<li>R3 integration: <code>PlayAsObservable(state, time)</code>, <code>PlayAsObservable</code> on a <code>With</code> play, and <code>StateStartedAsObservable</code> / <code>StateCompletedAsObservable</code> / <code>StateCanceledAsObservable</code>.</li>
+</ul>
+<h3 id="changed">Changed</h3>
+<ul>
+<li>A play is marked as playing before its first events: an event at the start (or On Start) that calls <code>Stop</code> on the state now stops it, and its <code>PlayAsync</code> is canceled.</li>
+</ul>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li><code>AddState</code> replacing a playing state of the same name left its timer running and its <code>PlayAsync</code> waiting; it stops it now (the <code>PlayAsync</code> is canceled).</li>
+<li>KeyTween Editor: after moving or stretching keys, the stretch handles could stay hidden until the selection changed (they waited for a layout signal that did not always come).</li>
+<li>A looping child state whose tracks an outer prefab overrides played once instead of looping (the merged state lost <strong>Loop</strong>).</li>
+<li><code>With(...).WithEndValue(...).PlayReversed()</code> ignored the end value once the state had played forward (a reversed play reuses the last forward play's values); the end value given for the reversed play is used now.</li>
+<li>Playing a state with child calls allocated on every play (looking up the ancestors' overrides for the length). It allocates nothing now, unless an outer prefab overrides the called child's tracks.</li>
+<li>KeyTween Editor: <strong>Add KeyTween to '…'</strong> appeared only for UI objects (RectTransform); it appears for any selected object now, as the non-UI tracks need.</li>
+</ul>
+<h3 id="deprecated">Deprecated</h3>
+<ul>
+<li><code>Sample(state, time)</code>: use <code>Stop(state, time)</code>, which does the same. <code>Sample</code> will be removed in the next version. The package and its samples use <code>Stop</code> now.</li>
+</ul>
+<h2 id="021---2026-10-29">[0.2.1] - 2026-10-29</h2>
+<p>KeyTween Editor: copy and paste keys, state tabs you can rename, duplicate and reorder, stretch handles for selected keys. The runtime and playback are unchanged.</p>
+<h3 id="added-1">Added</h3>
+<ul>
+<li>KeyTween Editor: copy and paste keys (Ctrl+C / Ctrl+V on the timeline, or the context menu). Pasted at the playhead (or where you right-click, <strong>Paste Keys Here</strong>, also after the end) with their spacing, onto the track of the same object and kind (made when missing); in another prefab, onto the object at the same path from the root.</li>
+<li>KeyTween Editor: state tabs can be renamed (double-click), duplicated, reordered (drag, or Move Left / Right) and deleted from the tab (right-click). A state is not renamed to an empty name or one another state has.</li>
+<li>KeyTween Editor: selecting two or more keys at different times shows a box around them with a handle at each end. Dragging a handle stretches or shrinks the selected keys around the other end, like the Animation window.</li>
+</ul>
+<h3 id="removed">Removed</h3>
+<ul>
+<li>KeyTween Editor: the key inspector's <strong>Capture Current Value</strong> button. Record (●) puts what you change in the scene into keys.</li>
+</ul>
+<h3 id="fixed-1">Fixed</h3>
+<ul>
+<li>KeyTween Editor: a box selection can start anywhere in the key area (the event and child call lanes, the empty space below the last track), like the Animation window. Before, it started only on a track's lane, so dragging from below the tracks did nothing.</li>
+</ul>
+<h2 id="020---2026-10-28">[0.2.0] - 2026-10-28</h2>
+<p>Tracks for game objects (not only UI), custom tracks, and playback that follows <code>Time.timeScale</code>. KeyTweens that must keep moving while the game is paused (timeScale 0), such as a pause menu, need <strong>Time</strong> set to <code>Unscaled</code> (see Changed).</p>
+<h3 id="added-2">Added</h3>
+<ul>
+<li>Documentation site: <a href="https://unialgames.github.io/KeyTween/">https://unialgames.github.io/KeyTween/</a> (the documents and an API reference). The Package Manager's <strong>Documentation</strong> link opens it, and the READMEs link to it.</li>
+<li>README and API document: awaiting several KeyTweens together (<code>PlayAsync</code> in turn, <code>Task.WhenAll</code>, <code>UniTask.WhenAll</code>).</li>
+<li>Tracks for objects that are not UI: Position, World Position, World Rotation (Transform), Color and Alpha (SpriteRenderer), Material tracks for a Renderer's color, number and vector properties (through a MaterialPropertyBlock, the material asset is not changed), Light (Color, Intensity, Range, Spot Angle), Camera (Field of View, Near Clip, Far Clip, Viewport Rect) and AudioSource (Volume, Pitch).</li>
+<li>UI tracks: Offset Min and Max (RectTransform), UV Rect (RawImage), Effect Color and Distance (Shadow, Outline), Softness and Padding (RectMask2D), Value (Slider), Scroll Position (ScrollRect), Min, Preferred and Flexible Size (LayoutElement).</li>
+<li>TextMeshPro tracks: Word Spacing, Line Spacing, Outline Width, Outline Color, Face Dilate, Underlay Color. Material tracks use an instance of the text's material; the editor preview puts the original back.</li>
+<li>Custom tracks: derive from <code>KeyTweenFloatTrack&lt;T&gt;</code> (or the Vector2, Vector3, Color and Vector4 versions) and implement <code>Get</code> and <code>Set</code>; the track appears in the Add Track window for objects with <code>T</code>.</li>
+</ul>
+<h3 id="changed-1">Changed</h3>
+<ul>
+<li><strong>Playback now follows <code>Time.timeScale</code> by default</strong>, like Animator, DOTween and LitMotion: pausing the game (timeScale 0) pauses KeyTween animations. Each KeyTween has <strong>Time</strong> (<code>timeMode</code>): <code>Scaled</code> (default) or <code>Unscaled</code> (real time, the old behavior, for pause menus and loading screens). It is a normal serialized field, so a prefab instance can override it. Existing prefabs load as <code>Scaled</code>; set the ones that must move while paused to <code>Unscaled</code>.</li>
+<li>When states overlap, a new state takes over the shared channels of another kind of track on the same value: an Alpha state takes only the a of a playing Color track, which keeps writing r, g, b; a Color state stops a playing Alpha track. The same holds for Char Color and Char Alpha, and Offset Min/Max take over Position and Size.</li>
+<li>The Add Track window offers Sound only on the root. A sound track still picks its AudioSource in its inspector (<strong>Audio Source (optional)</strong>).</li>
+<li>Recording puts a change on a track the state already has for that field: World Position, World Rotation, Offset Min/Max, a SpriteRenderer's Alpha, Scroll Position (moving the Content) and Number (the number in the text). Before, it made a second Position, Rotation, Size or Color track. Editing a text no longer records a Reveal key. Light, Camera, AudioSource, Shadow, LayoutElement and UIEffect values are recorded too.</li>
+<li>Each track kind is defined in one place (<code>KeyTweenTrackType</code>): reading, writing, the editor's field, preview restore and recording. <code>KeyTween.Read</code> and <code>KeyTween.Write</code> still work for built-in properties.</li>
+</ul>
+<h2 id="013---2026-10-27">[0.1.3] - 2026-10-27</h2>
+<h3 id="changed-2">Changed</h3>
+<ul>
+<li>README: the install URL without a tag follows the latest release (update with <strong>Update</strong> in the Package Manager); a new section explains installing a specific version (<code>#v0.1.3</code>), which <strong>Update</strong> does not move.</li>
+</ul>
+<h2 id="012---2026-10-27">[0.1.2] - 2026-10-27</h2>
+<p>Simpler play API. Code that passed <code>KeyTweenInterrupt</code> or called <code>PlayState</code> needs a small change (below).</p>
+<h3 id="changed-3">Changed</h3>
+<ul>
+<li>A state that is played takes the properties it animates from states already playing, where they are, and continues from there; a state left with no properties stops (its <code>PlayAsync</code> is canceled). This was the default (<code>KeyTweenInterrupt.Cancel</code>) and is now the only behavior.</li>
+<li><code>Play(string)</code> and <code>PlayReversed(string)</code> take one argument, so they are listed for UnityEvents such as a Button's OnClick. <code>Play(string, PointerEventData)</code> passes the pointer for tracks that start from it.</li>
+</ul>
+<h3 id="removed-1">Removed</h3>
+<ul>
+<li><code>KeyTweenInterrupt</code>, the <code>interrupt</code> parameter of <code>Play</code>, <code>PlayAsync</code>, <code>PlayReversed</code>, <code>PlayReversedAsync</code>, <code>PlayUniTaskAsync</code>, <code>PlayReversedUniTaskAsync</code> and <code>PlayAsObservable</code>, and the Interrupt setting of Play On. To finish a state before the next one, call <code>Complete(&quot;state&quot;)</code> first: its end pose, its remaining events, its await completing.</li>
+<li><code>PlayState</code> and <code>PlayStateReversed</code>: use <code>Play</code> and <code>PlayReversed</code>. UnityEvents saved with the old names must be picked again (the samples are updated).</li>
+</ul>
+<h2 id="011---2026-10-27">[0.1.1] - 2026-10-27</h2>
+<h3 id="fixed-2">Fixed</h3>
+<ul>
+<li>Importing a sample into a project without TMP Essential Resources left every label invisible. KeyTween now imports them automatically when a sample is imported into such a project (the same as Window › TextMeshPro › Import TMP Essential Resources).</li>
+</ul>
+<h2 id="010---2026-10-23">[0.1.0] - 2026-10-23</h2>
+<p>First public release.</p>
+<h3 id="added-3">Added</h3>
+<ul>
+<li><code>KeyTween</code> component: keyframe states stored in the prefab (no clip or controller assets), each a set of tracks on the prefab's own components.</li>
+<li>KeyTween Editor window: state tabs, timeline with tracks and keys, Add Track window, key inspector, recording (●), animation event and sound tracks, child prefab state calls.</li>
+<li>Live preview in Edit, Prefab and Play mode; values return when the preview stops.</li>
+<li>Saving: Auto Save and Save (Ctrl+S); edits made on running copies in Play mode are written back to the source prefab.</li>
+<li>Tracks: scale, rotation, position, size, anchors, pivot, active, color, alpha, CanvasGroup alpha, fill, camera, TMP font size, character spacing, typewriter reveal, number count-up, and per-character scale, position, rotation, color and alpha.</li>
+<li>Arrival: 36 eases, AnimationCurve, Punch and Shake.</li>
+<li>Nested prefabs: a parent state calls a child prefab's state and overrides its tracks in the current prefab only.</li>
+<li>Play On triggers: OnEnable, Start, pointer enter/exit/down/up, click, select/deselect, toggle on/off.</li>
+<li>API: <code>Play</code>, <code>PlayAsync</code> (Unity <code>Awaitable</code>), <code>PlayReversed</code>, <code>Complete</code>, <code>Stop</code>, <code>Sample</code>, <code>SetEndValue</code>, animation events.</li>
+<li>Scroll list: virtualized list, grid, masonry, carousel, infinite loop, pages, banners, wheel picker, section headers, chat and accordion layouts.</li>
+<li>Screen transitions: Page, Modal and Sheet containers with lifecycle callbacks and shared element transitions.</li>
+<li>Performance: no cost while idle, no GC allocation while playing, eased tracks evaluated in batches with Burst.</li>
+<li>Optional integrations, enabled when installed: UniTask, R3, UIEffect.</li>
+<li>Samples: RPG Sample, UI Components.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

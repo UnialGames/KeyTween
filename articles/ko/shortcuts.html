@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>우클릭 메뉴와 단축키 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="우클릭 메뉴와 단축키 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/shortcuts.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="우클릭-메뉴와-단축키">우클릭 메뉴와 단축키</h1>
+
+<p>KeyTween 창에서 쓸 수 있는 우클릭 메뉴와 단축키입니다.</p>
+<h2 id="우클릭-메뉴">우클릭 메뉴</h2>
+<table>
+<thead>
+<tr>
+<th>어디서</th>
+<th>메뉴</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>상태 탭</td>
+<td>Rename, Duplicate, Move Left, Move Right, Delete</td>
+</tr>
+<tr>
+<td>타임라인 빈 곳</td>
+<td>Paste Keys at Playhead, Paste Keys Here, Add Track..., Add Child Call ▸ 자식 ▸ 상태</td>
+</tr>
+<tr>
+<td>키프레임 트랙 머리</td>
+<td>Add Key at Playhead, Remove Track (오버라이드 트랙에서는 Revert Track to Original)</td>
+</tr>
+<tr>
+<td>키프레임 줄</td>
+<td>Add Key Here, Copy Selected Keys, Paste Keys at Playhead, Paste Keys Here, Delete Selected Keys, Remove Track</td>
+</tr>
+<tr>
+<td>이벤트, 사운드 트랙 머리</td>
+<td>Add Event / Sound at Playhead, Remove Track</td>
+</tr>
+<tr>
+<td>이벤트, 사운드 마커</td>
+<td>Delete</td>
+</tr>
+<tr>
+<td>자식 호출</td>
+<td>Revert All (outermost overrides), Remove Child Call</td>
+</tr>
+</tbody>
+</table>
+<h2 id="단축키">단축키</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ctrl+S (Cmd+S)</td>
+<td>Save</td>
+</tr>
+<tr>
+<td>Ctrl+C / Ctrl+V (Cmd+C / Cmd+V)</td>
+<td>고른 키를 복사 / 재생 막대 위치에 붙여넣기</td>
+</tr>
+<tr>
+<td>Delete / Backspace</td>
+<td>고른 키와 마커를 삭제</td>
+</tr>
+<tr>
+<td>F</td>
+<td>전체 보기</td>
+</tr>
+<tr>
+<td>Esc</td>
+<td>우클릭 메뉴 닫기</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>편집 모드의 씬 오브젝트를 편집 중이면 Ctrl+S는 Unity 씬 저장이 됩니다.</li>
+<li>Save 단축키는 <strong>Edit &gt; Shortcuts</strong>의 <code>KeyTween/Save</code>에서 바꿀 수 있습니다.</li>
+</ul>
+<p>모든 편집은 Unity Undo로 되돌릴 수 있습니다.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

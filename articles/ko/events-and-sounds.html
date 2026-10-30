@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>이벤트와 사운드 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="이벤트와 사운드 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/events-and-sounds.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="이벤트와-사운드">이벤트와 사운드</h1>
+
+<p>상태의 정해진 시간에 코드에 신호를 보내거나 소리를 낼 수 있습니다. 둘 다 트랙 추가 창에서 트랙으로 추가합니다.</p>
+<p>연출과 게임 로직의 타이밍을 맞출 때 씁니다. 예를 들어 칼을 휘두르는 상태의 0.3초(칼이 닿는 순간)에 <code>Hit</code> 이벤트를 두면, 코드는 그때 대미지를 주고 파티클을 띄웁니다. 연출의 키를 옮겨도 이벤트만 같이 옮기면 되고, 코드의 대기 시간을 고칠 필요가 없습니다.</p>
+<h2 id="이벤트-추가하기">이벤트 추가하기</h2>
+<ol>
+<li>트랙 추가 창에서 <code>Animation Events</code>를 고릅니다. 이벤트 트랙이 생깁니다.</li>
+<li>트랙 머리의 <strong>+</strong> 버튼을 누르거나 줄을 더블클릭합니다. 메뉴에서 <code>Name Only</code>나 데이터 struct를 고르면 이벤트가 생깁니다.</li>
+<li>인스펙터에서 <strong>Name</strong>과 **Time (s)**을 정합니다. 종류는 아래 <strong>Event Type</strong> 칸에서 바꿀 수 있습니다.</li>
+</ol>
+<p>이벤트는 드래그해서 옮깁니다.</p>
+<h2 id="이벤트-type">이벤트 Type</h2>
+<p>Type은 다음 중 하나입니다.</p>
+<ul>
+<li><code>Name Only</code></li>
+<li>코드에서 <code>[KeyTweenEvent]</code>를 붙인 struct</li>
+</ul>
+<p>struct를 고르면 그 필드를 인스펙터에서 바로 편집할 수 있습니다. 편집할 수 있는 필드 형식은 다음과 같습니다.</p>
+<ul>
+<li>float, int, bool, string</li>
+<li>Vector2/3</li>
+<li>Color</li>
+<li>enum</li>
+</ul>
+<p><img src="../../media/editor/editor-events.png" alt="Popup의 Open 상태. Animation Events 줄에 Popup Sound와 Shown 이벤트가, Sound 줄에 클립 길이만큼의 PopupOpen 막대가 있습니다. Popup Sound 이벤트를 골라 인스펙터의 Event Type에 Clip과 Volume 필드가 보입니다."></p>
+<h2 id="이벤트-받기">이벤트 받기</h2>
+<p>이벤트는 다음 두 방법으로 받습니다.</p>
+<ul>
+<li><p>코드에서 받습니다. 자세한 내용은 <a href="animation-events.html">API</a>를 참고하세요.</p>
+<pre><code class="lang-csharp">anim.EventRaised += (in KeyTweenEventInfo e) =&gt; { if (e.Name == &quot;Hit&quot;) DealDamage(); };
+await anim.WaitEventAsync(&quot;Hit&quot;);   // 또는 한 번만 기다리기
+</code></pre>
+</li>
+<li><p><code>KeyTween Event Listener</code> 컴포넌트로 받습니다. 이 컴포넌트는 이벤트 이름마다 UnityEvent를 연결합니다.</p>
+</li>
+</ul>
+<h2 id="사운드-추가하기">사운드 추가하기</h2>
+<ol>
+<li>트랙 추가 창에서 <code>Sound</code>를 고릅니다. 사운드 트랙이 생깁니다.</li>
+<li>트랙 머리의 <strong>+</strong> 버튼을 누르거나, 줄을 더블클릭하거나, AudioClip을 줄에 끌어다 놓아 사운드를 추가합니다.</li>
+<li>인스펙터에서 <strong>Clip</strong>, <strong>Volume</strong>, <strong>Time</strong>을 정합니다.</li>
+<li><strong>▶ Preview</strong>를 눌러 소리를 들어 봅니다.</li>
+</ol>
+<p>타임라인의 막대 길이는 클립 길이와 같습니다.</p>
+<h2 id="소리가-나는-audiosource">소리가 나는 AudioSource</h2>
+<p>소리는 다음 순서로 찾은 AudioSource에서 재생됩니다. 그래서 UI 오브젝트마다 AudioSource를 붙일 필요가 없습니다.</p>
+<ol>
+<li>사운드 트랙 인스펙터의 <strong>Audio Source (optional)</strong></li>
+<li>코드에서 정한 <code>KeyTween.audioSource</code> (인스펙터에서는 고칠 수 없습니다)</li>
+<li>둘 다 없으면 숨겨진 공용 2D AudioSource</li>
+</ol>
+<h2 id="사운드와-상태-길이">사운드와 상태 길이</h2>
+<p>상태 길이에는 사운드가 끝나는 시간까지 포함됩니다. 그래서 닫기 연출이 끝난 뒤 오브젝트를 Destroy해도 소리가 끊기지 않습니다.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

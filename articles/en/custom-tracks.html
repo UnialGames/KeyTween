@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Custom Tracks | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Custom Tracks | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/custom-tracks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="custom-tracks">Custom Tracks</h1>
+
+<p>You can make a track for a value that has no built-in track. Write one class that animates a component of your project, and it appears in the Add Track window for objects that have that component.</p>
+<h2 id="writing-a-track-class">Writing a Track Class</h2>
+<p>Derive from <code>KeyTweenFloatTrack&lt;T&gt;</code> and implement <code>Get</code>, which reads the value, and <code>Set</code>, which writes it. <code>T</code> is the component the track animates.</p>
+<pre><code class="lang-csharp">using KeyTweening;
+using UnityEngine.Scripting;
+using UnityEngine.UI;
+
+[Preserve]
+public sealed class ScrollbarSizeTrack : KeyTweenFloatTrack&lt;Scrollbar&gt;
+{
+    protected override float Get(Scrollbar target) =&gt; target.size;
+    protected override void Set(Scrollbar target, float value) =&gt; target.size = value;
+}
+</code></pre>
+<ul>
+<li>The class must be <code>public</code> and have a parameterless constructor.</li>
+<li>Put it in a runtime assembly, not in an Editor folder, because it must also play in builds.</li>
+<li>The track's name is the class name without <code>Track</code>. The example above shows as <code>Scrollbar Size</code>.</li>
+</ul>
+<h2 id="value-types">Value Types</h2>
+<p>Derive from the class that matches the value. The key inspector shows a matching field.</p>
+<table>
+<thead>
+<tr>
+<th>Base class</th>
+<th>Value</th>
+<th>Key field</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyTweenFloatTrack&lt;T&gt;</code></td>
+<td><code>float</code></td>
+<td>number</td>
+</tr>
+<tr>
+<td><code>KeyTweenVector2Track&lt;T&gt;</code></td>
+<td><code>Vector2</code></td>
+<td>x, y</td>
+</tr>
+<tr>
+<td><code>KeyTweenVector3Track&lt;T&gt;</code></td>
+<td><code>Vector3</code></td>
+<td>x, y, z</td>
+</tr>
+<tr>
+<td><code>KeyTweenColorTrack&lt;T&gt;</code></td>
+<td><code>Color</code></td>
+<td>color</td>
+</tr>
+<tr>
+<td><code>KeyTweenCustomTrack&lt;T&gt;</code></td>
+<td><code>Vector4</code></td>
+<td>x, y, z, w</td>
+</tr>
+</tbody>
+</table>
+<h2 id="changing-the-name-color-and-conditions">Changing the Name, Color and Conditions</h2>
+<p>Override these properties when you need to.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td>The name shown on the track and in the Add Track window</td>
+</tr>
+<tr>
+<td><code>TrackColor</code></td>
+<td>The track's color in the timeline</td>
+</tr>
+<tr>
+<td><code>Range</code></td>
+<td>The slider range of a number track (e.g. <code>new Vector2(0, 1)</code>)</td>
+</tr>
+<tr>
+<td><code>Offers(Component)</code></td>
+<td>Which objects show this track (e.g. only with a certain setting)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">public override string Name =&gt; &quot;Handle Size&quot;;
+public override Vector2 Range =&gt; new(0f, 1f);
+</code></pre>
+<h2 id="preview-and-recording">Preview and Recording</h2>
+<p>When the preview stops, the values a track changed are written back to what they were before the preview. If you list the serialized fields the value is stored in, recording also puts keys on that track.</p>
+<pre><code class="lang-csharp">public override void SerializedFields(Component target, List&lt;(Object owner, string path)&gt; fields) =&gt;
+    fields.Add((target, &quot;m_Size&quot;));
+</code></pre>
+<h2 id="when-a-build-strips-code">When a Build Strips Code</h2>
+<p>A track is created from its saved class name. With IL2CPP and a Managed Stripping Level above Minimal, classes that no code uses directly can be removed. Mark the class with <code>[Preserve]</code> to keep it.</p>
+<h2 id="when-a-class-is-renamed">When a Class Is Renamed</h2>
+<p>A track is saved with the full name of its class (namespace and assembly included).</p>
+<ul>
+<li>If you rename the class or its namespace, the track shows as <code>(missing)</code> and writes nothing.</li>
+<li>Rename it back, or add the track again.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

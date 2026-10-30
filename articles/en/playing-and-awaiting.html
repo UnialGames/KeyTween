@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Playing and Awaiting | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Playing and Awaiting | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/playing-and-awaiting.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="playing-and-awaiting">Playing and Awaiting</h1>
+
+<p>KeyTween lives in the <code>KeyTweening</code> namespace, and the component you add to a GameObject is <code>KeyTween</code>.</p>
+<p>Animations are made in the editor as states (<a href="concepts.html">Guide</a>). A state is one named animation, built from tracks and keys. From code, you <strong>play a state by name and await it</strong>.</p>
+<p>The <code>KeyTween</code> component provides methods to play and control a state by its name.</p>
+<pre><code class="lang-csharp">public sealed class KeyTween : MonoBehaviour
+{
+    public void Play(string stateName);              // takes one argument, so it is also listed in UnityEvents such as Button OnClick
+    public void Play(string stateName, PointerEventData pointer);   // for Start = Pointer tracks (where the pointer was pressed)
+    public void Play(string stateName, float time);  // plays from that time (seconds)
+    public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default);
+    public Awaitable PlayAsync(string stateName, float time, CancellationToken cancellationToken = default);
+    public void PlayReversed(string stateName);      // also listed in UnityEvents
+    public void PlayReversed(string stateName, float time);   // from that time back to 0 s
+    public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default);
+    public Awaitable PlayReversedAsync(string stateName, float time, CancellationToken cancellationToken = default);
+
+    public void Complete(string stateName);         // jumps a playing state to its end
+    public void Stop(string stateName);             // stops the state where it is
+    public void Stop(string stateName, float time); // stops it and shows the pose at that time (without playing)
+
+    public KeyTweenPlay With(string stateName);             // sets up one play in code (&quot;Setting Up a Play in Code&quot;)
+    public KeyTweenStateBuilder Build(string stateName);    // makes a state in code (&quot;Making a State in Code&quot;)
+
+    public bool IsPlaying(string stateName);
+    public bool HasState(string stateName);
+    public float Duration(string stateName);        // length including overrides; 0 if there is no such state
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Play</code></td>
+<td>Starts playing. With a time, plays from that time.</td>
+</tr>
+<tr>
+<td><code>PlayAsync</code></td>
+<td>Starts playing and waits until the play ends.</td>
+</tr>
+<tr>
+<td><code>PlayReversed</code></td>
+<td>Plays from the end (or the given time) back to the start.</td>
+</tr>
+<tr>
+<td><code>Complete</code></td>
+<td>Jumps a playing state to its end pose.</td>
+</tr>
+<tr>
+<td><code>Stop</code></td>
+<td>Stops the state where it is. With a time, stops it and shows the pose at that time.</td>
+</tr>
+</tbody>
+</table>
+<p>Times are in <strong>seconds</strong> on the state's timeline (the same unit as <code>Duration</code>). A time below 0 or past the length is clamped to 0 or the end.</p>
+<h2 id="playing-a-state">Playing a State</h2>
+<p><code>Play</code> starts playing and writes the first pose (0 s) <strong>immediately</strong>. If the state name does not exist, it only logs a warning.</p>
+<pre><code class="lang-csharp">anim.Play(&quot;Open&quot;);
+</code></pre>
+<p>If the state has Start = Pointer tracks, also pass <code>pointer</code>. The tracks use it to know where the pointer was pressed.</p>
+<pre><code class="lang-csharp">public void OnPointerDown(PointerEventData eventData) =&gt; anim.Play(&quot;Press&quot;, eventData);
+</code></pre>
+<h2 id="awaiting-a-play">Awaiting a Play</h2>
+<p><code>PlayAsync</code> completes when the play reaches the end or when <code>Complete</code> is called.</p>
+<pre><code class="lang-csharp">await anim.PlayAsync(&quot;Open&quot;, destroyCancellationToken);
+</code></pre>
+<ul>
+<li>If the play cannot finish, it ends with <code>OperationCanceledException</code>. For details, see <a href="#how-a-play-ends">How a Play Ends</a>.</li>
+<li>If the state does not exist, it completes immediately.</li>
+<li>It returns a Unity <code>Awaitable</code>, so you can await it <strong>only once</strong>.</li>
+<li>For a looping state, <code>PlayAsync</code> does not end until you call <code>Complete</code> or <code>Stop</code>.</li>
+</ul>
+<h2 id="playing-from-a-given-time">Playing from a Given Time</h2>
+<p>Pass a time to <code>Play</code> or <code>PlayAsync</code> to play from that time. The pose at that time is written at once, and only the rest of the state plays.</p>
+<pre><code class="lang-csharp">anim.Play(&quot;Intro&quot;, 1.5f);                     // from 1.5 s
+await anim.PlayAsync(&quot;Intro&quot;, 1.5f, destroyCancellationToken);
+</code></pre>
+<ul>
+<li>Events, sounds and child calls before that time are not raised. Those exactly at the start time are raised, as those at 0 s are when playing from 0 s.</li>
+<li>Pass a time to <code>PlayReversed</code> or <code>PlayReversedAsync</code> to play from that time back toward 0 s.</li>
+</ul>
+<h2 id="playing-in-reverse">Playing in Reverse</h2>
+<p><code>PlayReversed</code> plays from the end back to the start. To wait until it ends, use <code>PlayReversedAsync</code>.</p>
+<pre><code class="lang-csharp">await anim.PlayReversedAsync(&quot;Open&quot;);   // returns to where the forward play started
+</code></pre>
+<ul>
+<li>Events, sounds and child calls are each raised once, in reverse order.</li>
+<li>Child states also play reversed.</li>
+<li>Start = Current Value tracks reuse the value captured by the last forward play. So a reversed play returns exactly to where the forward play started.</li>
+<li>The end values are also those of the last forward play. If the forward play was <code>With(...).WithEndValue(...)</code>, a plain <code>PlayReversed</code> comes back from that end value. To give a reversed play another end value, use <code>With(...).WithEndValue(...).PlayReversed()</code>.</li>
+</ul>
+<h2 id="completing-a-play">Completing a Play</h2>
+<p><code>Complete</code> moves a playing state to its end pose and completes <code>PlayAsync</code> normally. It works only while the state is playing.</p>
+<pre><code class="lang-csharp">anim.Complete(&quot;Open&quot;);
+</code></pre>
+<ul>
+<li>The remaining events and child calls are raised in order.</li>
+<li>Remaining sounds are not played.</li>
+<li>During a reversed play, it moves to the start pose instead.</li>
+</ul>
+<h2 id="stopping-a-play">Stopping a Play</h2>
+<p><code>Stop</code> stops the state where it is. A pending <code>PlayAsync</code> is canceled. Use it to turn off a looping state.</p>
+<pre><code class="lang-csharp">anim.Stop(&quot;Idle&quot;);
+</code></pre>
+<h2 id="stopping-at-a-given-time">Stopping at a Given Time</h2>
+<p>Pass a time to <code>Stop</code> to stop the state if it is playing (a pending <code>PlayAsync</code> is canceled) and write its pose at that time. It writes the pose even when the state is not playing.</p>
+<pre><code class="lang-csharp">anim.Stop(&quot;Open&quot;, anim.Duration(&quot;Open&quot;));                     // straight to the end pose, without animation
+anim.Stop(&quot;Reveal&quot;, progress * anim.Duration(&quot;Reveal&quot;));      // every frame from a value such as a scroll position (progress: 0 to 1)
+</code></pre>
+<ul>
+<li>No timer runs, and no events or sounds are raised.</li>
+<li>You can call it every frame to drive the pose with something other than time, such as a scroll position or a pull distance.</li>
+<li>The old name <code>Sample(state, time)</code> still does the same but is <code>[Obsolete]</code> and will be removed in the next version.</li>
+</ul>
+<h2 id="checking-a-state">Checking a State</h2>
+<p>Use <code>IsPlaying</code>, <code>HasState</code> and <code>Duration</code> to check a state. <code>Duration</code> is the length including overrides, and 0 if there is no such state.</p>
+<pre><code class="lang-csharp">if (anim.HasState(&quot;Open&quot;) &amp;&amp; !anim.IsPlaying(&quot;Open&quot;)) anim.Play(&quot;Open&quot;);
+</code></pre>
+<h2 id="play-time">Play Time</h2>
+<p>Each KeyTween's <strong>Time</strong> (<code>timeMode</code>) decides whether playback follows <code>Time.timeScale</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Clock</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scaled</code> (default)</td>
+<td>Game time. Stops while <code>Time.timeScale</code> is 0</td>
+<td>Game objects, battle effects</td>
+</tr>
+<tr>
+<td><code>Unscaled</code></td>
+<td>Real time. Keeps playing while the game is paused</td>
+<td>Pause menus, loading screens</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">pauseMenu.timeMode = KeyTweenTimeMode.Unscaled;   // applies from the next play
+</code></pre>
+<ul>
+<li>It can be overridden per prefab instance. For example, keep a shared button <code>Unscaled</code> and switch only the buttons placed on the game screen to <code>Scaled</code>.</li>
+<li>A state played by a child call follows the child KeyTween's <strong>Time</strong>.</li>
+<li>Outside Play mode (playing from code in the editor), both use real time.</li>
+</ul>
+<h2 id="when-states-overlap">When States Overlap</h2>
+<p>If another playing state is animating the same property, the new state takes over only that property, from its current value. To let the earlier state reach its end pose first, call <code>Complete</code> before playing.</p>
+<pre><code class="lang-csharp">anim.Complete(&quot;earlier state&quot;);
+anim.Play(&quot;next state&quot;);
+</code></pre>
+<p>For details, see <a href="overlapping-states.html">Guide §11</a>.</p>
+<h2 id="how-a-play-ends">How a Play Ends</h2>
+<p>The table below shows how <code>PlayAsync</code> ends in each case, and what happens to the events and sounds that have not been reached yet.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th><code>PlayAsync</code> result</th>
+<th>Callback</th>
+<th>Remaining events</th>
+<th>Remaining sounds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reaches the end</td>
+<td>completes</td>
+<td>On Complete</td>
+<td>all raised</td>
+<td>all played</td>
+</tr>
+<tr>
+<td><code>Complete</code> called</td>
+<td>completes</td>
+<td>On Complete</td>
+<td>raised in order</td>
+<td>not played</td>
+</tr>
+<tr>
+<td>Another state takes all of its properties</td>
+<td>canceled</td>
+<td>On Cancel</td>
+<td>not raised</td>
+<td>not played</td>
+</tr>
+<tr>
+<td>The same state is played again</td>
+<td>earlier play canceled</td>
+<td>the earlier play's On Cancel</td>
+<td>not raised</td>
+<td>not played</td>
+</tr>
+<tr>
+<td>Object disabled</td>
+<td>canceled</td>
+<td>On Cancel</td>
+<td>not raised</td>
+<td>not played</td>
+</tr>
+<tr>
+<td><code>Stop</code> called, token canceled</td>
+<td>canceled</td>
+<td>On Cancel</td>
+<td>not raised</td>
+<td>not played</td>
+</tr>
+</tbody>
+</table>
+<p>A play that does not reach its end ends as <strong>canceled</strong>. This makes &quot;continue only when the play really finished&quot; the default behavior.</p>
+<h2 id="start-and-end-callbacks">Start and End Callbacks</h2>
+<p>You can receive the start and end of a play without <code>await</code>. Connect them per state in <strong>Callbacks</strong> in the editor (On Start, On Complete, On Cancel, see the <a href="states.html#calling-functions-at-the-start-and-end-callbacks">Guide</a>), or receive every state through the component's events in code.</p>
+<pre><code class="lang-csharp">public event Action&lt;string&gt; StateStarted;     // the state's name. After the first pose, before the events at the start time
+public event Action&lt;string&gt; StateCompleted;   // reached the end, or Complete. Before PlayAsync completes
+public event Action&lt;string&gt; StateCanceled;    // did not reach the end (the table above)
+</code></pre>
+<pre><code class="lang-csharp">anim.StateCompleted += state =&gt; { if (state == &quot;Close&quot;) gameObject.SetActive(false); };
+</code></pre>
+<ul>
+<li>Each play starts with <code>StateStarted</code> and ends with <strong>exactly one</strong> of <code>StateCompleted</code> and <code>StateCanceled</code>.</li>
+<li>At the same moment, the state's UnityEvent (On Start and so on) is called first, then the component's event.</li>
+<li>A callback that throws is logged, and the play and the other callbacks go on.</li>
+<li>Stopping the state inside its On Start means the play does not start, and its <code>PlayAsync</code> is canceled.</li>
+<li><code>Stop(state, time)</code>, which writes a pose without playing, and the editor preview call no callbacks.</li>
+</ul>
+<h2 id="example-closing-a-popup">Example: Closing a Popup</h2>
+<p>If the popup is opened again while it is closing, the close play is canceled and the popup is not destroyed.</p>
+<pre><code class="lang-csharp">try { await popup.PlayAsync(&quot;Close&quot;, cancellationToken: popup.destroyCancellationToken); }
+catch (OperationCanceledException) { return; }   // Open took over Close's properties, so keep the popup
+Destroy(popup.gameObject);
+</code></pre>
+<h2 id="example-a-dialogue-box">Example: A Dialogue Box</h2>
+<p>Change the text of the same TMP object and play the same state again. To skip, call <code>Complete</code>. The character count is read again on each play, so the animation follows the new line.</p>
+<pre><code class="lang-csharp">dialogue.text = nextLine;
+var typing = anim.PlayAsync(&quot;Typewriter&quot;);
+// skip button: anim.Complete(&quot;Typewriter&quot;);
+await typing;
+</code></pre>
+<p>The story screen of the RPG sample shows its lines one character at a time in this way.</p>
+<p><img src="../../media/rpg/rpg-story.gif" alt="Story dialogue in the RPG sample: portraits and text that appears one character at a time"></p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

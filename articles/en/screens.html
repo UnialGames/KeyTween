@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Screen Transitions | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Screen Transitions | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/screens.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="screen-transitions">Screen Transitions</h1>
+
+<p>KeyTween includes components that manage the screen flow of a game UI: pages that you stack and go back from, popups (modals) shown on top, and sheets that you switch between like tabs. They do the job of UnityScreenNavigator without a separate package.</p>
+<p>A transition is a <strong><code>KeyTween</code> state</strong> on the screen prefab. A state is one named animation stored on a <code>KeyTween</code> component. If the screen has no state with the expected name, the built-in default transition is used.</p>
+<p>Every transition returns a Unity <code>Awaitable</code>, so you can <code>await</code> it without third-party libraries.</p>
+<h2 id="1-screen--keytweenscreen">1. Screen — <code>KeyTweenScreen</code></h2>
+<p><code>KeyTweenScreen</code> represents one screen that can be a page, a modal or a sheet.</p>
+<h3 id="making-a-screen-prefab">Making a Screen Prefab</h3>
+<ol>
+<li>Select the root of the screen prefab.</li>
+<li>Choose <strong>Add Component &gt; KeyTween &gt; Screen</strong>.</li>
+</ol>
+<p>The same object also needs these components:</p>
+<ul>
+<li><code>RectTransform</code></li>
+<li><code>CanvasGroup</code></li>
+<li><code>KeyTween</code></li>
+</ul>
+<p>A screen created by a container fills the container.</p>
+<h3 id="drawing-order--renderingorder">Drawing Order — <code>renderingOrder</code></h3>
+<ul>
+<li>In a page container, a page with a higher value draws on top.</li>
+<li>Pages with equal values stack in the order they were added.</li>
+<li>In a modal container the modal opened last is on top; in a sheet container, the sheet passed to <code>Show</code> last.</li>
+</ul>
+<h3 id="transitioning-without-animation">Transitioning Without Animation</h3>
+<p>A transition with <code>animated: false</code> skips the animation and jumps straight to the state's end pose.</p>
+<p>Use it when nobody needs to see the transition, such as when the game starts or a saved screen is restored.</p>
+<pre><code class="lang-csharp">await pages.Push(homePrefab, animated: false);   // the first screen, without the slide
+</code></pre>
+<p>The state is not played then, only its end pose is written, so the transition state's On Start and On Complete are not called. The lifecycle methods (<code>WillEnter</code>, <code>DidEnter</code> and so on) are called as usual.</p>
+<h3 id="callbacks-of-transition-states">Callbacks of Transition States</h3>
+<p>A transition plays its state with <code>PlayAsync</code>, so the transition state's On Start and On Complete are called.</p>
+<p>If a transition state does not reach its end (its On Start calls <code>Stop</code>, or another state takes the same properties), <code>Push</code>, <code>Pop</code> and <code>Show</code> throw <code>OperationCanceledException</code>. The screens are then left in a middle pose and the lifecycle's <code>Did...</code> methods are not called. Do not stop a transition state during a transition.</p>
+<h2 id="2-containers">2. Containers</h2>
+<p>Screens are created and managed by a container. There are three kinds of container, and each looks for different state names on the screen and has its own default transition.</p>
+<table>
+<thead>
+<tr>
+<th>Container</th>
+<th>Screens</th>
+<th>Default transition (0.3 s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyTweenPageContainer</code></td>
+<td>Pages you stack and go back from</td>
+<td>Slide by one screen width (Size Relative), OutQuart</td>
+</tr>
+<tr>
+<td><code>KeyTweenModalContainer</code></td>
+<td>Modals shown on top</td>
+<td>Scale 0.3 → 1 with alpha (OutQuart); the backdrop fades its alpha (Linear)</td>
+</tr>
+<tr>
+<td><code>KeyTweenSheetContainer</code></td>
+<td>Sheets you switch between</td>
+<td>Alpha fade (Linear)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="adding-a-container">Adding a Container</h3>
+<ol>
+<li>Inside the Canvas, make the object that will be the screens' area, usually a RectTransform that fills the Canvas.</li>
+<li>Choose <strong>Add Component &gt; KeyTween &gt; Page Container</strong> (or <strong>Modal Container</strong>, <strong>Sheet Container</strong>). A <code>CanvasGroup</code> is added with it.</li>
+<li>In code, open screens by handing screen prefabs to this container.</li>
+</ol>
+<pre><code class="lang-csharp">[SerializeField] KeyTweenPageContainer pages;
+[SerializeField] KeyTweenScreen shopPrefab;
+
+public async void OpenShop() =&gt; await pages.Push(shopPrefab);
+</code></pre>
+<p>A screen the container makes is fitted to fill the container's area. To use pages and modals together, make two containers and put the modal container lower in the Hierarchy (the side drawn on top).</p>
+<h3 id="pages--keytweenpagecontainer">Pages — <code>KeyTweenPageContainer</code></h3>
+<ul>
+<li>API: <code>Push(prefab, animated, stack)</code>, <code>Pop(animated)</code>, <code>Pages</code>, <code>Current</code></li>
+<li>State names: <code>PushEnter</code>, <code>PushExit</code>, <code>PopEnter</code>, <code>PopExit</code></li>
+</ul>
+<pre><code class="lang-csharp">await pages.Push(loadingPage, stack: false);   // loading screen: removed from history and destroyed when the next page comes in
+await pages.Push(homePage);                     // the loading screen stays visible while Home prepares in WillEnter
+</code></pre>
+<p><code>Push</code> runs in this order:</p>
+<ol>
+<li>It creates the new page.</li>
+<li>It waits for the <code>Will*</code> methods of both the incoming and the outgoing page.</li>
+<li>It plays <code>PushEnter</code> and <code>PushExit</code> <strong>at the same time</strong>.</li>
+<li>It deactivates the outgoing page when they finish.</li>
+</ol>
+<ul>
+<li>A page pushed with <code>stack: false</code> is removed from history and destroyed when the next page comes in. Use it for a loading screen.</li>
+<li><code>Pop</code> reactivates the previous page, plays <code>PopEnter</code> and <code>PopExit</code>, and then destroys the current page.</li>
+<li><code>Pop</code> does nothing if there is no page.</li>
+</ul>
+<p>The RPG sample uses <code>Push</code> to go from the lobby to a hero's detail page and from there to the upgrade page, and <code>Pop</code> to come back.</p>
+<p><img src="../../media/rpg/rpg-heroes.gif" alt="The hero screens in the RPG sample. The lobby pushes a hero's detail page, which pushes the upgrade page and then returns."></p>
+<h3 id="modals--keytweenmodalcontainer">Modals — <code>KeyTweenModalContainer</code></h3>
+<ul>
+<li>API: <code>Push(prefab, animated)</code>, <code>Pop(animated)</code>, <code>Modals</code>, <code>Current</code>, <code>backdropPrefab</code></li>
+<li>State names: <code>Enter</code>, <code>Exit</code> (the backdrop also uses <code>Enter</code>/<code>Exit</code>)</li>
+</ul>
+<pre><code class="lang-csharp">await modals.Push(confirmPopup);
+await modals.Pop();
+</code></pre>
+<ul>
+<li>Each modal gets its own backdrop.</li>
+<li>If <code>backdropPrefab</code> is empty, a black backdrop at 75% opacity is created.</li>
+<li>Modals underneath do not move, and their lifecycle methods are not called.</li>
+<li><code>Pop</code> plays <code>Exit</code>, then destroys the modal and its backdrop.</li>
+</ul>
+<p>The Daily Attendance window in the RPG sample is opened with the modal container. While the window comes in, the backdrop darkens the lobby behind it.</p>
+<p><img src="../../media/rpg/rpg-mail.gif" alt="Mail and the Daily Attendance modal in the RPG sample. The modal appears over the lobby with its backdrop."></p>
+<h3 id="sheets--keytweensheetcontainer">Sheets — <code>KeyTweenSheetContainer</code></h3>
+<ul>
+<li>API: <code>Register(prefab)</code>, <code>Show(index, animated)</code>, <code>Sheets</code>, <code>ActiveIndex</code>, <code>Active</code></li>
+<li>State names: <code>Enter</code>, <code>Exit</code></li>
+<li>State names when going to a lower index: <code>EnterBackward</code>, <code>ExitBackward</code> (<code>Enter</code>/<code>Exit</code> if missing)</li>
+</ul>
+<pre><code class="lang-csharp">var tab = sheets.Register(shopTabPrefab);
+await sheets.Show(tab);                         // to a higher index: Enter, to a lower index: EnterBackward
+</code></pre>
+<ul>
+<li><code>Register</code> creates a sheet, keeps it hidden and returns its index.</li>
+<li><code>Show</code> does nothing when given the current index or an index out of range.</li>
+<li>The outgoing sheet is deactivated.</li>
+</ul>
+<h3 id="default-transition-values">Default Transition Values</h3>
+<p>The default values match UnityScreenNavigator's defaults. You can also use them directly in code through <code>KeyTweenDefaultTransitions</code>:</p>
+<ul>
+<li><code>PagePushEnter</code> and so on</li>
+<li><code>Slide</code></li>
+<li><code>FadeIn</code> / <code>FadeOut</code></li>
+</ul>
+<p>Each is a function that takes a <code>KeyTweenScreen</code> and returns a new <code>KeyTweenState</code>. Name it and add it with <code>AddState</code>, and it plays like any other state.</p>
+<pre><code class="lang-csharp">var fade = KeyTweenDefaultTransitions.FadeIn(screen);
+fade.name = &quot;FadeIn&quot;;
+screen.Animation.AddState(fade);
+</code></pre>
+<h2 id="3-input-blocking">3. Input Blocking</h2>
+<p>While a transition is running, <strong>touch input is blocked on every container</strong>, so rapid taps cannot start overlapping transitions.</p>
+<h3 id="checking-for-a-running-transition">Checking for a Running Transition</h3>
+<ul>
+<li><code>KeyTweenScreenContainer.AnyInTransition</code> tells whether any container is in a transition.</li>
+<li><code>IsInTransition</code> tells whether a particular container is in a transition.</li>
+</ul>
+<h3 id="how-input-is-blocked">How Input Is Blocked</h3>
+<p>Input is blocked through each container's <code>CanvasGroup.blocksRaycasts</code>.</p>
+<ul>
+<li><code>interactable</code> is left unchanged, so buttons do not switch to their disabled color during a transition.</li>
+<li>A container object needs a <code>RectTransform</code> and a <code>CanvasGroup</code>.</li>
+</ul>
+<h2 id="4-lifecycle--ikeytweenscreenlifecycle">4. Lifecycle — <code>IKeyTweenScreenLifecycle</code></h2>
+<p>Use this interface to run code when a screen enters or exits.</p>
+<h3 id="implementing-lifecycle-methods">Implementing Lifecycle Methods</h3>
+<p>If any component on the screen root implements it, its methods are called on every transition. Every method has a default implementation, so you only write the ones you need.</p>
+<pre><code class="lang-csharp">public sealed class HomePage : MonoBehaviour, IKeyTweenScreenLifecycle
+{
+    public async Awaitable WillEnter(KeyTweenTransition t) { await LoadAsync(); }   // called before the animation and awaited
+    public void DidEnter(KeyTweenTransition t) { }                                  // after the animation
+    public Awaitable WillExit(KeyTweenTransition t) =&gt; KeyTweenScreen.Completed();    // when there is nothing to await
+    public void DidExit(KeyTweenTransition t) { }
+}
+</code></pre>
+<h3 id="transition-info--keytweentransition">Transition Info — <code>KeyTweenTransition</code></h3>
+<p>The <code>KeyTweenTransition</code> passed to each method has the following properties.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Kind</code></td>
+<td>The kind of transition: Push, Pop, Show or Hide</td>
+</tr>
+<tr>
+<td><code>Partner</code></td>
+<td>The other screen in the transition</td>
+</tr>
+<tr>
+<td><code>Backward</code></td>
+<td>Whether the transition goes backward</td>
+</tr>
+<tr>
+<td><code>Animated</code></td>
+<td>Whether the transition plays its animation</td>
+</tr>
+</tbody>
+</table>
+<p><code>Backward</code> is true for these transitions:</p>
+<ul>
+<li>Pop for pages and modals</li>
+<li>A move to a lower index for sheets</li>
+</ul>
+<h2 id="5-shared-element-transition--keytweensharedelement">5. Shared Element Transition — <code>KeyTweenSharedElement</code></h2>
+<p>A shared element transition connects two screens through one element. For example, a portrait in a list moves into the portrait's place on the detail screen and grows as it goes.</p>
+<h3 id="making-a-shared-element-transition">Making a Shared Element Transition</h3>
+<p>You make the motion in the editor, and fill in the place on the other screen, which is known only at runtime, from code.</p>
+<ol>
+<li>Add a <strong>Position track and a Size track</strong> to the moving image and set keys on them.</li>
+<li>In a <code>Will*</code> method, fill in only the key for the place on the other screen (the first key or the last key).</li>
+</ol>
+<pre><code class="lang-csharp">// RPG sample RpgHeroDetail: the hero card's portrait (card) moves into the detail screen's portrait (portrait)
+public Awaitable WillEnter(KeyTweenTransition t)
+{
+    KeyTweenSharedElement.SetPartnerKeys(GetComponent&lt;KeyTween&gt;(), &quot;PushEnter&quot;, portrait.rectTransform, card, atStart: true);
+    card.GetComponent&lt;Image&gt;().enabled = false;   // hide the card's image; show it again after returning from the detail screen
+    return KeyTweenScreen.Completed();
+}
+
+public Awaitable WillExit(KeyTweenTransition t)
+{
+    if (t.Kind == KeyTweenTransitionKind.Pop)       // going back: the last key goes to the card's place
+        KeyTweenSharedElement.SetPartnerKeys(GetComponent&lt;KeyTween&gt;(), &quot;PopExit&quot;, portrait.rectTransform, card, atStart: false);
+    return KeyTweenScreen.Completed();
+}
+</code></pre>
+<h3 id="setpartnerkeys"><code>SetPartnerKeys</code></h3>
+<p><code>SetPartnerKeys(animation, state, moving, partner, atStart)</code> converts the rectangle that <code>partner</code> occupies on screen into a position and size for <code>moving</code>.</p>
+<ul>
+<li>It writes them to keys of the Position and Size tracks.</li>
+<li>With <code>atStart</code> true it writes the first key, otherwise the last key.</li>
+<li>It assumes that <code>moving</code> has point anchors (not stretch).</li>
+</ul>
+<h3 id="examples">Examples</h3>
+<ul>
+<li>The hero card to detail screen transition in the RPG sample</li>
+<li>The bag slot to item info popup transition</li>
+<li>The portrait viewer in the ScreenNavigator recreation</li>
+</ul>
+<p>In the bag of the RPG sample, tapping a slot carries the item icon into its place in the item info popup.</p>
+<p><img src="../../media/rpg/rpg-bag.gif" alt="The bag in the RPG sample. Tapping a slot opens the item info popup."></p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

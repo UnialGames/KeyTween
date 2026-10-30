@@ -1,0 +1,1943 @@
+{
+  "docfx_version": "2.81.0+ba844df625370a6bd7c1ecab0d0ec4d1d9128ac4",
+  "sitemap": {
+    "baseUrl": "https://unialgames.github.io/KeyTween/"
+  },
+  "source_base_path": "/home/seobyeongpil/actions-runner/_work/KeyTween-Dev/KeyTween-Dev/Tools/docfx",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.IKeyTweenScreenLifecycle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.IKeyTweenScreenLifecycle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.IKeyTweenScreenLifecycle",
+      "Summary": "<p sourcefile=\"api/KeyTweening.IKeyTweenScreenLifecycle.yml\" sourcestartlinenumber=\"1\">Implement on any component of a screen's root to run code around its transitions. The Will* calls are awaited\nbefore the animation starts (load data, preload the next screen); the Did* calls come after it ends.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTween.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTween.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTween",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTween.yml\" sourcestartlinenumber=\"1\">Holds the animation states of one prefab and plays them.\nStates can run at the same time; a newly played state takes over only the properties it animates.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenBinding.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenBinding",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenChildCall.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenChildCall.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenChildCall",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenChildCall.yml\" sourcestartlinenumber=\"1\">Plays another KeyTween's state at a point in this state's time (e.g. a popup showing its buttons).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenColorTrack-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenColorTrack-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenColorTrack<T>",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenColorTrack-1.yml\" sourcestartlinenumber=\"1\">A custom track of a Color.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenCurveType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenCurveType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenCurveType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenCustomTrack-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenCustomTrack-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenCustomTrack<T>",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenCustomTrack-1.yml\" sourcestartlinenumber=\"1\">A custom track on a component of type <code class=\"typeparamref\">T</code>. Override <xref href=\"KeyTweening.KeyTweenCustomTrack%601.Get(%600)\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"KeyTweening.KeyTweenCustomTrack%601.Set(%600%2cUnityEngine.Vector4)\" data-throw-if-not-resolved=\"false\"></xref>;\nthe value is a Vector4 (use x for one number, x/y for two …) as <xref href=\"KeyTweening.KeyTweenCustomTrack%601.Kind\" data-throw-if-not-resolved=\"false\"></xref> says.</p>\n<pre><code class=\"lang-csharp\">[Preserve] public sealed class SliderHandleTrack : KeyTweenCustomTrack&lt;Slider&gt; { … }</code></pre>\n<p sourcefile=\"api/KeyTweening.KeyTweenCustomTrack-1.yml\" sourcestartlinenumber=\"6\">The class needs a public parameterless constructor. Mark it [UnityEngine.Scripting.Preserve] when the build strips\ncode (IL2CPP with Managed Stripping Level above Minimal), because tracks are created from the saved class name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenDefaultTransitions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenDefaultTransitions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenDefaultTransitions",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenDefaultTransitions.yml\" sourcestartlinenumber=\"1\">Default transitions, the same as UnityScreenNavigator's defaults: 0.3 s OutQuart. Pages slide by one screen width\n(Size Relative, so any resolution), modals grow from 0.3 and fade in, backdrops and sheets fade (Linear).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEase",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEase.yml\" sourcestartlinenumber=\"1\">How a key arrives. Same members, order and formulas as LitMotion's Ease, so data saved with LitMotion.Ease\n(an int) reads back unchanged.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEasing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEasing.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEasing",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEasing.yml\" sourcestartlinenumber=\"1\">The easing formulas (easings.net, as in LitMotion's EaseUtility).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEvent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEvent",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventAttribute",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEventAttribute.yml\" sourcestartlinenumber=\"1\">Registers a struct as a custom animation event type. Its public fields become the event's parameters, edited per event\nin the KeyTween Editor; code receives them with <code>anim.AddListener((in KeyTweenEventInfo e, in HitEvent hit) =&gt; ...)</code>.</p>\n<pre><code class=\"lang-csharp\">[KeyTweenEvent(\"Hit\")] public struct HitEvent { public float damage; public string sfx; }</code></pre>\n<p sourcefile=\"api/KeyTweening.KeyTweenEventAttribute.yml\" sourcestartlinenumber=\"6\">Fields: numbers, bool, string, Vector2/3, Color, enums (stored as JSON, so no object references).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventHandler-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventHandler<T>",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventHandler",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventInfo",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEventInfo.yml\" sourcestartlinenumber=\"1\">What an animation event handler receives (like Unity 6.5's AnimationEventInfo): passed by <code>in</code>, no allocation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventListener.Binding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventListener.Binding.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventListener.Binding",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventListener.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventListener",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEventListener.yml\" sourcestartlinenumber=\"1\">Connects animation events to UnityEvents in the Inspector, so designers can react without code\n(e.g. &quot;Shown&quot; → AudioSource.PlayOneShot). Custom [KeyTweenEvent] struct data is for code: use KeyTween.AddListener&lt;T&gt;.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventMarker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventMarker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventMarker",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEventMarker.yml\" sourcestartlinenumber=\"1\">An animation event: a named point in a state's time, raised once when playback passes it (e.g. play a sound on impact).\nIt can carry one custom <xref href=\"KeyTweening.KeyTweenEventAttribute\" data-throw-if-not-resolved=\"false\"></xref> struct, stored as JSON and converted once on first use.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenEventTrack.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenEventTrack.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenEventTrack",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenEventTrack.yml\" sourcestartlinenumber=\"1\">A track of animation events (added like any other track).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenExternalProperties.Entry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenExternalProperties.Entry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenExternalProperties.Entry",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenExternalProperties.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenExternalProperties.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenExternalProperties",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenExternalProperties.yml\" sourcestartlinenumber=\"1\">Track properties of components from optional packages (UIEffect …). The core lists them in KeyTweenProperty but does\nnot reference those packages: each package's integration assembly (compiled only when the package is installed)\nregisters how to read and write its properties. Unregistered ones (package not installed) are skipped.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenFloatTrack-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenFloatTrack-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenFloatTrack<T>",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenFloatTrack-1.yml\" sourcestartlinenumber=\"1\">A custom track of one number. e.g. <code>class SliderValueTrack : KeyTweenFloatTrack&lt;Slider&gt;</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenKey.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenKey.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenKey",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenKey.yml\" sourcestartlinenumber=\"1\">A value at a time. Ease/curve describe how the track arrives at this key from the previous one.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenModalContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenModalContainer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenModalContainer",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenModalContainer.yml\" sourcestartlinenumber=\"1\">Modals on top of each other. Each has its own backdrop (a dimmed full-screen image) that fades with it;\nthe modal under the new one does not move.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenOverride.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenOverride.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenOverride",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenOverride.yml\" sourcestartlinenumber=\"1\">A nested KeyTween's state changed inside this prefab only (e.g. the common button flashes differently in this popup).\nOnly the changed tracks are stored, matched to the child's by target + property; every other track keeps following the\nchild's own state, so later changes to the child prefab still show up here. Stored on the outer prefab, so the child's\nprefab is never touched; for the same track the outermost override wins.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenPageContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenPageContainer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenPageContainer",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenPageContainer.yml\" sourcestartlinenumber=\"1\">A history of pages: Push puts a page on top (the old one leaves at the same time), Pop goes back.\nA page pushed with stack = false is dropped from the history once the next page is in (e.g. a loading page).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenPageIndicator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenPageIndicator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenPageIndicator",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenPageIndicator.yml\" sourcestartlinenumber=\"1\">Dots or tabs for a scroll list's items (pages, banners, tab pages): one item per list item, laid out by this\nobject's layout group. The current one plays the On state and the one it replaces plays Off. Clicking one scrolls there.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenPlay.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenPlay.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenPlay",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenPlay.yml\" sourcestartlinenumber=\"1\">A play of one state, set up in code before it starts (<xref href=\"KeyTweening.KeyTween.With(System.String)\" data-throw-if-not-resolved=\"false\"></xref>): a track's end value or arrival,\nwhere it starts, callbacks. Nothing changes until it plays; the changes hold for that play only (put back when it\ncompletes or is canceled), and the same object can be played again and again, like a LitMotion builder you keep.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenProperty.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenProperty.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenProperty",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenPullToRefresh.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenPullToRefresh.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenPullToRefresh",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenPullToRefresh.yml\" sourcestartlinenumber=\"1\">Pull to refresh on a list: pulling past the start shows the Pull state by distance; releasing past Distance\nraises On Refresh and plays the Refreshing state (repeated) until <xref href=\"KeyTweening.KeyTweenPullToRefresh.EndRefresh\" data-throw-if-not-resolved=\"false\"></xref>, holding the list open meanwhile.\nFor vertical lists (pulled down from the top).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScramble.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScramble.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScramble",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenScramble.yml\" sourcestartlinenumber=\"1\">Characters a Text Reveal track shows where text is not revealed yet. Same values as LitMotion's ScrambleMode.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScreen.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScreen.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScreen",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenScreen.yml\" sourcestartlinenumber=\"1\">A page, modal or sheet shown by a screen container. Its transitions are states of its KeyTween, by name:\npages &quot;PushEnter&quot;, &quot;PushExit&quot;, &quot;PopEnter&quot;, &quot;PopExit&quot;; modals &quot;Enter&quot;, &quot;Exit&quot;; sheets &quot;Enter&quot;, &quot;Exit&quot;\n(and optionally &quot;EnterBackward&quot;, &quot;ExitBackward&quot;). A missing one uses the container's default.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScreenContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScreenContainer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScreenContainer",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenScreenContainer.yml\" sourcestartlinenumber=\"1\">Shared by the page, modal and sheet containers: taps are off on every container while any of them is in a\ntransition (so a second tap cannot start another one), and screens get their default transitions from here.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScrollList.Alignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScrollList.Alignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScrollList.Alignment",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScrollList.GridConstraint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScrollList.GridConstraint.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScrollList.GridConstraint",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScrollList.LayoutType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScrollList.LayoutType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScrollList.LayoutType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScrollList.SnapMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScrollList.SnapMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScrollList.SnapMode",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScrollList.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScrollList.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScrollList",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenScrollList.yml\" sourcestartlinenumber=\"1\">A virtualized list on a ScrollRect: only the visible items exist, and they are reused as the list scrolls.\nLaid out like Unity's Vertical / Horizontal / Grid Layout Group (plus Masonry), filled through callbacks like\nUI Toolkit's ListView (bind / unbind by index), and animated with the items' KeyTween states:\nan entry stagger, a state when scrolling brings an item into view, and a state scrubbed by the item's position.\nAlso: several item prefabs, variable sizes, infinite loop, snapping / one page per swipe, auto scroll,\nsticky section headers, sticking to the end (chat), animated item resizing (accordion) and nested scrolling.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenScrollScrub.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenScrollScrub.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenScrollScrub",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenScrollScrub.yml\" sourcestartlinenumber=\"1\">Shows a state by how far a list is scrolled instead of by time: 0 px = the state's start, Distance = its end\n(a header that collapses as the list scrolls, a toolbar that fades in).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenSharedElement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenSharedElement.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenSharedElement",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenSharedElement.yml\" sourcestartlinenumber=\"1\">Shared element transitions: an image on one screen appears to travel to (or from) where it sits on another screen.\nThe motion is a normal state (AnchoredPosition + SizeDelta tracks on the moving image, edited in the window);\nonly the other screen's end is known at run time, so this writes it into the state's first or last keys\njust before the state plays.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenSheetContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenSheetContainer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenSheetContainer",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenSheetContainer.yml\" sourcestartlinenumber=\"1\">Sheets (tab pages) without history: Show switches to one, the old one leaves at the same time.\nMoving to a lower index plays &quot;EnterBackward&quot; / &quot;ExitBackward&quot; when the sheet has them (e.g. slide the other way).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenSound.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenSound.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenSound",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenSound.yml\" sourcestartlinenumber=\"1\">A sound played once when playback passes its time, through the KeyTween's AudioSource.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenSoundTrack.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenSoundTrack.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenSoundTrack",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenSoundTrack.yml\" sourcestartlinenumber=\"1\">A track of sounds played through <xref href=\"KeyTweening.KeyTweenSoundTrack.source\" data-throw-if-not-resolved=\"false\"></xref> (empty = the KeyTween's AudioSource).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenStart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenStart.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenStart",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenStart.yml\" sourcestartlinenumber=\"1\">Where a track's first key gets its value when the state starts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenState",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenStateBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenStateBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenStateBuilder",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenStateBuilder.yml\" sourcestartlinenumber=\"1\">A state made in code (<xref href=\"KeyTweening.KeyTween.Build(System.String)\" data-throw-if-not-resolved=\"false\"></xref>): tracks and keys, events, sounds and callbacks, added to the KeyTween\nas a runtime state (not saved) and played by name like one made in the editor. <xref href=\"KeyTweening.KeyTweenStateBuilder.Add\" data-throw-if-not-resolved=\"false\"></xref> adds it; the Play\nmethods add it and play it. Calls after that keep editing the same state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTimeMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTimeMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTimeMode",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenTimeMode.yml\" sourcestartlinenumber=\"1\">Which clock a KeyTween plays on, like Animator's Update Mode.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTrack.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTrack.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTrack",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTrackType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTrackType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTrackType",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenTrackType.yml\" sourcestartlinenumber=\"1\">What a track animates: which component it needs, how to read and write the value, and how the editor shows it.\nThe built-in tracks are instances of this class; a custom track derives from <xref href=\"KeyTweening.KeyTweenCustomTrack%601\" data-throw-if-not-resolved=\"false\"></xref>\n(or <xref href=\"KeyTweening.KeyTweenFloatTrack%601\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"KeyTweening.KeyTweenVector2Track%601\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"KeyTweening.KeyTweenVector3Track%601\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"KeyTweening.KeyTweenColorTrack%601\" data-throw-if-not-resolved=\"false\"></xref>) and then appears in the Add Track window for objects that have <code>T</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTrackTypes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTrackTypes.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTrackTypes",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenTrackTypes.yml\" sourcestartlinenumber=\"1\">Finds the type of a track: built-in by its <xref href=\"KeyTweening.KeyTweenProperty\" data-throw-if-not-resolved=\"false\"></xref>, custom by its saved class name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTransition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTransition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTransition",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenTransition.yml\" sourcestartlinenumber=\"1\">What a screen gets in its lifecycle calls.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTransitionKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTransitionKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTransitionKind",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenTransitionKind.yml\" sourcestartlinenumber=\"1\">Why a screen is entering or leaving.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenTrigger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenTrigger.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenTrigger",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenTrigger.yml\" sourcestartlinenumber=\"1\">Plays KeyTween states when UI events happen on this object.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenValueKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenValueKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenValueKind",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenValueKind.yml\" sourcestartlinenumber=\"1\">How a track's value is edited and how many of its four numbers (x, y, z, w) it uses.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenVector2Track-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenVector2Track-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenVector2Track<T>",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenVector2Track-1.yml\" sourcestartlinenumber=\"1\">A custom track of a Vector2.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.KeyTweenVector3Track-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.KeyTweenVector3Track-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening.KeyTweenVector3Track<T>",
+      "Summary": "<p sourcefile=\"api/KeyTweening.KeyTweenVector3Track-1.yml\" sourcestartlinenumber=\"1\">A custom track of a Vector3.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/KeyTweening.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/KeyTweening.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "KeyTweening",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/changelog.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/changelog.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/adding-tracks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/adding-tracks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/animation-events.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/animation-events.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/arrival.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/arrival.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/awaiting-several.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/awaiting-several.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/benchmarks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/benchmarks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/build.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/build.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/comparison.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/comparison.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/concepts.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/concepts.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/custom-tracks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/custom-tracks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/editing-keys.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/editing-keys.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/editor-window.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/editor-window.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/events-and-sounds.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/events-and-sounds.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/installation.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/installation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/nested-prefabs.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/nested-prefabs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/other-components.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/other-components.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/overlapping-states.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/overlapping-states.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/performance.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/performance.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/play-on.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/play-on.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/playing-and-awaiting.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/playing-and-awaiting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/preview.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/preview.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/quick-start.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/quick-start.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/r3.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/r3.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/recording.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/recording.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/samples.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/samples.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/saving.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/saving.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/screens.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/screens.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/scroll-list.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/scroll-list.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/shortcuts.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/shortcuts.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/states.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/states.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/text-tracks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/text-tracks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/en/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/en/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/track-options.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/track-options.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/uieffect.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/uieffect.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/unitask.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/unitask.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/values.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/values.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/with.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/with.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/adding-tracks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/adding-tracks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/animation-events.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/animation-events.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/arrival.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/arrival.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/awaiting-several.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/awaiting-several.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/benchmarks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/benchmarks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/build.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/build.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/comparison.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/comparison.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/concepts.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/concepts.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/custom-tracks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/custom-tracks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/editing-keys.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/editing-keys.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/editor-window.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/editor-window.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/events-and-sounds.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/events-and-sounds.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/installation.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/installation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/nested-prefabs.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/nested-prefabs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/other-components.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/other-components.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/overlapping-states.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/overlapping-states.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/overview.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/overview.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/performance.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/performance.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/play-on.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/play-on.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/playing-and-awaiting.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/playing-and-awaiting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/preview.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/preview.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/quick-start.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/quick-start.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/r3.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/r3.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/recording.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/recording.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/samples.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/samples.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/saving.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/saving.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/screens.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/screens.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/scroll-list.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/scroll-list.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/shortcuts.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/shortcuts.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/states.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/states.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/text-tracks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/text-tracks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/ko/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/ko/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/track-options.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/track-options.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/uieffect.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/uieffect.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/unitask.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/unitask.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/values.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/values.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ko/with.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ko/with.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-compare.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-compare.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-curve.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-curve.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-eases.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-eases.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-editor.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-editor.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-inspector-curve.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-inspector-curve.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-inspector-multi.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-inspector-multi.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-inspector-punch.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-inspector-punch.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-punch.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-punch.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-segments.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-segments.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/arrival/arrival-shake.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/arrival/arrival-shake.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-add-track-menu.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-add-track-menu.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-add-track.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-add-track.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-box-select.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-box-select.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-events.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-events.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-key-inspector.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-key-inspector.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-override.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-override.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-play-mode.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-play-mode.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-play-on.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-play-on.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-preview.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-preview.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-record.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-record.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-state.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-state.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-text-chars.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-text-chars.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-track-inspector.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-track-inspector.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/editor/editor-window.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/editor/editor-window.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-bag.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-bag.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-battle.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-battle.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-guild.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-guild.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-heroes.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-heroes.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-mail.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-mail.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-quests.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-quests.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-ranking.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-ranking.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-story.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-story.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/rpg/rpg-summon.gif",
+      "output": {
+        "resource": {
+          "relative_path": "media/rpg/rpg-summon.gif"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "media/scroll/scroll-list-inspector.png",
+      "output": {
+        "resource": {
+          "relative_path": "media/scroll/scroll-list-inspector.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

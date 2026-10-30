@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Concepts | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Concepts | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/concepts.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="concepts">Concepts</h1>
+
+<p>This guide explains how to create, preview and save animations in the KeyTween editor. The editor UI is in English, and this guide uses the names exactly as they appear on screen.</p>
+<p>This page explains the terms used throughout the KeyTween editor.</p>
+<h2 id="the-keytween-component">The KeyTween Component</h2>
+<p><code>KeyTween</code> is the component that holds the animation. Add it to a prefab or a scene object, and it animates the objects under it.</p>
+<p>The animation data is serialized inside the <code>KeyTween</code> component, with no separate asset. As a result, the animation travels with the prefab when you duplicate or move it.</p>
+<p><strong>Time</strong> in the component inspector decides whether playback follows <code>Time.timeScale</code>. The default is <code>Scaled</code> (it follows); set it to <code>Unscaled</code> for UI that must keep moving while the game is paused. For details, see <a href="playing-and-awaiting.html#play-time">Play Time</a>.</p>
+<h2 id="state">State</h2>
+<p>A state is one named animation. Code plays a state by this name.</p>
+<ul>
+<li>Examples: <code>Hover</code>, <code>Open</code>, <code>Close</code></li>
+<li>A state can contain several tracks.</li>
+</ul>
+<p>For details, see <a href="states.html">States</a>.</p>
+<h2 id="track">Track</h2>
+<p>A track animates one property of one object. For example, the Scale of a close button is one track.</p>
+<p>For details, see <a href="adding-tracks.html">Adding Tracks</a>.</p>
+<h2 id="key">Key</h2>
+<p>A key is the value of a track at one point in time. As in the Unity Animation window, animating 1 → 1.2 → 1 takes three keys.</p>
+<p>For details, see <a href="editing-keys.html">Editing Keys</a>.</p>
+<h2 id="arrival">Arrival</h2>
+<p>Arrival is how the value moves from the previous key to this one. Choose one of the following:</p>
+<ul>
+<li>An ease (Ease)</li>
+<li>A curve (Curve)</li>
+<li>Punch</li>
+<li>Shake</li>
+</ul>
+<p>For details, see <a href="arrival.html">Arrival</a>.</p>
+<h2 id="play-on">Play On</h2>
+<p>Play On is the moment a state plays by itself. If you do not pick one, the state plays from code. Examples of moments you can pick:</p>
+<ul>
+<li>When the pointer enters</li>
+<li>On click</li>
+<li>When the component is enabled</li>
+</ul>
+<p>For details, see <a href="play-on.html">Play On</a>.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

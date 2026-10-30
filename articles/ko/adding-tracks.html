@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>트랙 추가 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="트랙 추가 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/adding-tracks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="트랙-추가">트랙 추가</h1>
+
+<p>트랙은 오브젝트 하나의 속성 하나를 움직입니다. 트랙은 트랙 추가 창에서 골라 상태에 넣습니다.</p>
+<h2 id="트랙-추가-창-열기">트랙 추가 창 열기</h2>
+<p>타임라인의 빈 곳을 우클릭하고 <strong>Add Track...</strong> 항목을 고릅니다.</p>
+<p><img src="../../media/editor/editor-add-track-menu.png" alt="타임라인의 트랙 영역을 우클릭한 메뉴. Add Track...과 Add Child Call이 있습니다."></p>
+<h2 id="트랙-고르기">트랙 고르기</h2>
+<p>트랙 추가 창의 왼쪽에는 Prefab 안의 오브젝트 트리가 있고, 오른쪽에는 선택한 오브젝트에서 만들 수 있는 트랙 카드가 현재 값과 함께 나옵니다.</p>
+<ol>
+<li>왼쪽 트리에서 오브젝트를 고릅니다. 트리는 검색할 수 있습니다.</li>
+<li>오른쪽에서 트랙 카드를 클릭해 고릅니다. 여러 개를 고를 수 있습니다.</li>
+<li><strong>Add N</strong>을 누릅니다.</li>
+</ol>
+<p><img src="../../media/editor/editor-add-track.gif" alt="트랙 추가 창에서 오브젝트를 고르고 트랙 카드를 선택해 추가하는 모습"></p>
+<ul>
+<li>카드를 더블클릭하면 바로 추가됩니다.</li>
+<li>다른 오브젝트로 옮겨 가며 골라도 선택은 유지됩니다.</li>
+<li>이미 있는 트랙에는 <code>Added</code> 표시가 붙습니다.</li>
+</ul>
+<h2 id="새-트랙의-기본값">새 트랙의 기본값</h2>
+<ul>
+<li>0초 키와 상태 끝 시간의 키가 생깁니다. 두 키 모두 지금 값을 가집니다.</li>
+<li>상태가 비어 있으면 끝 키는 0.2초에 생깁니다.</li>
+<li>Start는 <strong>Current Value</strong>입니다. Reveal과 글자별 트랙만 Key Value로 생깁니다.</li>
+<li>끝 키의 도착 방식은 Ease <code>OutSine</code>입니다.</li>
+<li>글자별 트랙의 Stagger는 0.05초입니다.</li>
+</ul>
+<p>Start 옵션은 <a href="track-options.html">트랙 옵션</a>을 참고하세요.</p>
+<h2 id="만들-수-있는-트랙">만들 수 있는 트랙</h2>
+<p>트랙 추가 창은 고른 오브젝트에 붙은 컴포넌트에 맞는 트랙만 보여 줍니다.</p>
+<p><strong>오브젝트</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>모든 오브젝트</td>
+<td>Scale, Rotation, Active</td>
+</tr>
+<tr>
+<td>UI가 아닌 오브젝트 (Transform)</td>
+<td>Position, World Position, World Rotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>UI</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RectTransform</td>
+<td>Position, Size, Anchor Min, Anchor Max, Pivot, Offset Min, Offset Max</td>
+</tr>
+<tr>
+<td>CanvasGroup</td>
+<td>Group Alpha</td>
+</tr>
+<tr>
+<td>Graphic (Image, RawImage, TMP 등)</td>
+<td>Color, Alpha</td>
+</tr>
+<tr>
+<td>Image (Image Type = Filled)</td>
+<td>Fill Amount</td>
+</tr>
+<tr>
+<td>RawImage</td>
+<td>UV Rect</td>
+</tr>
+<tr>
+<td>Shadow, Outline</td>
+<td>Effect Color, Effect Distance</td>
+</tr>
+<tr>
+<td>RectMask2D</td>
+<td>Softness, Padding</td>
+</tr>
+<tr>
+<td>Slider</td>
+<td>Value</td>
+</tr>
+<tr>
+<td>ScrollRect</td>
+<td>Scroll Position</td>
+</tr>
+<tr>
+<td>LayoutElement</td>
+<td>Min Size, Preferred Size, Flexible Size</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TextMeshPro</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TMP_Text</td>
+<td>Font Size, Character Spacing, Word Spacing, Line Spacing, Reveal (Typewriter), Number (Count)</td>
+</tr>
+<tr>
+<td>TMP_Text 재질</td>
+<td>Outline Width, Outline Color, Face Dilate, Underlay Color</td>
+</tr>
+<tr>
+<td>TMP_Text 글자별</td>
+<td>Char Scale, Char Position, Char Rotation, Char Color, Char Alpha</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2D, 3D, 카메라, 소리</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SpriteRenderer</td>
+<td>Color, Alpha</td>
+</tr>
+<tr>
+<td>Renderer (MeshRenderer 등)</td>
+<td>Material 트랙: 재질의 색, 숫자, 벡터 속성마다 하나 (예: <code>Material _BaseColor</code>)</td>
+</tr>
+<tr>
+<td>Light</td>
+<td>Light Color, Intensity, Range (Point, Spot), Spot Angle (Spot)</td>
+</tr>
+<tr>
+<td>Camera</td>
+<td>Camera Background, Camera Size, Field of View, Near Clip, Far Clip, Viewport Rect</td>
+</tr>
+<tr>
+<td>AudioSource</td>
+<td>Volume, Pitch</td>
+</tr>
+</tbody>
+</table>
+<p><strong>이벤트와 사운드</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>루트</td>
+<td>Animation Events, Sound</td>
+</tr>
+</tbody>
+</table>
+<p><strong>그 밖의 트랙</strong></p>
+<ul>
+<li>UIEffect를 설치하면 UIEffect 트랙 14종이 추가됩니다. 자세한 내용은 <a href="unitask.html">연동</a>을 참고하세요.</li>
+<li>프로젝트의 컴포넌트를 움직이는 트랙은 직접 만들 수 있습니다. 자세한 내용은 <a href="custom-tracks.html">커스텀 트랙 만들기</a>를 참고하세요.</li>
+</ul>
+<p><strong>알아 둘 점</strong></p>
+<ul>
+<li><code>Group Alpha</code>는 화면이나 팝업 전체를 페이드할 때 씁니다.</li>
+<li><code>Rotation</code>과 <code>World Rotation</code>은 오일러 각(도)입니다. 값을 −180~180 범위로 읽으므로, −30°에서 0°로 갈 때 먼 쪽으로 돌지 않습니다.</li>
+<li><code>Active</code>는 키 사이를 보간하지 않고, 키 시간에 오브젝트를 켜거나 끕니다.</li>
+<li>Material 트랙은 MaterialPropertyBlock으로 씁니다. 재질 에셋은 바뀌지 않고, 같은 재질을 쓰는 다른 오브젝트에도 영향을 주지 않습니다.</li>
+<li>TMP 재질 트랙은 그 텍스트만 쓰는 재질 인스턴스를 만듭니다. 미리보기를 멈추면 원래 재질로 돌아옵니다.</li>
+</ul>
+<h2 id="트랙-대상-바꾸기">트랙 대상 바꾸기</h2>
+<p>트랙의 대상을 바꾸려면 트랙 인스펙터 맨 위의 <code>경로 · 속성 ▾</code> 버튼을 누릅니다.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

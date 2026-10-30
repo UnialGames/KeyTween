@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>화면 전환 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="화면 전환 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/screens.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="화면-전환">화면 전환</h1>
+
+<p>KeyTween에는 게임 UI의 화면 흐름을 관리하는 컴포넌트가 들어 있습니다. 화면을 쌓고 뒤로 가는 페이지, 위에 띄우는 팝업(모달), 탭처럼 바꿔 보여 주는 시트를 다룹니다. UnityScreenNavigator와 같은 역할을 별도 패키지 없이 할 수 있습니다.</p>
+<p>전환 연출은 화면 Prefab에 붙은 <strong><code>KeyTween</code> 상태</strong>로 만듭니다. 상태는 <code>KeyTween</code> 컴포넌트에 이름을 붙여 저장해 둔 애니메이션 하나를 말합니다. 정해진 이름의 상태가 없으면 기본 전환을 씁니다.</p>
+<p>모든 전환은 Unity <code>Awaitable</code>을 돌려주므로, 서드파티 라이브러리 없이 <code>await</code>로 끝날 때까지 기다릴 수 있습니다.</p>
+<h2 id="1-화면--keytweenscreen">1. 화면 — <code>KeyTweenScreen</code></h2>
+<p><code>KeyTweenScreen</code>은 페이지, 모달, 시트가 되는 화면 하나를 나타냅니다.</p>
+<h3 id="화면-prefab-만들기">화면 Prefab 만들기</h3>
+<ol>
+<li>화면 Prefab의 루트를 고릅니다.</li>
+<li><strong>Add Component &gt; KeyTween &gt; Screen</strong>을 선택합니다.</li>
+</ol>
+<p>같은 오브젝트에 다음 컴포넌트가 함께 있어야 합니다.</p>
+<ul>
+<li><code>RectTransform</code></li>
+<li><code>CanvasGroup</code></li>
+<li><code>KeyTween</code></li>
+</ul>
+<p>컨테이너가 만든 화면은 컨테이너 영역을 꽉 채웁니다.</p>
+<h3 id="그리는-순서--renderingorder">그리는 순서 — <code>renderingOrder</code></h3>
+<ul>
+<li>페이지 컨테이너에서는 값이 높은 페이지가 위에 그려집니다.</li>
+<li>값이 같으면 넣은 순서대로 쌓입니다.</li>
+<li>모달 컨테이너에서는 나중에 띄운 모달이, 시트 컨테이너에서는 마지막으로 <code>Show</code>한 시트가 위에 옵니다.</li>
+</ul>
+<h3 id="연출-없이-전환하기">연출 없이 전환하기</h3>
+<p><code>animated: false</code>로 전환하면 연출 없이 상태의 끝 모습으로 바로 바뀝니다.</p>
+<p>게임을 시작하거나 저장된 화면을 복원할 때처럼, 사용자가 전환을 볼 필요가 없을 때 씁니다.</p>
+<pre><code class="lang-csharp">await pages.Push(homePrefab, animated: false);   // 첫 화면은 슬라이드 없이 바로
+</code></pre>
+<p>이때는 상태를 재생하지 않고 끝 모습만 쓰므로, 전환 상태의 On Start와 On Complete가 불리지 않습니다. 생명주기 메서드(<code>WillEnter</code>, <code>DidEnter</code> 등)는 그대로 불립니다.</p>
+<h3 id="전환-상태의-콜백">전환 상태의 콜백</h3>
+<p>전환은 상태를 <code>PlayAsync</code>로 재생합니다. 그래서 전환 상태의 On Start와 On Complete가 불립니다.</p>
+<p>전환 상태가 끝까지 가지 못하면(그 상태의 On Start에서 <code>Stop</code>을 부르거나, 다른 상태가 같은 속성을 가져가는 경우) <code>Push</code>, <code>Pop</code>, <code>Show</code>가 <code>OperationCanceledException</code>을 던집니다. 이때 화면은 중간 모습으로 남고 생명주기의 <code>Did...</code>는 불리지 않습니다. 전환 상태는 전환 중에 멈추지 마세요.</p>
+<h2 id="2-컨테이너">2. 컨테이너</h2>
+<p>화면은 컨테이너가 만들고 관리합니다. 컨테이너는 세 종류가 있고, 종류마다 화면에서 찾는 상태 이름과 기본 전환이 다릅니다.</p>
+<table>
+<thead>
+<tr>
+<th>컨테이너</th>
+<th>화면</th>
+<th>기본 전환 (0.3초)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyTweenPageContainer</code></td>
+<td>쌓고 뒤로 가는 페이지</td>
+<td>화면 한 폭만큼 슬라이드(Size Relative), OutQuart</td>
+</tr>
+<tr>
+<td><code>KeyTweenModalContainer</code></td>
+<td>위에 띄우는 모달</td>
+<td>크기 0.3 → 1과 알파(OutQuart), 배경은 알파 페이드(Linear)</td>
+</tr>
+<tr>
+<td><code>KeyTweenSheetContainer</code></td>
+<td>바꿔 보여 주는 시트</td>
+<td>알파 페이드(Linear)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="컨테이너-추가하기">컨테이너 추가하기</h3>
+<ol>
+<li>Canvas 안에 화면이 들어갈 영역이 될 오브젝트를 만듭니다. 보통 Canvas를 꽉 채우는 RectTransform입니다.</li>
+<li><strong>Add Component &gt; KeyTween &gt; Page Container</strong>(또는 <strong>Modal Container</strong>, <strong>Sheet Container</strong>)를 선택합니다. <code>CanvasGroup</code>이 함께 붙습니다.</li>
+<li>코드에서 이 컨테이너에 화면 Prefab을 넘겨 엽니다.</li>
+</ol>
+<pre><code class="lang-csharp">[SerializeField] KeyTweenPageContainer pages;
+[SerializeField] KeyTweenScreen shopPrefab;
+
+public async void OpenShop() =&gt; await pages.Push(shopPrefab);
+</code></pre>
+<p>컨테이너가 화면을 만들 때 컨테이너 영역을 꽉 채우도록 맞춥니다. 페이지와 모달을 함께 쓰려면 컨테이너를 둘 만들고, 모달 컨테이너를 Hierarchy에서 아래(위에 그려지는 쪽)에 둡니다.</p>
+<h3 id="페이지--keytweenpagecontainer">페이지 — <code>KeyTweenPageContainer</code></h3>
+<ul>
+<li>API: <code>Push(prefab, animated, stack)</code>, <code>Pop(animated)</code>, <code>Pages</code>, <code>Current</code></li>
+<li>상태 이름: <code>PushEnter</code>, <code>PushExit</code>, <code>PopEnter</code>, <code>PopExit</code></li>
+</ul>
+<pre><code class="lang-csharp">await pages.Push(loadingPage, stack: false);   // 로딩 화면: 다음 페이지가 들어오면 기록에서 빠지고 파괴됨
+await pages.Push(homePage);                     // Home이 WillEnter에서 준비하는 동안 로딩 화면이 보임
+</code></pre>
+<p><code>Push</code>는 다음 순서로 진행합니다.</p>
+<ol>
+<li>새 페이지를 만듭니다.</li>
+<li>들어오는 페이지와 나가는 페이지의 <code>Will*</code> 메서드가 끝나기를 기다립니다.</li>
+<li><code>PushEnter</code>와 <code>PushExit</code>를 <strong>동시에</strong> 재생합니다.</li>
+<li>끝나면 나간 페이지를 비활성화합니다.</li>
+</ol>
+<ul>
+<li><code>stack: false</code>로 넣은 페이지는 다음 페이지가 들어올 때 기록에서 빠지고 파괴됩니다. 로딩 화면에 씁니다.</li>
+<li><code>Pop</code>은 이전 페이지를 다시 활성화하고 <code>PopEnter</code>와 <code>PopExit</code>를 재생한 뒤 현재 페이지를 파괴합니다.</li>
+<li>페이지가 없으면 <code>Pop</code>은 아무것도 하지 않습니다.</li>
+</ul>
+<p>RPG 샘플은 로비에서 영웅 상세 페이지로, 상세 페이지에서 강화 페이지로 이동할 때 <code>Push</code>를 쓰고, 돌아올 때 <code>Pop</code>을 씁니다.</p>
+<p><img src="../../media/rpg/rpg-heroes.gif" alt="RPG 샘플의 영웅 화면. 로비에서 영웅 상세 페이지로 들어가고, 강화 페이지로 넘어갔다가 돌아옵니다."></p>
+<h3 id="모달--keytweenmodalcontainer">모달 — <code>KeyTweenModalContainer</code></h3>
+<ul>
+<li>API: <code>Push(prefab, animated)</code>, <code>Pop(animated)</code>, <code>Modals</code>, <code>Current</code>, <code>backdropPrefab</code></li>
+<li>상태 이름: <code>Enter</code>, <code>Exit</code> (배경도 <code>Enter</code>/<code>Exit</code>)</li>
+</ul>
+<pre><code class="lang-csharp">await modals.Push(confirmPopup);
+await modals.Pop();
+</code></pre>
+<ul>
+<li>모달마다 배경(backdrop)을 하나씩 만듭니다.</li>
+<li><code>backdropPrefab</code>을 비워 두면 75% 불투명도의 검정 배경을 만듭니다.</li>
+<li>아래에 깔린 모달은 움직이지 않고, 생명주기 메서드도 불리지 않습니다.</li>
+<li><code>Pop</code>은 <code>Exit</code>를 재생한 뒤 모달과 배경을 파괴합니다.</li>
+</ul>
+<p>RPG 샘플의 출석 체크 창은 모달 컨테이너로 띄웁니다. 창이 나타나는 동안 뒤의 로비는 배경으로 어두워집니다.</p>
+<p><img src="../../media/rpg/rpg-mail.gif" alt="RPG 샘플의 우편함과 출석 체크 모달. 모달이 배경과 함께 로비 위에 나타납니다."></p>
+<h3 id="시트--keytweensheetcontainer">시트 — <code>KeyTweenSheetContainer</code></h3>
+<ul>
+<li>API: <code>Register(prefab)</code>, <code>Show(index, animated)</code>, <code>Sheets</code>, <code>ActiveIndex</code>, <code>Active</code></li>
+<li>상태 이름: <code>Enter</code>, <code>Exit</code></li>
+<li>낮은 번호로 갈 때의 상태 이름: <code>EnterBackward</code>, <code>ExitBackward</code> (없으면 <code>Enter</code>/<code>Exit</code>)</li>
+</ul>
+<pre><code class="lang-csharp">var tab = sheets.Register(shopTabPrefab);
+await sheets.Show(tab);                         // 높은 번호로 가면 Enter, 낮은 번호로 가면 EnterBackward
+</code></pre>
+<ul>
+<li><code>Register</code>는 시트를 만들어 숨겨 두고, 그 시트의 번호를 돌려줍니다.</li>
+<li><code>Show</code>는 현재와 같은 번호이거나 범위를 벗어난 번호를 받으면 아무것도 하지 않습니다.</li>
+<li>나간 시트는 비활성화됩니다.</li>
+</ul>
+<h3 id="기본-전환-값">기본 전환 값</h3>
+<p>기본 전환 값은 UnityScreenNavigator의 기본값과 같습니다. 코드에서 <code>KeyTweenDefaultTransitions</code>를 통해 직접 쓸 수도 있습니다.</p>
+<ul>
+<li><code>PagePushEnter</code> 등</li>
+<li><code>Slide</code></li>
+<li><code>FadeIn</code> / <code>FadeOut</code></li>
+</ul>
+<p>모두 <code>KeyTweenScreen</code>을 받아 새 <code>KeyTweenState</code>를 돌려주는 함수입니다. 이름을 붙여 <code>AddState</code>로 넣으면 다른 상태처럼 재생할 수 있습니다.</p>
+<pre><code class="lang-csharp">var fade = KeyTweenDefaultTransitions.FadeIn(screen);
+fade.name = &quot;FadeIn&quot;;
+screen.Animation.AddState(fade);
+</code></pre>
+<h2 id="3-입력-막기">3. 입력 막기</h2>
+<p>전환이 진행되는 동안에는 <strong>모든 컨테이너의 터치 입력이 막힙니다</strong>. 그래서 버튼을 연달아 눌러도 전환이 겹치지 않습니다.</p>
+<h3 id="전환-중인지-확인하기">전환 중인지 확인하기</h3>
+<ul>
+<li><code>KeyTweenScreenContainer.AnyInTransition</code>: 어느 컨테이너든 전환 중인지 알려 줍니다.</li>
+<li><code>IsInTransition</code>: 컨테이너별로 전환 중인지 알려 줍니다.</li>
+</ul>
+<h3 id="입력을-막는-방식">입력을 막는 방식</h3>
+<p>입력은 각 컨테이너의 <code>CanvasGroup.blocksRaycasts</code>로 막습니다.</p>
+<ul>
+<li><code>interactable</code>은 바꾸지 않으므로, 전환 중에도 버튼이 비활성 색으로 바뀌지 않습니다.</li>
+<li>컨테이너 오브젝트에는 <code>RectTransform</code>과 <code>CanvasGroup</code>이 있어야 합니다.</li>
+</ul>
+<h2 id="4-생명주기--ikeytweenscreenlifecycle">4. 생명주기 — <code>IKeyTweenScreenLifecycle</code></h2>
+<p>화면이 들어오고 나갈 때 코드를 실행하려면 이 인터페이스를 씁니다.</p>
+<h3 id="생명주기-메서드-구현하기">생명주기 메서드 구현하기</h3>
+<p>화면 루트에 있는 컴포넌트 중 이 인터페이스를 구현한 것이 있으면 전환 때마다 불립니다. 모든 메서드에 기본 구현이 있으므로 필요한 메서드만 작성하면 됩니다.</p>
+<pre><code class="lang-csharp">public sealed class HomePage : MonoBehaviour, IKeyTweenScreenLifecycle
+{
+    public async Awaitable WillEnter(KeyTweenTransition t) { await LoadAsync(); }   // 애니메이션 전에 불리고, 끝날 때까지 기다림
+    public void DidEnter(KeyTweenTransition t) { }                                  // 애니메이션 후
+    public Awaitable WillExit(KeyTweenTransition t) =&gt; KeyTweenScreen.Completed();    // 기다릴 작업이 없을 때
+    public void DidExit(KeyTweenTransition t) { }
+}
+</code></pre>
+<h3 id="전환-정보--keytweentransition">전환 정보 — <code>KeyTweenTransition</code></h3>
+<p>각 메서드가 받는 <code>KeyTweenTransition</code>에는 다음 정보가 들어 있습니다.</p>
+<table>
+<thead>
+<tr>
+<th>속성</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Kind</code></td>
+<td>전환 종류. Push, Pop, Show, Hide 중 하나</td>
+</tr>
+<tr>
+<td><code>Partner</code></td>
+<td>함께 전환되는 상대 화면</td>
+</tr>
+<tr>
+<td><code>Backward</code></td>
+<td>뒤로 가는 전환인지 여부</td>
+</tr>
+<tr>
+<td><code>Animated</code></td>
+<td>연출을 재생하는 전환인지 여부</td>
+</tr>
+</tbody>
+</table>
+<p><code>Backward</code>가 true인 전환은 다음과 같습니다.</p>
+<ul>
+<li>페이지와 모달의 Pop</li>
+<li>시트에서 낮은 번호로 가는 전환</li>
+</ul>
+<h2 id="5-공유-요소-전환--keytweensharedelement">5. 공유 요소 전환 — <code>KeyTweenSharedElement</code></h2>
+<p>공유 요소 전환은 한 요소가 두 화면을 잇는 연출입니다. 예를 들어 목록에 있던 초상화가 상세 화면의 초상화 자리로 이어지며 커집니다.</p>
+<h3 id="공유-요소-전환-만들기">공유 요소 전환 만들기</h3>
+<p>연출 자체는 에디터에서 만들고, 실행 중에만 알 수 있는 상대 화면 쪽 자리는 코드에서 채웁니다.</p>
+<ol>
+<li>움직이는 이미지에 <strong>Position 트랙과 Size 트랙</strong>을 두고 키를 넣습니다.</li>
+<li><code>Will*</code> 메서드에서 상대 화면 쪽 자리에 해당하는 키(첫 키 또는 마지막 키)만 채웁니다.</li>
+</ol>
+<pre><code class="lang-csharp">// RPG 샘플 RpgHeroDetail: 영웅 카드의 초상화(card)가 상세 화면의 초상화(portrait) 자리로 이어짐
+public Awaitable WillEnter(KeyTweenTransition t)
+{
+    KeyTweenSharedElement.SetPartnerKeys(GetComponent&lt;KeyTween&gt;(), &quot;PushEnter&quot;, portrait.rectTransform, card, atStart: true);
+    card.GetComponent&lt;Image&gt;().enabled = false;   // 카드 쪽 그림은 숨겨 두고, 상세 화면에서 돌아온 뒤 다시 보이게 함
+    return KeyTweenScreen.Completed();
+}
+
+public Awaitable WillExit(KeyTweenTransition t)
+{
+    if (t.Kind == KeyTweenTransitionKind.Pop)       // 돌아갈 때: 마지막 키를 카드 자리로
+        KeyTweenSharedElement.SetPartnerKeys(GetComponent&lt;KeyTween&gt;(), &quot;PopExit&quot;, portrait.rectTransform, card, atStart: false);
+    return KeyTweenScreen.Completed();
+}
+</code></pre>
+<h3 id="setpartnerkeys"><code>SetPartnerKeys</code></h3>
+<p><code>SetPartnerKeys(animation, state, moving, partner, atStart)</code>는 <code>partner</code>가 화면에서 차지하는 사각형을 <code>moving</code> 기준의 위치와 크기로 바꿉니다.</p>
+<ul>
+<li>그 값을 Position 트랙과 Size 트랙의 키에 씁니다.</li>
+<li><code>atStart</code>가 true이면 첫 키에, false이면 마지막 키에 씁니다.</li>
+<li><code>moving</code>의 앵커는 한 점이어야 합니다(stretch가 아니어야 합니다).</li>
+</ul>
+<h3 id="사용-예">사용 예</h3>
+<ul>
+<li>RPG 샘플의 영웅 카드에서 상세 화면으로의 전환</li>
+<li>가방 슬롯에서 아이템 정보 팝업으로의 전환</li>
+<li>ScreenNavigator 재현 샘플의 초상화 뷰어</li>
+</ul>
+<p>RPG 샘플의 가방에서는 슬롯을 누르면 아이템 아이콘이 아이템 정보 팝업의 자리로 이어집니다.</p>
+<p><img src="../../media/rpg/rpg-bag.gif" alt="RPG 샘플의 가방. 슬롯을 누르면 아이템 정보 팝업이 열립니다."></p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

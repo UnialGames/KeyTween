@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>코드에서 재생 설정하기 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="코드에서 재생 설정하기 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/with.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="코드에서-재생-설정하기">코드에서 재생 설정하기</h1>
+
+<p>움직임은 에디터에서 만들고, 재생할 때마다 달라지는 것만 코드에서 정합니다. 재화나 전투력의 목표 숫자, 상황에 따라 다른 도착 방식, 끝났을 때 할 일 같은 것입니다.</p>
+<p><code>With(state)</code>로 재생 하나를 설정하고, <code>Play</code> 계열로 재생합니다. LitMotion의 <code>WithEase</code>처럼 이어 씁니다.</p>
+<pre><code class="lang-csharp">// 금화 라벨의 &quot;Count&quot; 상태: Number (Count) 트랙, Start = Current Value, 0.6초 OutQuad (에디터에서 만듦)
+count.With(&quot;Count&quot;).WithEndValue(goldLabel, KeyTweenProperty.TextNumber, gold).Play();
+
+// 팝업 열기: 이번에는 OutBack으로 도착하고, 다 열리면 입력을 받음
+await popup.With(&quot;Open&quot;)
+    .WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack)
+    .WithOnComplete(EnableInput)
+    .PlayAsync(destroyCancellationToken);
+</code></pre>
+<h2 id="바꿀-수-있는-것">바꿀 수 있는 것</h2>
+<p>트랙은 상태 이름, 대상, 속성으로 찾고, 바꾸는 것은 그 트랙의 <strong>마지막 키</strong>(끝 값과 그 키로 오는 구간)입니다.</p>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>바꾸는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WithEndValue(target, property, value)</code></td>
+<td>마지막 키의 값. <code>float</code>를 받는 것은 내장 속성용이고 x만 바꿉니다</td>
+</tr>
+<tr>
+<td><code>WithEase(target, property, ease)</code></td>
+<td>마지막 키의 도착 방식을 Ease로, 그 Ease</td>
+</tr>
+<tr>
+<td><code>WithCurve(target, property, curve)</code></td>
+<td>도착 방식을 Curve로, 그 AnimationCurve</td>
+</tr>
+<tr>
+<td><code>WithPunch(target, property, frequency = 10, damping = 1)</code>, <code>WithShake(...)</code></td>
+<td>도착 방식을 Punch / Shake로, 진동 값. 세기는 키에 적힌 값 그대로입니다</td>
+</tr>
+<tr>
+<td><code>WithTime(time)</code></td>
+<td>그 시간(초)부터 재생 (<code>Play(state, time)</code>과 같음)</td>
+</tr>
+<tr>
+<td><code>WithEventsBefore(raise = true)</code></td>
+<td><code>WithTime</code>과 함께: 그 시간 이전의 애니메이션 이벤트도 시작할 때 순서대로 발생 (사운드, 자식 호출은 건너뜀)</td>
+</tr>
+<tr>
+<td><code>WithOnStart</code>, <code>WithOnComplete</code>, <code>WithOnCancel</code></td>
+<td>이 재생에만 거는 콜백. 상태의 On Start 등 다음에 불림</td>
+</tr>
+<tr>
+<td><code>WithOnLoop</code></td>
+<td>반복 상태에서 한 바퀴가 끝날 때마다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Material 트랙은 <code>WithEase(renderer, &quot;_BaseColor&quot;, ease)</code>처럼 셰이더 속성 이름으로, 커스텀 트랙은 <code>WithEase&lt;MyTrack&gt;(target, ease)</code>처럼 트랙 클래스로 찾습니다.</li>
+<li>넘긴 값은 키 값과 똑같이 해석됩니다. Relative To Rest와 Size Relative 설정이 반영됩니다.</li>
+<li>맞는 트랙이 없으면 경고 로그를 남기고 그 항목만 건너뜁니다. 재생은 합니다.</li>
+<li><code>With</code>에는 <code>PointerEventData</code>를 넘기는 재생이 없습니다. Start = Pointer 트랙이 있는 상태는 <code>Play(state, eventData)</code>로 재생합니다.</li>
+</ul>
+<p><code>WithTime</code>, <code>WithEventsBefore</code>, <code>WithOnLoop</code>는 이렇게 씁니다.</p>
+<pre><code class="lang-csharp">// 저장한 게임을 불러올 때: 0.8초 지점부터 이어서 재생하고, 그 전의 이벤트(&quot;DoorOpened&quot; 등)도 순서대로 받아 상태를 맞춤
+door.With(&quot;Open&quot;).WithTime(0.8f).WithEventsBefore().Play();
+
+// 반복 상태가 한 바퀴 돌 때마다 횟수를 셈
+int laps = 0;
+wheel.With(&quot;Spin&quot;).WithOnLoop(() =&gt; laps++).Play();
+</code></pre>
+<h2 id="이번-재생에만-적용됩니다">이번 재생에만 적용됩니다</h2>
+<p>바꾼 값은 재생을 시작할 때 들어가고, 그 재생이 끝나면(완료든 취소든) 원래대로 돌아옵니다. 다음 <code>Play</code>는 에디터에서 정한 값으로 재생합니다. 저장된 데이터는 바뀌지 않습니다.</p>
+<p><code>With</code>가 돌려준 것은 변수에 두고 몇 번이든 다시 재생할 수 있습니다. 다시 쓰면 재생할 때 GC 할당이 없습니다.</p>
+<pre><code class="lang-csharp">KeyTweenPlay _open;
+
+void Awake() =&gt; _open = popup.With(&quot;Open&quot;).WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+public void Show() =&gt; _open.Play();
+</code></pre>
+<h2 id="다른-곳이-재생하는-상태의-끝-값">다른 곳이 재생하는 상태의 끝 값</h2>
+<p>Play On이나 화면 전환처럼 내 코드가 아닌 곳이 재생하는 상태는 <code>With</code>를 쓸 수 없습니다. 이때는 <code>SetEndValue</code>로 끝 값을 미리 넣어 둡니다. 이 값은 그 뒤의 모든 재생에 계속 적용됩니다.</p>
+<pre><code class="lang-csharp">public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value);
+public void SetEndValue(string stateName, Component target, KeyTweenProperty property, float value);   // x만 바꿉니다
+</code></pre>
+<p><code>SetEndValue</code>는 내장 속성 트랙만 찾습니다. Material 트랙과 커스텀 트랙의 끝 값은 <code>With</code>로 바꿉니다.</p>
+<pre><code class="lang-csharp">// 결과 화면: 화면 전환이 &quot;Enter&quot;를 재생할 때 금화가 이 숫자까지 올라감
+result.SetEndValue(&quot;Enter&quot;, goldLabel, KeyTweenProperty.TextNumber, reward);
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
