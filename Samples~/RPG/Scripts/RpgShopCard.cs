@@ -25,6 +25,6 @@ public sealed class RpgShopCard : MonoBehaviour
         stock.transform.parent.gameObject.SetActive(o.stock > 0);   // the "N LEFT" badge: limited offers only
         stock.text = $"{o.stock} LEFT";
         buy.interactable = o.stock != 0;
-        GetComponent<KeyTween>().Sample("SoldOut", o.stock == 0 ? 1f : 0f);   // a reused card may show another offer's stamp
+        GetComponent<KeyTween>().Stop("SoldOut", o.stock == 0 ? 1f : 0f);   // a reused card may show another offer's stamp
     }
 }

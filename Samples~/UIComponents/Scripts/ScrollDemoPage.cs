@@ -124,7 +124,7 @@ public sealed class ScrollDemoPage : MonoBehaviour
                 list.SetCount(_count, (RectTransform item, int i) =>
                 {
                     item.GetComponent<ScrollItemView>().Set($"Question {i + 1}", i);
-                    item.GetComponent<KeyTween>().Sample(_open.Contains(i) ? "Open" : "Close", float.MaxValue);
+                    item.GetComponent<KeyTween>().Stop(_open.Contains(i) ? "Open" : "Close", float.MaxValue);
                     var button = item.GetComponent<Button>();
                     button.onClick.RemoveAllListeners();
                     button.onClick.AddListener(() => Toggle(item, i));

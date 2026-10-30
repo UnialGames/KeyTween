@@ -24,7 +24,7 @@ namespace KeyTweening
             var t = Mathf.Clamp01(list.Offset / distance);
             if (Mathf.Approximately(t, _last)) return;
             _last = t;
-            target.Sample(state, t * target.Duration(state));
+            target.Stop(state, t * target.Duration(state));
         }
     }
 }

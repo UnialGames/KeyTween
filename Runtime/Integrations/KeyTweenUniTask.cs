@@ -18,6 +18,18 @@ namespace KeyTweening
         public static UniTask PlayReversedUniTaskAsync(this KeyTween animation, string stateName, CancellationToken cancellationToken = default) =>
             animation.PlayReversedAsync(stateName, cancellationToken).AsUniTask();
 
+        /// <summary><see cref="KeyTween.PlayAsync(string, float, CancellationToken)"/> (from a given time) as a UniTask.</summary>
+        public static UniTask PlayUniTaskAsync(this KeyTween animation, string stateName, float time, CancellationToken cancellationToken = default) =>
+            animation.PlayAsync(stateName, time, cancellationToken).AsUniTask();
+        /// <summary><see cref="KeyTween.PlayReversedAsync(string, float, CancellationToken)"/> (from a given time) as a UniTask.</summary>
+        public static UniTask PlayReversedUniTaskAsync(this KeyTween animation, string stateName, float time, CancellationToken cancellationToken = default) =>
+            animation.PlayReversedAsync(stateName, time, cancellationToken).AsUniTask();
+        /// <summary><see cref="KeyTweenPlay.PlayAsync"/> (a play set up with With) as a UniTask.</summary>
+        public static UniTask PlayUniTaskAsync(this KeyTweenPlay play, CancellationToken cancellationToken = default) =>
+            play.PlayAsync(cancellationToken).AsUniTask();
+        /// <summary><see cref="KeyTweenPlay.PlayReversedAsync"/> as a UniTask.</summary>
+        public static UniTask PlayReversedUniTaskAsync(this KeyTweenPlay play, CancellationToken cancellationToken = default) =>
+            play.PlayReversedAsync(cancellationToken).AsUniTask();
         /// <summary><see cref="KeyTween.WaitEventAsync"/> as a UniTask.</summary>
         public static UniTask<KeyTweenEventInfo> WaitEventUniTaskAsync(this KeyTween animation, string eventName,
             CancellationToken cancellationToken = default) =>

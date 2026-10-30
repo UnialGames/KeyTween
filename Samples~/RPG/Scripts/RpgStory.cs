@@ -39,7 +39,7 @@ public sealed class RpgStory : MonoBehaviour, IKeyTweenScreenLifecycle
     {
         _line = -1;
         _leftShown = _rightShown = false;
-        _animation.Sample("Choices", 0f);
+        _animation.Stop("Choices", 0f);
         line.text = "";
         speaker.text = "";
         left.color = right.color = new Color(1, 1, 1, 0);

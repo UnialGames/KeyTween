@@ -29,9 +29,9 @@ public sealed class RpgAttendance : MonoBehaviour, IKeyTweenScreenLifecycle
             var (icon, amount) = RpgData.Attendance[i];
             rewardIcons[i].sprite = demo.Sprite(icon);
             amounts[i].text = icon == "chest" ? "x1" : amount.ToString("N0");
-            days[i].Sample("Stamp", i < demo.AttendanceDay ? 1f : 0f);
+            days[i].Stop("Stamp", i < demo.AttendanceDay ? 1f : 0f);
             days[i].Stop("Today");
-            days[i].Sample("Today", 0f);
+            days[i].Stop("Today", 0f);
         }
         claim.interactable = !demo.AttendanceClaimed;
         if (!demo.AttendanceClaimed) days[demo.AttendanceDay].Play("Today");
@@ -45,7 +45,7 @@ public sealed class RpgAttendance : MonoBehaviour, IKeyTweenScreenLifecycle
         var today = days[demo.AttendanceDay];
         claim.interactable = false;
         today.Stop("Today");
-        today.Sample("Today", 0f);
+        today.Stop("Today", 0f);
         try { await today.PlayAsync("Stamp"); }
         catch (OperationCanceledException) { return; }   // closed before the stamp landed
         demo.ClaimAttendance();

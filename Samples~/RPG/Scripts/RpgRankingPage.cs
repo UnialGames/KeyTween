@@ -31,7 +31,7 @@ public sealed class RpgRankingPage : MonoBehaviour
         list.SetData(rest, (RpgRow row, RpgData.Rank r, int i) =>
         {
             Set(row, r, i + podium.Length);
-            row.GetComponent<KeyTween>().Sample("Highlight", 0f);
+            row.GetComponent<KeyTween>().Stop("Highlight", 0f);
         });
         myRank.onClick.AddListener(ShowMine);
     }

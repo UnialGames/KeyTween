@@ -64,7 +64,7 @@ namespace KeyTweening
                 Destroy(_items[^1].gameObject);
                 _items.RemoveAt(_items.Count - 1);
             }
-            for (var i = 0; i < _items.Count; i++) Anim(i)?.Sample(offState, float.MaxValue);   // rest pose: Off
+            for (var i = 0; i < _items.Count; i++) Anim(i)?.Stop(offState, float.MaxValue);   // rest pose: Off
             _current = -1;
         }
     }

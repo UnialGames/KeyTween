@@ -44,6 +44,6 @@ public sealed class RpgSettings : MonoBehaviour, IKeyTweenScreenLifecycle
         var anim = toggle.GetComponent<KeyTween>();
         var state = on ? "On" : "Off";
         if (animated) anim.Play(state);
-        else anim.Sample(state, anim.Duration(state));
+        else anim.Stop(state, anim.Duration(state));
     }
 }

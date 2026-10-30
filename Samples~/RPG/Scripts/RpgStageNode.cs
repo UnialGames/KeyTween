@@ -26,7 +26,7 @@ public sealed class RpgStageNode : MonoBehaviour
         else
         {
             anim.Stop("Pulse");
-            anim.Sample("Pulse", 0f);
+            anim.Stop("Pulse", 0f);
         }
     }
 

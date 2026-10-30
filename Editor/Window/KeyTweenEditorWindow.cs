@@ -796,7 +796,7 @@ namespace KeyTweening.Editor
                 var section = Section("Getting Started");
                 section.Add(Hint("Select an object with a KeyTween component."));
                 var go = Selection.activeGameObject;
-                if (go != null && go.transform is RectTransform)
+                if (go != null)
                     section.Add(new Button(() => SetTarget(Undo.AddComponent<KeyTween>(go))) { text = $"Add KeyTween to '{go.name}'" });
                 _inspector.Add(section);
                 OnPreviewChanged();
@@ -1331,6 +1331,7 @@ namespace KeyTweening.Editor
             info.Add(Hint($"Duration {state.Duration:0.00}s · {state.tracks.Count} track(s)"));
             _inspector.Add(info);
             _inspector.Add(PlayOnSection(state));
+            _inspector.Add(CallbacksSection(state));
 
             var remove = new Button(() => DeleteState(state)) { text = "Delete State", style = { marginTop = 8, marginLeft = 4, marginRight = 4 } };
             remove.AddToClassList("kt-danger");
@@ -1593,6 +1594,31 @@ namespace KeyTweening.Editor
         }
 
         // Unity-Inspector-style section: a foldout header bar with the fields indented under it.
+        // On Start / On Complete / On Cancel of this state, drawn by Unity's own UnityEvent field (like a Button's OnClick) and
+        // edited through a SerializedObject, so Undo and prefab overrides work as anywhere in Unity; saved like the window's edits.
+        VisualElement CallbacksSection(KeyTweenState state)
+        {
+            var section = Section("Callbacks");
+            var index = _target.states.IndexOf(state);
+            if (index < 0) return section;
+            var so = new SerializedObject(_target);
+            section.Add(new IMGUIContainer(() =>
+            {
+                if (so.targetObject == null) return;
+                so.UpdateIfRequiredOrScript();
+                var states = so.FindProperty(nameof(KeyTween.states));
+                if (index >= states.arraySize) return;
+                var s = states.GetArrayElementAtIndex(index);
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.PropertyField(s.FindPropertyRelative(nameof(KeyTweenState.onStart)), new GUIContent("On Start"));
+                EditorGUILayout.PropertyField(s.FindPropertyRelative(nameof(KeyTweenState.onComplete)), new GUIContent("On Complete"));
+                EditorGUILayout.PropertyField(s.FindPropertyRelative(nameof(KeyTweenState.onCancel)), new GUIContent("On Cancel"));
+                if (EditorGUI.EndChangeCheck() && so.ApplyModifiedProperties()) KeyTweenSave.Changed(new[] { _target });
+            }) { name = "callbacks" });
+            section.Add(Hint("Each play starts with On Start and ends with On Complete (reached the end, or Complete) or On Cancel (stopped, taken over, disabled, played again). The preview in this window does not call them."));
+            return section;
+        }
+
         static VisualElement Section(string title)
         {
             var section = new Foldout { text = title, value = true };

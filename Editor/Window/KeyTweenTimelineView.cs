@@ -895,19 +895,27 @@ namespace KeyTweening.Editor
             if (_span.parent != _rows) _rows.Add(_span);
             float from = float.MaxValue, to = float.MinValue, top = float.MaxValue, bottom = float.MinValue;
             var count = 0;
+            VisualElement firstLane = null;
             foreach (var (key, el, offset) in _keyElements)
             {
                 if (!_selection.Contains(key) || el.parent == null) continue;
                 count++;
+                firstLane ??= el.parent;
                 from = Mathf.Min(from, offset + key.time);
                 to = Mathf.Max(to, offset + key.time);
                 var lane = _rows.WorldToLocal(el.parent.worldBound);
                 top = Mathf.Min(top, lane.yMin);
                 bottom = Mathf.Max(bottom, lane.yMax);
             }
-            // Rows just rebuilt (after a drag the keys are re-sorted) have no layout yet, and the rows' size may not change:
-            // try again on the next frame instead of waiting for a geometry event that does not come.
-            if (count >= 2 && !(bottom > top)) { _span.style.display = DisplayStyle.None; schedule.Execute(LayoutSpan); return; }
+            // Rows just rebuilt (after a drag the keys are re-sorted) have no layout yet, and the rows' own size may not change:
+            // again when the lane is laid out, and on the next frame in case that came first.
+            if (count >= 2 && !(bottom > top))
+            {
+                _span.style.display = DisplayStyle.None;
+                firstLane.RegisterCallback<GeometryChangedEvent>(OnLaneLaidOut);
+                schedule.Execute(LayoutSpan);
+                return;
+            }
             var show = count >= 2 && to - from >= Snap - 1e-4f;
             _span.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
             if (!show) return;
@@ -916,6 +924,12 @@ namespace KeyTweening.Editor
             _span.style.top = top + 2f;
             _span.style.height = bottom - top - 4f;
             _span.BringToFront();
+        }
+
+        void OnLaneLaidOut(GeometryChangedEvent e)
+        {
+            ((VisualElement)e.target).UnregisterCallback<GeometryChangedEvent>(OnLaneLaidOut);
+            LayoutSpan();
         }
 
         VisualElement SpanHandle(bool left)

@@ -30,7 +30,7 @@ public sealed class RpgMailPage : MonoBehaviour
         list.SetCount(_mails.Count, Bind);
         claimAll.onClick.AddListener(ClaimAll);
         Refresh();
-        if (_mails.Count == 0) GetComponent<KeyTween>().Sample("Empty", 1f);
+        if (_mails.Count == 0) GetComponent<KeyTween>().Stop("Empty", 1f);
     }
 
     void Bind(RectTransform item, int i)
@@ -38,7 +38,7 @@ public sealed class RpgMailPage : MonoBehaviour
         var row = item.GetComponent<RpgMailRow>();
         var mail = _mails[i];
         row.Set(mail);
-        item.GetComponent<KeyTween>().Sample("Claim", 0f);
+        item.GetComponent<KeyTween>().Stop("Claim", 0f);
         row.claim.onClick.RemoveAllListeners();
         row.claim.onClick.AddListener(() => ClaimOne(mail));
     }
@@ -89,7 +89,7 @@ public sealed class RpgMailPage : MonoBehaviour
         catch (OperationCanceledException) { }
         _mails.Clear();
         list.SetCount(0);
-        anim.Sample("ClearAll", 0f);   // the (now empty) list is back to normal for the next letters
+        anim.Stop("ClearAll", 0f);   // the (now empty) list is back to normal for the next letters
         Refresh();
         anim.Play("Empty");
     }

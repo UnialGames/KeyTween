@@ -49,7 +49,7 @@ public sealed class RpgFormation : MonoBehaviour, IKeyTweenScreenLifecycle
         for (var i = 0; i < slots.Length; i++)
         {
             if (_team[i] >= 0) slotPortraits[i].sprite = demo.Sprite(RpgData.Heroes[_team[i]].id);
-            slots[i].GetComponent<KeyTween>().Sample("In", _team[i] >= 0 ? 1f : 0f);
+            slots[i].GetComponent<KeyTween>().Stop("In", _team[i] >= 0 ? 1f : 0f);
         }
         power.text = Power().ToString("N0");
         RefreshRoster();
@@ -77,8 +77,7 @@ public sealed class RpgFormation : MonoBehaviour, IKeyTweenScreenLifecycle
         battle.interactable = TeamSize > 0;
         // The power counts to the new total (the label's "Count").
         var count = power.GetComponent<KeyTween>();
-        count.SetEndValue("Count", power, KeyTweenProperty.TextNumber, Power());
-        count.Play("Count");
+        count.With("Count").WithEndValue(power, KeyTweenProperty.TextNumber, Power()).Play();
     }
 
     void Add(int hero)
@@ -113,13 +112,13 @@ public sealed class RpgFormation : MonoBehaviour, IKeyTweenScreenLifecycle
         try { await anim.PlayAsync("Battle"); }
         catch (OperationCanceledException)
         {
-            if (this != null) anim.Sample("Battle", 0f);
+            if (this != null) anim.Stop("Battle", 0f);
             _charging = false;
             return;
         }
         var (chapter, s) = demo.SelectedStage;
         demo.Team = _team.Where(h => h >= 0).ToArray();
-        if (!demo.BeginBattle(chapter, s)) anim.Sample("Battle", 0f);   // did not open: back from black
+        if (!demo.BeginBattle(chapter, s)) anim.Stop("Battle", 0f);   // did not open: back from black
         _charging = false;
     }
 
@@ -127,6 +126,6 @@ public sealed class RpgFormation : MonoBehaviour, IKeyTweenScreenLifecycle
     // (Not right after BeginBattle: the battle page fades in over this one, which would show the team back early.)
     public void DidExit(KeyTweenTransition t)
     {
-        if (t.Kind == KeyTweenTransitionKind.Push) GetComponent<KeyTween>().Sample("Battle", 0f);
+        if (t.Kind == KeyTweenTransitionKind.Push) GetComponent<KeyTween>().Stop("Battle", 0f);
     }
 }

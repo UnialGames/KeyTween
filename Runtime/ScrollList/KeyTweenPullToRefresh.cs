@@ -40,7 +40,7 @@ namespace KeyTweening
             var t = Mathf.Clamp01(-_list.Offset / distance);
             if (Mathf.Approximately(t, _last)) return;
             _last = t;
-            target.Sample(pullState, t * target.Duration(pullState));
+            target.Stop(pullState, t * target.Duration(pullState));
         }
 
         public void OnEndDrag(PointerEventData eventData)

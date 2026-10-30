@@ -500,7 +500,7 @@ namespace KeyTweening
             {
                 _entryFirst = Mathf.Min(_entryFirst, item.slot);
                 item.entered = false;
-                item.anim?.Sample(entryState, 0f);   // waiting in the start pose
+                item.anim?.Stop(entryState, 0f);   // waiting in the start pose
             }
             var span = (_visible.Count - 1) * entryStagger;
             if (span <= 0f)
@@ -535,7 +535,7 @@ namespace KeyTweening
             var first = int.MaxValue;
             foreach (var item in _active.Values) first = Mathf.Min(first, item.slot);
             foreach (var item in _active.Values)
-                item.anim?.Sample(entryState, elapsed - (item.slot - first) * entryStagger);
+                item.anim?.Stop(entryState, elapsed - (item.slot - first) * entryStagger);
         }
 
         void Shown(Item item, bool scrolledIn)
@@ -543,11 +543,11 @@ namespace KeyTweening
             item.entered = !EntryRunning;
             if (item.anim != null)
             {
-                if (EntryRunning) item.anim.Sample(entryState, 0f);   // its turn comes in EntryAt
+                if (EntryRunning) item.anim.Stop(entryState, 0f);   // its turn comes in EntryAt
                 else
                 {
                     // A reused object may be mid-animation from its last index: rest it in the entered pose first.
-                    if (!string.IsNullOrEmpty(entryState)) item.anim.Sample(entryState, float.MaxValue);
+                    if (!string.IsNullOrEmpty(entryState)) item.anim.Stop(entryState, float.MaxValue);
                     if (scrolledIn && !string.IsNullOrEmpty(appearState)) item.anim.Play(appearState);
                 }
             }
@@ -562,7 +562,7 @@ namespace KeyTweening
             {
                 if (item.anim == null) continue;
                 var center = MainStart(item.slot) + SizeOf(item.index) * 0.5f - Offset;
-                item.anim.Sample(scrubState, Mathf.Clamp01(center / viewport) * item.anim.Duration(scrubState));
+                item.anim.Stop(scrubState, Mathf.Clamp01(center / viewport) * item.anim.Duration(scrubState));
             }
         }
 

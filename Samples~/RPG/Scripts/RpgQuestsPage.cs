@@ -40,7 +40,7 @@ public sealed class RpgQuestsPage : MonoBehaviour
         }
         var row = item.GetComponent<RpgQuestRow>();
         row.Set(quest);
-        item.GetComponent<KeyTween>().Sample("Claim", 0f);   // a reused row may still show a claimed stamp
+        item.GetComponent<KeyTween>().Stop("Claim", 0f);   // a reused row may still show a claimed stamp
         row.claim.onClick.RemoveAllListeners();
         row.claim.onClick.AddListener(() => Claim(quest, item.GetComponent<KeyTween>()));
     }

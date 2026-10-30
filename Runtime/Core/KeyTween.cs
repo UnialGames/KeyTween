@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace KeyTweening
@@ -47,6 +48,8 @@ namespace KeyTweening
             public bool awaited;                                  // a PlayAsync is waiting on completion
             public CancellationTokenRegistration cancelRegistration;
             public int group = -1;                                // KeyTweenBatch group while the timer runs, else -1
+            public double startElapsed;                           // a play started part-way: the timer starts this far in
+            public KeyTweenPlay with;                             // set up in code for this play (KeyTween.With): put back when it ends
 
             public Playback(KeyTween owner, KeyTweenState state)
             {
@@ -60,6 +63,13 @@ namespace KeyTweening
         /// a canceled play does not. Lambdas need the parameter type: <c>anim.EventRaised += (in KeyTweenEventInfo e) =&gt; ...</c>
         /// </summary>
         public event KeyTweenEventHandler EventRaised;
+
+        /// <summary>A play of a state started (with the state's name). Each play then ends with exactly one of <see cref="StateCompleted"/> or <see cref="StateCanceled"/>.</summary>
+        public event Action<string> StateStarted;
+        /// <summary>A play reached its end, or <see cref="Complete"/> skipped there (the state's On Complete runs first).</summary>
+        public event Action<string> StateCompleted;
+        /// <summary>A play did not reach its end: Stop, taken over, disabled, played again, or its PlayAsync token canceled.</summary>
+        public event Action<string> StateCanceled;
 
         /// <summary>Calls <paramref name="handler"/> for events carrying a <typeparamref name="T"/>; dispose the result to stop.</summary>
         public IDisposable AddListener<T>(KeyTweenEventHandler<T> handler) where T : struct
@@ -181,17 +191,21 @@ namespace KeyTweening
             CaptureRest();
         }
 
+        static readonly List<KeyTween> Ancestors = new();
+
         /// <summary>
         /// This state as it plays here: its own tracks, each replaced by an ancestor's override of that track (outermost wins),
         /// plus overridden tracks the state no longer has. Without overrides it is the state itself.
         /// </summary>
-        // ponytail: builds a new merged state per call (Playback keeps one; a child call's Duration builds one per play).
+        // ponytail: builds a new merged state per call when overridden (Playback keeps one; a child call's Duration builds one per play).
         internal KeyTweenState EffectiveState(string stateName)
         {
             var own = FindState(stateName);
             List<KeyTweenTrack> overridden = null;
             for (var t = transform.parent; t != null; t = t.parent)
-                foreach (var ancestor in t.GetComponents<KeyTween>())
+            {
+                t.GetComponents(Ancestors);   // a shared list: a child call's Duration comes here on every play
+                foreach (var ancestor in Ancestors)
                 foreach (var o in ancestor.overrides)
                 {
                     if (o.child != this || o.state != stateName) continue;
@@ -203,11 +217,17 @@ namespace KeyTweening
                         else overridden.Add(track);
                     }
                 }
-            if (overridden == null || overridden.Count == 0 || own == null) return own;
+            }
+            return overridden == null || overridden.Count == 0 || own == null ? own : Merge(own, overridden);
+        }
 
+        // Apart from EffectiveState: the lambda's capture of overridden would otherwise be allocated on every call.
+        static KeyTweenState Merge(KeyTweenState own, List<KeyTweenTrack> overridden)
+        {
             var merged = new KeyTweenState
             {
-                name = own.name, eventTracks = own.eventTracks, soundTracks = own.soundTracks, childCalls = own.childCalls,
+                name = own.name, loop = own.loop, eventTracks = own.eventTracks, soundTracks = own.soundTracks, childCalls = own.childCalls,
+                onStart = own.onStart, onComplete = own.onComplete, onCancel = own.onCancel,
                 tracks = own.tracks.ConvertAll(t => overridden.Find(o => o.SameTarget(t)) ?? t),
             };
             foreach (var track in overridden)
@@ -247,12 +267,54 @@ namespace KeyTweening
             if (playback != null) StartMotion(playback);
         }
 
-        /// <summary><see cref="PlayReversed"/> that completes or is canceled like <see cref="PlayAsync"/>.</summary>
-        public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Sets up a play of a state in code: <c>anim.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).Play()</c>.
+        /// The changes hold for that play only, and the returned object can be kept and played again.
+        /// </summary>
+        public KeyTweenPlay With(string stateName) => new(this, stateName);
+
+        /// <summary>
+        /// Makes a state in code, added to this KeyTween as a runtime state (not saved):
+        /// <c>anim.Build("Pop").Track(t, KeyTweenProperty.Scale).Key(0f, Vector3.one).Key(0.2f, Vector3.one * 1.2f).Play()</c>.
+        /// </summary>
+        public KeyTweenStateBuilder Build(string stateName) => new(this, stateName);
+
+        internal void PlayWith(KeyTweenPlay with, bool reversed)
+        {
+            var playback = Prepare(with.StateName, null, reversed, with.Time, with);
+            if (playback != null) StartMotion(playback);
+        }
+
+        internal Awaitable PlayAsyncWith(KeyTweenPlay with, bool reversed, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) return Done(canceled: true);
-            var playback = Prepare(stateName, null, reversed: true);
-            if (playback == null) return Done(canceled: false);
+            var playback = Prepare(with.StateName, null, reversed, with.Time, with);
+            if (playback == null) return Done(canceled: HasState(with.StateName));
+            var task = Await(playback, cancellationToken);
+            StartMotion(playback);
+            return task;
+        }
+
+        /// <summary><see cref="PlayReversed(string)"/> from <paramref name="time"/> (seconds on the state's timeline) back to 0.</summary>
+        public void PlayReversed(string stateName, float time)
+        {
+            var playback = Prepare(stateName, null, reversed: true, time);
+            if (playback != null) StartMotion(playback);
+        }
+
+        /// <summary><see cref="PlayReversed"/> that completes or is canceled like <see cref="PlayAsync"/>.</summary>
+        public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default) =>
+            PlayReversedAsync(stateName, null, cancellationToken);
+
+        /// <summary><see cref="PlayReversedAsync(string, CancellationToken)"/> from <paramref name="time"/> back to 0.</summary>
+        public Awaitable PlayReversedAsync(string stateName, float time, CancellationToken cancellationToken = default) =>
+            PlayReversedAsync(stateName, (float?)time, cancellationToken);
+
+        Awaitable PlayReversedAsync(string stateName, float? time, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested) return Done(canceled: true);
+            var playback = Prepare(stateName, null, reversed: true, time);
+            if (playback == null) return Done(canceled: HasState(stateName));
             var task = Await(playback, cancellationToken);
             StartMotion(playback);
             return task;
@@ -273,28 +335,50 @@ namespace KeyTweening
         }
 
         /// <summary>
+        /// <see cref="Play(string)"/> from <paramref name="time"/> (seconds on the state's timeline, 0 to <see cref="Duration"/>):
+        /// the pose at that time is written at once, and events, sounds and child calls before it are not raised.
+        /// </summary>
+        public void Play(string stateName, float time)
+        {
+            var playback = Prepare(stateName, null, time: time);
+            if (playback != null) StartMotion(playback);
+        }
+
+        /// <summary>
         /// Plays a state and completes when it reaches its end (or <see cref="Complete"/> skips there).
         /// Canceled (OperationCanceledException) when the state does not finish: another state took all of its
         /// properties, it was played again, the object was disabled, or <paramref name="cancellationToken"/> fired.
         /// e.g. <c>await anim.PlayAsync("Close"); Destroy(gameObject);</c> never destroys a popup that was reopened mid-close.
         /// </summary>
         /// <remarks>Unity's <see cref="Awaitable"/>: await it once. With UniTask installed, PlayUniTaskAsync returns a UniTask.</remarks>
-        public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default)
+        public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default) =>
+            PlayAsync(stateName, null, cancellationToken);
+
+        /// <summary><see cref="PlayAsync(string, CancellationToken)"/> from <paramref name="time"/>, as <see cref="Play(string, float)"/>.</summary>
+        public Awaitable PlayAsync(string stateName, float time, CancellationToken cancellationToken = default) =>
+            PlayAsync(stateName, (float?)time, cancellationToken);
+
+        Awaitable PlayAsync(string stateName, float? time, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) return Done(canceled: true);
-            var playback = Prepare(stateName, null);
-            if (playback == null) return Done(canceled: false);
+            var playback = Prepare(stateName, null, time: time);
+            if (playback == null) return Done(canceled: HasState(stateName));   // missing: done; stopped at its start: canceled
             var task = Await(playback, cancellationToken);
             StartMotion(playback);
             return task;
         }
 
+        /// <summary>Renamed: <see cref="Stop(string, float)"/> does the same.</summary>
+        [Obsolete("Use Stop(stateName, time): it stops the state if it is playing and shows its pose at that time.")]
+        public void Sample(string stateName, float time) => Stop(stateName, time);
+
         /// <summary>
-        /// Shows a state's pose at <paramref name="time"/> without playing it: no motion, events or sounds. For effects driven
-        /// by something other than time, e.g. a scroll list item scaled by its position in the viewport.
+        /// Stops the state if it is playing (a pending PlayAsync is canceled) and shows its pose at <paramref name="time"/>
+        /// (seconds, clamped to 0 to <see cref="Duration"/>), without playing: no motion, events or sounds. Also for effects
+        /// driven by something other than time, called every frame, e.g. a scroll list item scaled by its place in the viewport.
         /// The live start values (Start = Current) are taken the first time, then reused.
         /// </summary>
-        public void Sample(string stateName, float time)
+        public void Stop(string stateName, float time)
         {
             EnsureInitialized();
             var p = FindPlayback(stateName);
@@ -345,7 +429,8 @@ namespace KeyTweening
             {
                 // No end: each lap runs the same resolved values from 0 again, without a gap.
                 playback.handle = KeyTweenTimer.Start(float.PositiveInfinity, playback,
-                    static (p, elapsed) => Lap((Playback)p, elapsed), scaled: playback.owner.timeMode == KeyTweenTimeMode.Scaled);
+                    static (p, elapsed) => Lap((Playback)p, elapsed), scaled: playback.owner.timeMode == KeyTweenTimeMode.Scaled,
+                    elapsed: playback.startElapsed);
                 KeyTweenBatch.Register(playback);
                 return;
             }
@@ -356,7 +441,7 @@ namespace KeyTweening
                     var playback = (Playback)p;
                     Step(playback, playback.reversed ? playback.duration - elapsed : elapsed);
                 },
-                static p => Finish((Playback)p), scaled: playback.owner.timeMode == KeyTweenTimeMode.Scaled);
+                static p => Finish((Playback)p), scaled: playback.owner.timeMode == KeyTweenTimeMode.Scaled, elapsed: playback.startElapsed);
             KeyTweenBatch.Register(playback);
         }
 
@@ -373,6 +458,7 @@ namespace KeyTweening
                 RaiseEvents(p, p.reversed ? 0f : duration);
                 p.lastTime = p.reversed ? float.MaxValue : -1f;
                 p.hasMarkers = p.state.soundTracks.Count > 0 || p.state.childCalls.Count > 0 || p.state.eventTracks.Count > 0;
+                if (p.with != null) p.owner.Raise(p.with.onLoop);
             }
             Step(p, t);
         }
@@ -386,7 +472,7 @@ namespace KeyTweening
 
         [ThreadStatic] static int _callDepth;   // parent and child calling each other at the same time stop here
 
-        static void RaiseEvents(Playback p, float t, bool playSounds = true)
+        static void RaiseEvents(Playback p, float t, bool playSounds = true, bool callChildren = true)
         {
             var from = p.lastTime;
             p.lastTime = t;
@@ -398,7 +484,7 @@ namespace KeyTweening
                 foreach (var track in p.state.soundTracks)
                 foreach (var sound in track.sounds)
                     if (Passed(sound.time) && sound.clip != null) p.owner.PlaySound(track, sound);
-            if (_callDepth < KeyTweenState.MaxCallDepth)
+            if (callChildren && _callDepth < KeyTweenState.MaxCallDepth)
             {
                 _callDepth++;
                 try
@@ -440,16 +526,49 @@ namespace KeyTweening
                 if (call.child != null && call.child.IsPlaying(call.state)) call.child.Complete(call.state);
             p.active = false;
             KeyTweenBatch.Unregister(p);
+            var with = TakeWith(p);
+            p.owner.Raise(p.state.onComplete, p.owner.StateCompleted, p.state.name, with?.onComplete);
             Release(p)?.TrySetResult();
         }
 
         // Did not reach the end.
         static void Stop(Playback p)
         {
+            var wasPlaying = p.active;   // OnDisable stops every playback, playing or not
             p.handle.TryCancel();
             p.active = false;
             KeyTweenBatch.Unregister(p);
+            var with = TakeWith(p);
+            if (wasPlaying) p.owner.Raise(p.state.onCancel, p.owner.StateCanceled, p.state.name, with?.onCancel);
             Release(p)?.TrySetCanceled();
+        }
+
+        // The play is over: the keys as they were before KeyTween.With changed them (so a callback that plays again starts clean).
+        static KeyTweenPlay TakeWith(Playback p)
+        {
+            var with = p.with;
+            p.with = null;
+            with?.Restore();
+            return with;
+        }
+
+        // The state's callback, the play's own (KeyTween.With), then the component's event. One that throws is logged and
+        // does not stop the others or the play.
+        void Raise(UnityEvent callback, Action<string> handler, string stateName, Action play = null)
+        {
+            try { callback?.Invoke(); }
+            catch (Exception e) { Debug.LogException(e, this); }
+            Raise(play);
+            if (handler == null) return;
+            try { handler(stateName); }
+            catch (Exception e) { Debug.LogException(e, this); }
+        }
+
+        void Raise(Action action)
+        {
+            if (action == null) return;
+            try { action(); }
+            catch (Exception e) { Debug.LogException(e, this); }
         }
 
         static Awaitable Done(bool canceled)
@@ -472,7 +591,7 @@ namespace KeyTweening
         }
 
         /// <summary>Everything Play does except starting the motion. Split out so tests can drive time.</summary>
-        internal Playback Prepare(string stateName, PointerEventData pointer, bool reversed = false)
+        internal Playback Prepare(string stateName, PointerEventData pointer, bool reversed = false, float? time = null, KeyTweenPlay with = null)
         {
             EnsureInitialized();
             var playback = FindPlayback(stateName);
@@ -484,6 +603,8 @@ namespace KeyTweening
 
             Stop(playback);
             TakeOver(playback.state);
+            playback.with = with;
+            with?.Apply(playback.state);   // before the key values are resolved below
 
             foreach (var track in playback.state.tracks)
             {
@@ -492,16 +613,29 @@ namespace KeyTweening
             }
             // Reversed keeps the values the last forward play resolved ("Current" = where Open started); first time, resolve now.
             if (!reversed || !playback.resolved) Resolve(playback.state, pointer);
+            else with?.ResolveEnds();
             playback.resolved = true;
             playback.reversed = reversed;
             playback.duration = playback.state.Duration;
             playback.hasMarkers = playback.state.soundTracks.Count > 0 || playback.state.childCalls.Count > 0 || playback.state.eventTracks.Count > 0;
             // Show the first pose right away: e.g. a typewriter after a text change must not show the whole new line for a frame.
-            playback.lastTime = reversed ? float.MaxValue : -1f;   // a marker at the starting end fires on this first step
-            Step(playback, reversed ? playback.duration : 0f);
-
-            playback.active = true;
-            return playback;
+            // From a given time: markers before it stay silent, one right at it fires (as one at the start does).
+            var from = Mathf.Clamp(time ?? (reversed ? playback.duration : 0f), 0f, playback.duration);
+            playback.lastTime = !time.HasValue ? (reversed ? float.MaxValue : -1f) : reversed ? from + 1e-4f : from - 1e-4f;
+            playback.startElapsed = reversed ? playback.duration - from : from;
+            playback.active = true;   // before On Start, so IsPlaying is true there and a Stop there cancels this play
+            Evaluate(playback.state, from);
+            Raise(playback.state.onStart, StateStarted, playback.state.name, with?.onStart);
+            if (!playback.active) return null;   // stopped in On Start
+            if (with != null && with.EventsBefore && time.HasValue)
+            {
+                // The animation events before the start time, in order (no sounds or child calls), then those at it as usual.
+                var at = playback.lastTime;
+                playback.lastTime = reversed ? float.MaxValue : -1f;
+                RaiseEvents(playback, at, playSounds: false, callChildren: false);
+            }
+            RaiseEvents(playback, from);
+            return playback.active ? playback : null;   // or by an event at the start
         }
 
         // Other playing states give up what this state animates, where they are: whole properties, or the channels of a shared
@@ -550,7 +684,9 @@ namespace KeyTweening
         /// <summary>
         /// Sets where a track ends from code, for values known only at runtime: e.g. a "Count" state counting a gold label
         /// (Text Number, Start = Current) from what it shows to the new amount. Replaces the last key's value (read the
-        /// same way, so relative tracks stay relative) on every play from now on. Call before playing the state.
+        /// same way, so relative tracks stay relative) on every play from now on. Call before playing the state. For a state
+        /// played by something else (Play On, a screen transition); when your code plays it, <see cref="With"/>(state)
+        /// .WithEndValue(...) sets it for that play only.
         /// </summary>
         public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value)
         {
@@ -579,6 +715,7 @@ namespace KeyTweening
         public void AddState(KeyTweenState state)
         {
             EnsureInitialized();
+            if (FindPlayback(state.name) is { active: true } playing) Stop(playing);   // its PlayAsync is canceled, not left waiting
             states.RemoveAll(s => s.name == state.name);
             _playbacks.RemoveAll(p => p.state.name == state.name);
             states.Add(state);
@@ -613,21 +750,31 @@ namespace KeyTweening
                     KeyTweenTextChars.For((TMP_Text)track.target).CaptureSource();
                 track.startValue = track.start == KeyTweenStart.Pointer && PointerPosition(track, pointer, out var pressed)
                     ? pressed : track.Type.Read(track.target);
-                // Pointer: keys are offsets from the press point (0 = stay there), the only base known for them.
-                var size = track.sizeRelative && track.Type.SizeRelative ? ((RectTransform)track.target.transform).rect.size : Vector2.one;
                 var last = track.keys[track.keys.Count - 1];
-                foreach (var key in track.keys)
-                {
-                    var raw = key == last && track.hasEndValue ? track.endValue : key.value;
-                    var value = new Vector4(raw.x * size.x, raw.y * size.y, raw.z, raw.w);
-                    key.resolved = track.start == KeyTweenStart.Pointer ? track.startValue + value
-                        : track.relativeToRest ? track.rest + value : value;
-                }
+                foreach (var key in track.keys) key.resolved = ResolvedValue(track, key == last && track.hasEndValue ? track.endValue : key.value);
                 // The first key becomes the live value, so the track starts where the property is. With 2+ keys it holds
                 // until its time (= a delay); a lone key keeps its value and is reached through the implicit segment.
                 if (track.startFromCurrent && (track.keys.Count > 1 || track.keys[0].time <= 0f)) track.keys[0].resolved = track.startValue;
                 HoldThroughVibrations(track);
             }
+        }
+
+        // Pointer: keys are offsets from the press point (0 = stay there), the only base known for them.
+        static Vector4 ResolvedValue(KeyTweenTrack track, Vector4 raw)
+        {
+            var size = track.sizeRelative && track.Type.SizeRelative ? ((RectTransform)track.target.transform).rect.size : Vector2.one;
+            var value = new Vector4(raw.x * size.x, raw.y * size.y, raw.z, raw.w);
+            return track.start == KeyTweenStart.Pointer ? track.startValue + value : track.relativeToRest ? track.rest + value : value;
+        }
+
+        // A reversed play keeps the last forward play's values, except an end value given for this play (With): it goes on
+        // the last key, from the start value that play read. A last key that is the live start or a vibration is not a destination.
+        internal static void ResolveEnd(KeyTweenTrack track)
+        {
+            if (track.target == null || track.keys.Count == 0 || KeyTweenTextChars.IsCharProperty(track.property)) return;
+            var last = track.keys[track.keys.Count - 1];
+            if (last.IsVibration || (track.keys.Count == 1 && track.startFromCurrent && last.time <= 0f)) return;
+            last.resolved = ResolvedValue(track, track.hasEndValue ? track.endValue : last.value);
         }
 
         // A punch/shake key's value is a strength, not a destination: after it the track is back where it started.

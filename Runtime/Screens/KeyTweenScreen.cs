@@ -120,7 +120,7 @@ namespace KeyTweening
                 else anim.AddState(Rename(makeDefault(this), state));
             }
             if (animated) return anim.PlayAsync(state);
-            anim.Sample(state, float.MaxValue);   // no animation: straight to the end pose
+            anim.Stop(state, float.MaxValue);   // no animation: straight to the end pose
             return Completed();
         }
 

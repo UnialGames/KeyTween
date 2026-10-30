@@ -58,8 +58,9 @@ namespace KeyTweening
         /// Starts a timer of <paramref name="duration"/> seconds: <paramref name="tick"/> every frame with the elapsed time,
         /// then <paramref name="complete"/>. The first tick comes on the next frame. <paramref name="scaled"/>: on game time.
         /// </summary>
+        /// <param name="elapsed">Seconds already behind it: the first tick reports this much more (a play started part-way).</param>
         public static KeyTweenTimerHandle Start(float duration, object state, Action<object, float> tick,
-            Action<object> complete = null, Action<object> cancel = null, bool scaled = false)
+            Action<object> complete = null, Action<object> cancel = null, bool scaled = false, double elapsed = 0)
         {
             EnsureHooked();
             int slot;
@@ -72,7 +73,7 @@ namespace KeyTweening
             ref var s = ref _slots[slot];
             s.active = true;
             s.scaled = scaled;
-            s.start = scaled ? ScaledNow : Now;
+            s.start = (scaled ? ScaledNow : Now) - elapsed;
             s.duration = duration;
             s.state = state;
             s.tick = tick;

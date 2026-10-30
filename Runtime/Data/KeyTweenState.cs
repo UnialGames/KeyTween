@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace KeyTweening
@@ -59,6 +60,13 @@ namespace KeyTweening
         public List<KeyTweenSoundTrack> soundTracks = new();
         public List<KeyTweenChildCall> childCalls = new();    // sorted by time
 
+        [Tooltip("When a play of this state starts (Play, PlayAsync, PlayReversed): after its first pose, before the events at its start.")]
+        public UnityEvent onStart = new();
+        [Tooltip("When a play reaches its end, or Complete skips there: after the events at the end, before PlayAsync completes.")]
+        public UnityEvent onComplete = new();
+        [Tooltip("When a play does not reach its end: Stop, another state took all it animates, the object was disabled, it was played again, or the PlayAsync token was canceled.")]
+        public UnityEvent onCancel = new();
+
         // Before event/sound tracks: one flat list each. Moved into a track when loaded (see OnAfterDeserialize).
         [SerializeField, HideInInspector, FormerlySerializedAs("signals")] List<KeyTweenEventMarker> events = new();
         [SerializeField, HideInInspector] List<KeyTweenSound> sounds = new();
@@ -111,10 +119,16 @@ namespace KeyTweening
                 source = t.source, sounds = t.sounds.ConvertAll(x => new KeyTweenSound { time = x.time, clip = x.clip, volume = x.volume }),
             });
             copy.childCalls = childCalls.ConvertAll(c => new KeyTweenChildCall { time = c.time, child = c.child, state = c.state });
+            // Its own events: editing the copy's callbacks must not change the original's (same targets and methods).
+            copy.onStart = Copy(onStart);
+            copy.onComplete = Copy(onComplete);
+            copy.onCancel = Copy(onCancel);
             copy.events = new List<KeyTweenEventMarker>();
             copy.sounds = new List<KeyTweenSound>();
             return copy;
         }
+
+        static UnityEvent Copy(UnityEvent e) => e == null ? new UnityEvent() : JsonUtility.FromJson<UnityEvent>(JsonUtility.ToJson(e));
 
         /// <summary>Until the last track, animation event, sound or called child state ends.</summary>
         public float Duration

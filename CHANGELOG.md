@@ -2,6 +2,33 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-10-31
+
+Play from a given time and stop at a time, start and end callbacks per state, `With` to set up a play in code and `Build` to make a state in code, and the same for UniTask and R3. `Sample` is deprecated (use `Stop(state, time)`).
+
+### Added
+- Play from a given time: `Play(state, time)`, `PlayAsync(state, time, token)`, `PlayReversed(state, time)`, `PlayReversedAsync(state, time, token)`. Time is in seconds on the state's timeline; the pose at that time is written at once, and events, sounds and child calls before it are not raised.
+- `Stop(state, time)`: stops the state if it is playing (a pending `PlayAsync` is canceled) and shows its pose at that time, without playing.
+- Start and end callbacks per state: **On Start**, **On Complete** and **On Cancel** (UnityEvents in the state settings of the KeyTween Editor, saved in the prefab), and the component events `StateStarted`, `StateCompleted`, `StateCanceled` (with the state's name). Each play starts with On Start and ends with exactly one of the other two, at the same moments as `PlayAsync` completes or is canceled. The editor preview and `Stop(state, time)` on a state that is not playing call none.
+- `With(state)`: set up a play in code and play it (`.Play()`, `.PlayAsync()`, …): the end value or arrival of a track's last key (`WithEndValue`, `WithEase`, `WithCurve`, `WithPunch`, `WithShake`; built-in, Material and custom tracks), the start time (`WithTime`, `WithEventsBefore`), callbacks for that play (`WithOnStart`, `WithOnComplete`, `WithOnCancel`, `WithOnLoop`). The changes hold for that play only, and the returned `KeyTweenPlay` can be kept and played again without allocating.
+- `Build(state)`: make a state in code (`Track`, `Key`, `KeyCurve`, `KeyPunch`, `KeyShake`, `From`, `Event`, `Sound`, `Loop`, `OnStart` / `OnComplete` / `OnCancel`), then `Add()` it as a runtime state or play it at once.
+- UniTask integration: `PlayUniTaskAsync` / `PlayReversedUniTaskAsync` from a given time, and on a `With` play (`KeyTweenPlay`).
+- R3 integration: `PlayAsObservable(state, time)`, `PlayAsObservable` on a `With` play, and `StateStartedAsObservable` / `StateCompletedAsObservable` / `StateCanceledAsObservable`.
+
+### Changed
+- A play is marked as playing before its first events: an event at the start (or On Start) that calls `Stop` on the state now stops it, and its `PlayAsync` is canceled.
+
+### Fixed
+- `AddState` replacing a playing state of the same name left its timer running and its `PlayAsync` waiting; it stops it now (the `PlayAsync` is canceled).
+- KeyTween Editor: after moving or stretching keys, the stretch handles could stay hidden until the selection changed (they waited for a layout signal that did not always come).
+- A looping child state whose tracks an outer prefab overrides played once instead of looping (the merged state lost **Loop**).
+- `With(...).WithEndValue(...).PlayReversed()` ignored the end value once the state had played forward (a reversed play reuses the last forward play's values); the end value given for the reversed play is used now.
+- Playing a state with child calls allocated on every play (looking up the ancestors' overrides for the length). It allocates nothing now, unless an outer prefab overrides the called child's tracks.
+- KeyTween Editor: **Add KeyTween to '…'** appeared only for UI objects (RectTransform); it appears for any selected object now, as the non-UI tracks need.
+
+### Deprecated
+- `Sample(state, time)`: use `Stop(state, time)`, which does the same. `Sample` will be removed in the next version. The package and its samples use `Stop` now.
+
 ## [0.2.1] - 2026-10-29
 
 KeyTween Editor: copy and paste keys, state tabs you can rename, duplicate and reorder, stretch handles for selected keys. The runtime and playback are unchanged.

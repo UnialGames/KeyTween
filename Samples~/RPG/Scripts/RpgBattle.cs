@@ -71,14 +71,14 @@ public sealed class RpgBattle : MonoBehaviour, IKeyTweenScreenLifecycle
     {
         _over = false;
         _team = 1f;
-        enemy.Sample("Die", 0f);
+        enemy.Stop("Die", 0f);
         var anim = GetComponent<KeyTween>();
-        anim.Sample("Lose", 0f);
+        anim.Stop("Lose", 0f);
         foreach (var skill in skills)
         {
             var cooldown = skill.GetComponent<KeyTween>();
             cooldown.Stop("Cooldown");
-            cooldown.Sample("Cooldown", cooldown.Duration("Cooldown"));   // the fill is gone
+            cooldown.Stop("Cooldown", cooldown.Duration("Cooldown"));   // the fill is gone
             skill.interactable = true;
         }
         giveUp.interactable = true;

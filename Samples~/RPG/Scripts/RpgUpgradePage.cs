@@ -42,7 +42,7 @@ public sealed class RpgUpgradePage : MonoBehaviour, IKeyTweenScreenLifecycle
         for (var i = 0; i < slotIcons.Length; i++)
         {
             slotIcons[i].sprite = demo.Sprite(GearIcon(hero, i));
-            slotIcons[i].GetComponentInParent<KeyTween>().Sample("Equip", 0f);   // empty
+            slotIcons[i].GetComponentInParent<KeyTween>().Stop("Equip", 0f);   // empty
         }
         power.text = Power().ToString("N0");
         Refresh();
@@ -62,8 +62,7 @@ public sealed class RpgUpgradePage : MonoBehaviour, IKeyTweenScreenLifecycle
         for (var i = 0; i < stats.Length; i++) stats[i].text = Mathf.RoundToInt(RpgData.Stat(hero, i) * scale).ToString("N0");
         // The power counts to the new total (the label's "Count").
         var count = power.GetComponent<KeyTween>();
-        count.SetEndValue("Count", power, KeyTweenProperty.TextNumber, Power());
-        count.Play("Count");
+        count.With("Count").WithEndValue(power, KeyTweenProperty.TextNumber, Power()).Play();
     }
 
     int Power()

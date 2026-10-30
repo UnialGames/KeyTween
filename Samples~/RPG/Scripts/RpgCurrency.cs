@@ -35,8 +35,7 @@ public sealed class RpgCurrency : MonoBehaviour
         if (Value == _shown) return;
         _shown = Value;
         var count = text.GetComponent<KeyTween>();
-        count.SetEndValue("Count", text, KeyTweenProperty.TextNumber, _shown);
-        count.Play("Count");
+        count.With("Count").WithEndValue(text, KeyTweenProperty.TextNumber, _shown).Play();
         GetComponent<KeyTween>().Play("Bump");
     }
 
