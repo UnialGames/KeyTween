@@ -153,12 +153,30 @@ KeyTween 창에서 상태와 트랙을 만들고, 키를 편집하고, 결과를
 | **Loop** | 끝에 닿으면 0초로 이음매 없이 이어서 반복합니다 |
 | Duration | 상태의 길이와 트랙 수 (예: `Duration 0.80s · 3 track(s)`) |
 | **Play On** | `None` 또는 이벤트 하나 |
+| **Callbacks** | 재생이 시작할 때(**On Start**), 끝까지 갔을 때(**On Complete**), 끝까지 못 갔을 때(**On Cancel**) 부를 함수 |
 | **Delete State** | 확인을 거친 뒤 상태를 삭제합니다 |
 
 * **Loop**는 Animator 클립의 Loop Time과 같은 개념입니다. 이벤트, 사운드, 자식 호출은 바퀴마다 다시 실행됩니다.
 * **Play On**에서 이벤트를 고르면 `KeyTweenTrigger` 컴포넌트가 자동으로 붙습니다.
 
 고를 수 있는 이벤트는 [Play On](#4-play-on)을 참고하세요.
+
+### 시작과 끝에 함수 부르기 (Callbacks)
+
+상태 설정의 **Callbacks**에서 재생이 시작하고 끝날 때 부를 함수를 연결합니다. Button의 **OnClick**과 같은 방식으로, 오브젝트를 끌어다 놓고 함수를 고릅니다. 상태마다 따로 정합니다.
+
+| 칸 | 불리는 때 |
+|---|---|
+| **On Start** | `Play`, `PlayAsync`, `PlayReversed`로 재생을 시작할 때. 첫 모습을 쓴 다음, 시작 시간의 애니메이션 이벤트보다 먼저 |
+| **On Complete** | 끝에 닿았을 때, 또는 `Complete`로 끝으로 건너뛰었을 때. 끝의 애니메이션 이벤트 다음, `PlayAsync`가 끝나기 전 |
+| **On Cancel** | 끝까지 못 갔을 때: `Stop`, 다른 상태가 값을 모두 가져감, 오브젝트 비활성화, 같은 상태를 다시 재생, `PlayAsync`의 토큰 취소 |
+
+* 재생 한 번은 On Start로 시작해서 **On Complete와 On Cancel 중 정확히 하나**로 끝납니다.
+* 반복(Loop) 상태는 On Start가 처음 한 번 불리고, On Complete는 `Complete`할 때만 불립니다.
+* 재생하지 않고 모습만 쓰는 `Stop(state, time)`은 콜백을 부르지 않습니다. 재생 중인 상태를 이것으로 멈추면 On Cancel이 불립니다.
+* 이 창의 미리보기는 콜백을 부르지 않습니다. 미리보기 중에 게임 코드가 실행되지 않게 하기 위해서입니다.
+* 콜백은 Prefab에 저장되고, Prefab 인스턴스에서 Unity의 다른 값처럼 오버라이드할 수 있습니다.
+* 코드에서는 `StateStarted`, `StateCompleted`, `StateCanceled` 이벤트로 모든 상태를 한 곳에서 받을 수 있습니다. 자세한 내용은 [API](API.md#시작과-끝-콜백)를 참고하세요.
 
 ### 상태의 길이
 
@@ -365,7 +383,7 @@ Start 옵션은 [트랙 옵션](#8-트랙-옵션-트랙-인스펙터)을 참고�
 
 키를 고르면 인스펙터에 **Key** 섹션과 **Arrival** 섹션이 차례로 나옵니다. 어떤 키든 구성은 같습니다.
 
-![Button · Color 트랙의 키 인스펙터. Time 0.2, 색 값, Arrival Type = Ease, Ease = Out Sine, 곡선 미리보기가 보입니다.](media/editor/editor-key-inspector.png)
+![Card · Scale 트랙의 키 인스펙터. Time 0.3, Value 1.2, Arrival Type = Ease, Ease = Out Back, 곡선 미리보기가 보입니다.](media/editor/editor-key-inspector.png)
 
 * Key 섹션에서 해당하지 않는 칸은 숨기지 않습니다. 비활성으로 두고 그 이유를 보여 줍니다.
 * Arrival 섹션은 고른 Type에 맞는 칸만 보여 줍니다.
@@ -405,44 +423,125 @@ Arrival 섹션에서 **Type**을 고르고, 그 Type에 맞는 칸을 정합니�
 
 ## 7. 도착 방식
 
-도착 방식(Arrival)은 이전 키의 값에서 이 키의 값으로 넘어오는 방식입니다. 키 인스펙터의 Arrival 섹션에서 Type을 고릅니다.
+키는 **언제(시간)** 어떤 **값**이 될지만 정합니다. 두 키 사이를 **어떻게 지나갈지**는 도착 방식(Arrival)이 정합니다. 서랍을 열 때 처음에는 빠르게 당기다가 끝에서 천천히 멈추는 것처럼, 같은 거리를 같은 시간에 움직여도 속도가 어떻게 바뀌느냐에 따라 느낌이 완전히 달라집니다.
 
-### Type
+![같은 두 키(이전 키 0, 이 키 1)를 Linear, OutSine, OutBack으로 지나간 값. Linear는 일정한 속도로, OutSine은 빠르게 출발해 천천히 도착하고, OutBack은 목표를 조금 지나쳤다가 돌아옵니다.](media/arrival/arrival-compare.png)
 
-| Type | 동작 |
+위 그래프의 세 선은 키가 같습니다. 0초에 0, 끝에 1입니다. 다른 것은 Arrival뿐입니다.
+
+### 키마다 하나, 들어오는 구간에
+
+Arrival은 키마다 하나씩 있고, **이전 키에서 이 키로 들어오는 구간**의 움직임을 정합니다. 키가 셋이면 구간이 둘이고, 구간마다 다른 Arrival을 쓸 수 있습니다.
+
+![키 3개, 구간 2개. 키 1에서 키 2(0.4초)까지는 키 2의 Arrival인 OutBack으로 1.2를 조금 넘었다가 닿고, 키 2에서 키 3(1초)까지는 키 3의 Arrival인 InOutSine으로 부드럽게 1에 내려옵니다.](media/arrival/arrival-segments.png)
+
+* 키 1 → 키 2 구간은 **키 2의** Arrival로, 키 2 → 키 3 구간은 **키 3의** Arrival로 움직입니다.
+* 첫 키는 들어오는 구간이 없으므로 Arrival이 비활성입니다. 단, Start가 Current Value이고 키가 하나뿐이면, 재생할 때의 값에서 그 키로 들어오는 구간에 그 키의 Arrival을 씁니다.
+
+### 에디터에서 고르기
+
+1. 타임라인에서 키를 고릅니다.
+2. 키 인스펙터의 **Arrival** 섹션에서 **Type**을 고릅니다.
+3. Type에 맞는 칸을 정합니다. 아래 그래프가 바로 바뀌어, 이전 키의 값(아래 선)에서 이 키의 값(위 선)까지 어떻게 지나가는지 보여 줍니다.
+
+![KeyTween 창. Card의 Scale 트랙에서 0.3초 키를 골랐고, 오른쪽 키 인스펙터의 Arrival 섹션에 Type = Ease, Ease = Out Back과 곡선 그래프가 보입니다.](media/arrival/arrival-editor.png)
+
+| Type | 정하는 칸 | 이럴 때 |
+|---|---|---|
+| **Ease** | Ease (곡선 36종) | 대부분의 연출. 정해진 곡선에서 고릅니다 |
+| **Curve** | Animation Curve | 원하는 모양이 Ease에 없을 때 직접 그립니다 |
+| **Punch** | Ease, Frequency, Damping | 톡 튀었다가 제자리로 돌아오는 반응 |
+| **Shake** | Ease, Frequency, Damping | 무작위로 떨렸다가 제자리로 돌아오는 반응 |
+
+* 키를 여러 개 고르면 Arrival 섹션만 나오고, 고른 키를 한꺼번에 바꿉니다. 키마다 값이 다른 칸은 `—`로 보입니다.
+* 결과는 **▶** 미리보기로 바로 확인합니다.
+
+![키 2개를 고른 키 인스펙터. 2 Keys Selected 아래 Arrival 섹션에 Type = Ease가 있고, 두 키의 Ease가 달라 Ease 칸은 —로 보입니다.](media/arrival/arrival-inspector-multi.png)
+
+### Ease: 정해진 곡선 고르기
+
+가장 많이 쓰는 Type입니다. 곡선 36종 중 하나를 고릅니다. 이름의 두 부분이 각각 다음을 뜻합니다.
+
+| 부분 | 뜻 |
 |---|---|
-| `Ease` | 이징 프리셋 중 하나로 움직입니다 |
-| `Curve` | AnimationCurve로 움직임을 정합니다 |
-| `Punch` | 이전 값을 중심으로 흔들리다가 이전 값으로 돌아옵니다 |
-| `Shake` | Punch와 같지만, 축마다 매 프레임 무작위로 흔들립니다 |
+| **In** / **Out** / **InOut** | 어디가 느린지. In은 출발이 느리고 점점 빨라집니다. Out은 빠르게 출발해 도착이 느립니다. InOut은 양쪽이 느립니다 |
+| **Sine** → Quad → Cubic → Quart → Quint → **Expo** | 변화의 세기. 오른쪽으로 갈수록 느린 부분과 빠른 부분의 차이가 커집니다 |
+| **Circ** | 원호 모양 |
+| **Back** | 출발 전에 살짝 뒤로 가거나(In), 목표를 살짝 지나쳤다가(Out) 돌아옵니다 |
+| **Elastic** | 고무줄처럼 출렁입니다 |
+| **Bounce** | 바닥에 튀듯이 도착합니다 |
 
-### 이징 프리셋
+![Ease 36종의 그래프. 각 칸의 가로는 구간의 진행(0에서 1), 세로는 0이 이전 키의 값, 1이 이 키의 값이고 흐린 선이 0과 1입니다. KeyTween이 실제로 계산한 값입니다.](media/arrival/arrival-eases.png)
 
-`Ease`에서는 프리셋 36종 중에서 고릅니다.
+* Linear부터 InOutBounce까지 앞의 32종은 LitMotion `Ease`와 번호와 공식이 같습니다.
+* OutBackQuad부터 OutBackQuint까지는 Unity-AnimationUI의 OutBack 계열입니다. 뒤로 갈수록 더 크게 지나쳤다가 돌아옵니다.
+* CustomAnimationCurve는 Ease로 고르면 Linear와 같습니다. 곡선을 직접 그리려면 Type을 **Curve**로 고릅니다.
 
-* Linear
-* Sine, Quad, Cubic, Quart, Quint, Expo, Circ, Elastic, Back, Bounce 각각의 In, Out, InOut
-* CustomAnimationCurve (Linear과 같음)
-* OutBackQuad, OutBackCubic, OutBackQuart, OutBackQuint (Unity-AnimationUI의 OutBack에 해당)
+#### UI에서 고르는 요령
 
-앞의 32종은 LitMotion `Ease`와 번호와 공식이 같습니다.
+정답은 없지만, 다음에서 시작하면 대부분 자연스럽습니다.
 
-### Curve
+| 연출 | 먼저 써 볼 Ease | 이유 |
+|---|---|---|
+| 화면에 들어오기, 팝업 열기 | OutCubic, OutQuart | 빠르게 나타나고 부드럽게 멈춰서 반응이 빠르게 느껴집니다 |
+| 화면에서 나가기, 닫기 | InCubic, InQuad | 천천히 출발해 빠르게 사라져서 사라지는 장면을 오래 보여 주지 않습니다 |
+| 한 자리에서 다른 자리로 (탭 전환, 슬라이드) | InOutSine, InOutCubic | 출발과 도착이 모두 부드럽습니다 |
+| 버튼을 누른 반응, 튀어나오는 팝업 | OutBack | 살짝 지나쳤다가 돌아와서 탄력이 느껴집니다 |
+| 떨어져서 착지 | OutBounce | 바닥에 튀는 모습이 그대로 납니다 |
+| 숫자 세기, 진행 바 | Linear, OutQuad | 일정한 속도이거나 끝에서만 살짝 느려집니다 |
+| 반복하는 숨쉬기, 맥박 (Loop) | InOutSine | 끝과 처음이 같은 속도(0)라서 바퀴 사이가 끊기지 않습니다 |
 
-`Curve`는 AnimationCurve의 값으로 움직임을 정합니다.
+### Curve: 곡선을 직접 그리기
 
-* 0은 이전 키의 값입니다.
-* 1은 이 키의 값입니다.
-* 1을 넘으면 목표를 지나쳤다가 돌아옵니다.
+원하는 모양이 Ease에 없으면 Type을 **Curve**로 고르고 **Animation Curve** 칸을 눌러 Unity의 곡선 편집기에서 직접 그립니다.
 
-### Punch와 Shake
+![Curve의 예. 가로는 구간의 진행(0에서 1), 세로는 0이 이전 키의 값, 1이 이 키의 값입니다. 0.6쯤에서 1.15까지 지나쳤다가 1로 돌아옵니다.](media/arrival/arrival-curve.png)
 
-Punch와 Shake에서 키 값은 목적지가 아니라 **세기**입니다. 계산 공식은 LitMotion과 같습니다.
+![Card의 Color 트랙 키를 고른 키 인스펙터. Arrival의 Type = Curve이고 Animation Curve 칸과 같은 모양의 그래프가 보입니다.](media/arrival/arrival-inspector-curve.png)
 
-| 칸 | 뜻 |
-|---|---|
-| `Frequency` | 초당 흔들림 횟수 |
-| `Damping` | 흔들림이 줄어드는 정도 |
+* 가로는 구간의 진행입니다. 0이 이전 키의 시간, 1이 이 키의 시간입니다.
+* 세로는 값입니다. 0이 이전 키의 값, 1이 이 키의 값입니다. 1을 넘거나 0보다 작으면 목표를 지나치거나 반대쪽으로 갔다가 돌아옵니다.
+* 끝점은 보통 (1, 1)에 둡니다. 그래야 이 키의 시간에 이 키의 값에 정확히 닿습니다.
+
+### Punch와 Shake: 흔들고 제자리로
+
+버튼을 눌렀을 때 톡 튀는 반응이나, 오류가 났을 때 떨리는 연출에 씁니다. 다른 Type과 달리 **이 키의 값은 목적지가 아니라 흔들림의 세기(Strength)**입니다. 값은 이전 키의 값을 중심으로 흔들리다가, 구간이 끝나면 **이전 키의 값으로 돌아옵니다**.
+
+* **Punch**는 정해진 박자로 왕복합니다.
+* **Shake**는 축마다 매 프레임 무작위로 흔들립니다.
+
+![Card의 Rotation 트랙 키를 고른 키 인스펙터. Strength가 X 0, Y 0, Z 15이고, Arrival에 Type = Punch, Ease = Out Sine, Frequency 10, Damping 1과 점점 잦아드는 흔들림 그래프가 보입니다.](media/arrival/arrival-inspector-punch.png)
+
+| 칸 | 뜻 | 새 키의 값 |
+|---|---|---|
+| **Strength** (키의 값) | 흔들림의 크기. 축마다 따로 정합니다. 위 예는 Z축으로 15도까지 흔들립니다 | — |
+| **Frequency** | 흔들리는 빠르기. 클수록 자주 흔들립니다. LitMotion의 frequency와 같은 값입니다 | 10 |
+| **Damping** | 흔들림이 잦아드는 정도. 1이면 끝으로 갈수록 잦아들고, 0이면 끝까지 같은 세기로 흔들리다가 제자리로 돌아옵니다 | 1 |
+| **Ease** | 흔들림을 시간에 어떻게 펼칠지. Out Sine이면 흔들림이 앞쪽에 몰리고 뒤로 갈수록 느려집니다 | Out Sine |
+
+![Punch의 그래프 4개. 세기 1로 1초 동안 흔들린 값입니다. Frequency 10, Damping 1을 기준으로 Damping 0.5와 0은 덜 잦아들고, Frequency 5는 더 느리게 흔들립니다. 모두 끝에서 제자리(0)로 돌아옵니다.](media/arrival/arrival-punch.png)
+
+![Shake의 그래프 2개. Frequency 10에 Damping 1과 0입니다. 무작위로 흔들리다가 끝에서 제자리로 돌아옵니다.](media/arrival/arrival-shake.png)
+
+* 공식은 LitMotion의 `LMotion.Punch`, `LMotion.Shake`와 같습니다.
+* 끝나면 제자리로 돌아오므로 Punch 키는 보통 "제자리 키 다음"에 둡니다. 예를 들어 0초 키(Scale 1) 다음에 0.3초 Punch 키(Strength 0.2)를 두면, 크기 1을 중심으로 톡 튀었다가 1로 돌아옵니다.
+
+### 코드에서 바꾸기
+
+재생할 때마다 도착 방식을 바꾸려면 `With`를 씁니다. 바꾼 값은 그 재생에만 적용되고, 끝나면 에디터에서 정한 값으로 돌아옵니다. 바꾸는 것은 그 트랙의 마지막 키(끝 값에 도착하는 구간)입니다.
+
+```csharp
+anim.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).Play();
+anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 20f, damping: 0.5f).Play();
+```
+
+코드로 상태를 만들 때는 `Key(time, value, ease)`, `KeyCurve`, `KeyPunch`, `KeyShake`로 키마다 정합니다. 자세한 내용은 [API](API.md#코드에서-재생-설정하기-with)를 참고하세요.
+
+### 알아 둘 점
+
+* Start가 Current Value인 트랙은 첫 구간이 재생할 때의 값에서 출발합니다. 도착 방식은 같게 적용됩니다.
+* Active처럼 켜고 끄는 트랙에는 중간값이 없습니다. 키의 시간에 바로 바뀝니다.
+* 재생 중에는 Ease만 쓰는 트랙을 Burst로 한꺼번에 계산합니다. Curve, Punch, Shake 키가 있는 트랙은 일반 코드로 계산합니다. 동시에 수백 개를 재생할 때만 차이가 납니다. 자세한 내용은 [성능](Performance.md)을 참고하세요.
 
 ## 8. 트랙 옵션 (트랙 인스펙터)
 
@@ -512,7 +611,7 @@ Punch와 Shake에서 키 값은 목적지가 아니라 **세기**입니다. 계�
 * 정수와 천 단위 쉼표(`1,234`)를 지원합니다.
 * Start를 Current Value로 두면 지금 보이는 숫자에서 세기 시작합니다.
 
-끝 숫자를 실행 중에 정하려면 코드에서 `SetEndValue`를 부릅니다. 이때 창에 있는 마지막 키 값은 미리보기용 값이 됩니다. 자세한 내용은 [API](API.md#런타임에-끝-값-바꾸기)를 참고하세요.
+끝 숫자를 실행 중에 정하려면 코드에서 `With(state).WithEndValue(...)`로 재생합니다(다른 곳이 재생하는 상태는 `SetEndValue`). 이때 창에 있는 마지막 키 값은 미리보기용 값이 됩니다. 자세한 내용은 [API](API.md#코드에서-재생-설정하기-with)를 참고하세요.
 
 ### 글자별 트랙
 

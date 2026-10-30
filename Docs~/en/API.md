@@ -13,13 +13,20 @@ public sealed class KeyTween : MonoBehaviour
 {
     public void Play(string stateName);              // takes one argument, so it is also listed in UnityEvents such as Button OnClick
     public void Play(string stateName, PointerEventData pointer);   // for Start = Pointer tracks (where the pointer was pressed)
+    public void Play(string stateName, float time);  // plays from that time (seconds)
     public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default);
+    public Awaitable PlayAsync(string stateName, float time, CancellationToken cancellationToken = default);
     public void PlayReversed(string stateName);      // also listed in UnityEvents
+    public void PlayReversed(string stateName, float time);   // from that time back to 0 s
     public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default);
+    public Awaitable PlayReversedAsync(string stateName, float time, CancellationToken cancellationToken = default);
 
     public void Complete(string stateName);         // jumps a playing state to its end
     public void Stop(string stateName);             // stops the state where it is
-    public void Sample(string stateName, float time);   // writes the pose at a given time, without playing
+    public void Stop(string stateName, float time); // stops it and shows the pose at that time (without playing)
+
+    public KeyTweenPlay With(string stateName);             // sets up one play in code ("Setting Up a Play in Code")
+    public KeyTweenStateBuilder Build(string stateName);    // makes a state in code ("Making a State in Code")
 
     public bool IsPlaying(string stateName);
     public bool HasState(string stateName);
@@ -29,12 +36,13 @@ public sealed class KeyTween : MonoBehaviour
 
 | Method | Behavior |
 |---|---|
-| `Play` | Starts playing. |
+| `Play` | Starts playing. With a time, plays from that time. |
 | `PlayAsync` | Starts playing and waits until the play ends. |
-| `PlayReversed` | Plays from the end back to the start. |
+| `PlayReversed` | Plays from the end (or the given time) back to the start. |
 | `Complete` | Jumps a playing state to its end pose. |
-| `Stop` | Stops the state where it is. |
-| `Sample` | Writes the pose at a given time, without playing. |
+| `Stop` | Stops the state where it is. With a time, stops it and shows the pose at that time. |
+
+Times are in **seconds** on the state's timeline (the same unit as `Duration`). A time below 0 or past the length is clamped to 0 or the end.
 
 ### Playing a State
 
@@ -62,6 +70,18 @@ await anim.PlayAsync("Open", destroyCancellationToken);
 * If the state does not exist, it completes immediately.
 * It returns a Unity `Awaitable`, so you can await it **only once**.
 * For a looping state, `PlayAsync` does not end until you call `Complete` or `Stop`.
+
+### Playing from a Given Time
+
+Pass a time to `Play` or `PlayAsync` to play from that time. The pose at that time is written at once, and only the rest of the state plays.
+
+```csharp
+anim.Play("Intro", 1.5f);                     // from 1.5 s
+await anim.PlayAsync("Intro", 1.5f, destroyCancellationToken);
+```
+
+* Events, sounds and child calls before that time are not raised. Those exactly at the start time are raised, as those at 0 s are when playing from 0 s.
+* Pass a time to `PlayReversed` or `PlayReversedAsync` to play from that time back toward 0 s.
 
 ### Playing in Reverse
 
@@ -95,16 +115,18 @@ anim.Complete("Open");
 anim.Stop("Idle");
 ```
 
-### Writing the Pose at a Given Time
+### Stopping at a Given Time
 
-`Sample` clamps the time to the range from 0 to the state's length and writes the pose at that time. Use it when something other than time drives the pose, such as a scroll position.
+Pass a time to `Stop` to stop the state if it is playing (a pending `PlayAsync` is canceled) and write its pose at that time. It writes the pose even when the state is not playing.
 
 ```csharp
-anim.Sample("Reveal", progress * anim.Duration("Reveal"));   // progress: 0 to 1
+anim.Stop("Open", anim.Duration("Open"));                     // straight to the end pose, without animation
+anim.Stop("Reveal", progress * anim.Duration("Reveal"));      // every frame from a value such as a scroll position (progress: 0 to 1)
 ```
 
 * No timer runs, and no events or sounds are raised.
-* If the state is playing, it stops.
+* You can call it every frame to drive the pose with something other than time, such as a scroll position or a pull distance.
+* The old name `Sample(state, time)` still does the same but is `[Obsolete]` and will be removed in the next version.
 
 ### Checking a State
 
@@ -146,16 +168,36 @@ For details, see [Guide §11](Guide.md#11-when-states-overlap).
 
 The table below shows how `PlayAsync` ends in each case, and what happens to the events and sounds that have not been reached yet.
 
-| Case | `PlayAsync` result | Remaining events | Remaining sounds |
-|---|---|---|---|
-| Reaches the end | completes | all raised | all played |
-| `Complete` called | completes | raised in order | not played |
-| Another state takes all of its properties | canceled | not raised | not played |
-| The same state is played again | earlier play canceled | not raised | not played |
-| Object disabled | canceled | not raised | not played |
-| `Stop` called, token canceled | canceled | not raised | not played |
+| Case | `PlayAsync` result | Callback | Remaining events | Remaining sounds |
+|---|---|---|---|---|
+| Reaches the end | completes | On Complete | all raised | all played |
+| `Complete` called | completes | On Complete | raised in order | not played |
+| Another state takes all of its properties | canceled | On Cancel | not raised | not played |
+| The same state is played again | earlier play canceled | the earlier play's On Cancel | not raised | not played |
+| Object disabled | canceled | On Cancel | not raised | not played |
+| `Stop` called, token canceled | canceled | On Cancel | not raised | not played |
 
 A play that does not reach its end ends as **canceled**. This makes "continue only when the play really finished" the default behavior.
+
+### Start and End Callbacks
+
+You can receive the start and end of a play without `await`. Connect them per state in **Callbacks** in the editor (On Start, On Complete, On Cancel, see the [Guide](Guide.md#calling-functions-at-the-start-and-end-callbacks)), or receive every state through the component's events in code.
+
+```csharp
+public event Action<string> StateStarted;     // the state's name. After the first pose, before the events at the start time
+public event Action<string> StateCompleted;   // reached the end, or Complete. Before PlayAsync completes
+public event Action<string> StateCanceled;    // did not reach the end (the table above)
+```
+
+```csharp
+anim.StateCompleted += state => { if (state == "Close") gameObject.SetActive(false); };
+```
+
+* Each play starts with `StateStarted` and ends with **exactly one** of `StateCompleted` and `StateCanceled`.
+* At the same moment, the state's UnityEvent (On Start and so on) is called first, then the component's event.
+* A callback that throws is logged, and the play and the other callbacks go on.
+* Stopping the state inside its On Start means the play does not start, and its `PlayAsync` is canceled.
+* `Stop(state, time)`, which writes a pose without playing, and the editor preview call no callbacks.
 
 ### Example: Closing a Popup
 
@@ -220,33 +262,68 @@ If any of the plays is canceled ([How a Play Ends](#how-a-play-ends)), an `Opera
 * Starting all, then awaiting each: at the `await` of the canceled play
 * `Task.WhenAll`, `UniTask.WhenAll`: at `WhenAll`
 
-## Changing End Values at Runtime
+## Setting Up a Play in Code (With)
 
-Some animations have an end value that is known only at runtime, such as a currency amount or a power rating. For these, make the motion (timing and easing) in the editor, and pass only the end value from code.
+Make the motion in the editor, and set in code only what changes from play to play: the target number of a currency or power rating, a different arrival for the situation, what to do when it finishes.
+
+Set up a play with `With(state)`, then play it with one of the `Play` methods. The calls chain like LitMotion's `WithEase`.
+
+```csharp
+// "Count" state on the gold label: a Number (Count) track, Start = Current Value, 0.6 s OutQuad (made in the editor)
+count.With("Count").WithEndValue(goldLabel, KeyTweenProperty.TextNumber, gold).Play();
+
+// Opening a popup: arrive with OutBack this time, and take input once it is open
+await popup.With("Open")
+    .WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack)
+    .WithOnComplete(EnableInput)
+    .PlayAsync(destroyCancellationToken);
+```
+
+### What You Can Change
+
+The track is found by state name, target and property, and what changes is its **last key** (the end value and the segment that arrives there).
+
+| Method | Changes |
+|---|---|
+| `WithEndValue(target, property, value)` | The last key's value |
+| `WithEase(target, property, ease)` | The last key's arrival becomes Ease, with that ease |
+| `WithCurve(target, property, curve)` | The arrival becomes Curve, with that AnimationCurve |
+| `WithPunch(target, property, frequency, damping)`, `WithShake(...)` | The arrival becomes Punch / Shake, with those values |
+| `WithTime(time)` | Plays from that time in seconds (the same as `Play(state, time)`) |
+| `WithEventsBefore()` | With `WithTime`: the animation events before that time are raised too, in order, at the start (sounds and child calls are skipped) |
+| `WithOnStart`, `WithOnComplete`, `WithOnCancel` | Callbacks for this play only, called after the state's On Start and so on |
+| `WithOnLoop` | For a looping state, each time a lap ends |
+
+* A Material track is found by its shader property name, as in `WithEase(renderer, "_BaseColor", ease)`, and a custom track by its class, as in `WithEase<MyTrack>(target, ease)`.
+* A value is interpreted exactly like a key value, so the Relative To Rest and Size Relative settings apply.
+* If no track matches, it logs a warning and skips that change. The state still plays.
+
+### For That Play Only
+
+The changes go in when the play starts and are put back when it ends, whether it completes or is canceled. The next `Play` uses the values set in the editor. The saved data is not changed.
+
+You can keep what `With` returns and play it again as often as you like. Reused, it does not allocate when it plays.
+
+```csharp
+KeyTweenPlay _open;
+
+void Awake() => _open = popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+public void Show() => _open.Play();
+```
+
+### End Values for States Played Elsewhere
+
+You cannot use `With` for a state that something other than your code plays, such as Play On or a screen transition. Set its end value beforehand with `SetEndValue` instead. The value then applies to every later play.
 
 ```csharp
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value);
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, float value);   // sets x only
 ```
 
-### Setting the End Value and Playing
-
-Call `SetEndValue` before playing.
-
 ```csharp
-// "Count" state on the gold label: a Number (Count) track, Start = Current Value, 0.6 s OutQuad (made in the editor)
-count.SetEndValue("Count", goldLabel, KeyTweenProperty.TextNumber, gold);
-count.Play("Count");
+// Result screen: when the screen transition plays "Enter", the gold counts up to this number
+result.SetEndValue("Enter", goldLabel, KeyTweenProperty.TextNumber, reward);
 ```
-
-### What Changes
-
-`SetEndValue` replaces the **last key value** of the matching track.
-
-* The new value applies from the next play onward.
-* The saved data is not changed.
-* The value is interpreted exactly like a key value, so the Relative To Rest and Size Relative settings apply.
-* If no track matches, it logs a warning.
 
 ## Animation Events
 
@@ -308,19 +385,50 @@ The `KeyTweenEventListener` component receives events without code.
 
 The event data is not passed in this case.
 
-## Adding States at Runtime
+## Making a State in Code (Build)
 
-States are usually made in the editor, but you can also add a state from code.
+States are usually made in the editor, but you can also make one in code alone. Use this when the targets are known only at runtime, or for a small animation you do not want to make in the editor.
 
-### Adding a State from Code
+Stack tracks and keys with `Build(state)`, then add the state with `Add`, or add and play it with one of the `Play` methods.
 
-`AddState` adds a state. It replaces an existing state with the same name.
+```csharp
+anim.Build("Pop")
+    .Track(button.transform, KeyTweenProperty.Scale)       // starts a track; the Keys until the next Track go on it
+        .Key(0f, Vector3.one)
+        .Key(0.15f, Vector3.one * 1.2f, KeyTweenEase.OutBack)  // the segment arriving at this key uses OutBack
+        .Key(0.3f, Vector3.one, KeyTweenEase.InOutSine)
+    .Track(label, KeyTweenProperty.GraphicAlpha)
+        .Key(0f, 0f).Key(0.2f, 1f)
+    .Event(0.15f, "Peak")
+    .OnComplete(() => Debug.Log("popped"))
+    .Play();
+```
+
+| Method | What it does |
+|---|---|
+| `Track(target, property)` | Starts a track of a built-in property. A Material track is `Track(renderer, "_BaseColor")`, a custom track `Track<MyTrack>(target)` |
+| `From(start)` | The track's Start. Key Value (the first key) by default; Current Value (the value when it plays) or Pointer |
+| `Key(time, value, ease)` | One key. `ease` is how the segment arriving at this key moves (OutSine by default, as in the editor). The value is a `Vector4` or a `float`; a `Vector3`, `Vector2` or `Color` works too |
+| `KeyCurve`, `KeyPunch`, `KeyShake` | A key whose arrival is Curve, Punch or Shake |
+| `Event(time, name)`, `Sound(time, clip, volume)` | An animation event and a sound |
+| `Loop()` | Makes it a looping state |
+| `OnStart`, `OnComplete`, `OnCancel` | The state's callbacks (every play of it) |
+| `Add()` | Adds the state. Then play it by name, as in `anim.Play("Pop")` |
+| `Play()`, `PlayAsync()`, `PlayReversed()`, `PlayReversedAsync()` | Adds it and plays it |
+| `With()` | Adds it and goes on to set up a play (`With`) |
+
+* The state exists only at runtime. It is not saved, and you can use `Play`, `Stop`, `Complete` and `With` with it like a state made in the editor.
+* Keys are placed in time order whatever order you add them in.
+* A state with the same name is replaced. If that state is playing, it stops and its pending `PlayAsync` is canceled.
+* Calling `Key` before `Track` throws right away.
+
+### Adding a State Object
+
+You can also make a `KeyTweenState` yourself and add it with `AddState`. `Build` uses this method, and so do screen containers when they add their default transitions ([Screens](Screens.md)).
 
 ```csharp
 public void AddState(KeyTweenState state);
 ```
-
-Screen containers use this method to add their default transitions ([Screens](Screens.md)). For ordinary animations, we recommend making them in the editor.
 
 ## Reading and Writing Values
 

@@ -153,12 +153,30 @@ When no track or key is selected, the inspector shows the state's settings.
 | **Loop** | When playback reaches the end, it continues seamlessly from 0 s and repeats |
 | Duration | The state's length and track count (for example, `Duration 0.80s · 3 track(s)`) |
 | **Play On** | `None` or an event |
+| **Callbacks** | Functions to call when a play starts (**On Start**), reaches its end (**On Complete**), or does not reach its end (**On Cancel**) |
 | **Delete State** | Deletes the state after you confirm |
 
 * **Loop** is the same idea as Loop Time on an Animator clip. Events, sounds and child calls fire again on every loop.
 * Choosing an event in **Play On** adds a `KeyTweenTrigger` component automatically.
 
 For the available events, see [Play On](#4-play-on).
+
+### Calling Functions at the Start and End (Callbacks)
+
+In **Callbacks** in the state settings, connect functions to call when a play starts and ends. It works like a Button's **OnClick**: drag in an object and choose a function. Each state has its own.
+
+| Field | When it is called |
+|---|---|
+| **On Start** | When a play starts with `Play`, `PlayAsync` or `PlayReversed`. After the first pose, before the animation events at the start time |
+| **On Complete** | When the play reaches its end, or `Complete` skips there. After the animation events at the end, before `PlayAsync` completes |
+| **On Cancel** | When the play does not reach its end: `Stop`, another state took everything it animates, the object was disabled, the same state was played again, or the `PlayAsync` token was canceled |
+
+* Each play starts with On Start and ends with **exactly one of On Complete and On Cancel**.
+* A looping state calls On Start once at the beginning, and On Complete only when you call `Complete`.
+* `Stop(state, time)`, which writes a pose without playing, calls no callbacks. Stopping a playing state with it calls On Cancel.
+* The preview in this window does not call callbacks, so that no game code runs while you preview.
+* Callbacks are saved in the prefab, and a prefab instance can override them like any other Unity value.
+* In code, the `StateStarted`, `StateCompleted` and `StateCanceled` events report every state in one place. For details, see [API](API.md#start-and-end-callbacks).
 
 ### State Length
 
@@ -365,7 +383,7 @@ To delete keys, press Delete or Backspace, or right-click and choose **Delete Se
 
 When you select a key, the inspector shows a **Key** section followed by an **Arrival** section. Every key uses the same layout.
 
-![The key inspector for the Button · Color track, showing Time 0.2, a color value, Arrival Type = Ease, Ease = Out Sine and a curve preview.](../media/editor/editor-key-inspector.png)
+![The key inspector for the Card · Scale track, showing Time 0.3, Value 1.2, Arrival Type = Ease, Ease = Out Back and a curve preview.](../media/editor/editor-key-inspector.png)
 
 * In the Key section, fields that do not apply are not hidden. They are disabled and show the reason.
 * The Arrival section shows only the fields for the chosen Type.
@@ -405,44 +423,125 @@ For how each Type behaves, see [Arrival](#7-arrival).
 
 ## 7. Arrival
 
-Arrival sets how the value moves from the previous key to this one. Choose the Type in the Arrival section of the key inspector.
+A key sets only **when** (its time) and **what value**. How the track gets **from one key to the next** is its arrival. When you open a drawer, you pull it fast at first and slow down as it comes out: moving the same distance in the same time feels completely different depending on how the speed changes on the way.
 
-### Types
+![The same two keys (previous key 0, this key 1) passed with Linear, OutSine and OutBack. Linear moves at a constant speed, OutSine starts fast and arrives slowly, and OutBack goes slightly past the target and comes back.](../media/arrival/arrival-compare.png)
 
-| Type | Behavior |
+The three lines in the graph have the same keys: 0 at 0 s and 1 at the end. Only the arrival differs.
+
+### One per Key, for the Segment Coming In
+
+Each key has one arrival, and it sets how the track moves **from the previous key to this key**. With three keys there are two segments, and each can use a different arrival.
+
+![Three keys, two segments. From key 1 to key 2 (0.4 s) the track moves with key 2's arrival, OutBack, going slightly past 1.2; from key 2 to key 3 (1 s) it moves with key 3's arrival, InOutSine, easing down to 1.](../media/arrival/arrival-segments.png)
+
+* The segment from key 1 to key 2 uses **key 2's** arrival, and the one from key 2 to key 3 uses **key 3's**.
+* The first key has no segment coming in, so its arrival is disabled. The exception is a track whose Start is Current Value with only one key: the segment from the value at play time to that key uses that key's arrival.
+
+### Choosing It in the Editor
+
+1. Select a key on the timeline.
+2. In the key inspector's **Arrival** section, choose a **Type**.
+3. Set the fields for that Type. The graph below updates at once, showing how the track goes from the previous key's value (lower line) to this key's value (upper line).
+
+![The KeyTween window. The 0.3 s key of Card's Scale track is selected, and the key inspector's Arrival section on the right shows Type = Ease, Ease = Out Back and a curve graph.](../media/arrival/arrival-editor.png)
+
+| Type | Fields | Use it for |
+|---|---|---|
+| **Ease** | Ease (36 curves) | Most animations: pick a ready-made curve |
+| **Curve** | Animation Curve | A shape no ease has: draw it yourself |
+| **Punch** | Ease, Frequency, Damping | A bump that springs back into place |
+| **Shake** | Ease, Frequency, Damping | A random jitter that settles back into place |
+
+* With several keys selected, only the Arrival section is shown, and it changes all of them at once. A field whose value differs between the keys shows `—`.
+* Check the result right away with the **▶** preview.
+
+![The key inspector with two keys selected. Under 2 Keys Selected, the Arrival section shows Type = Ease, and the Ease field shows — because the two keys use different eases.](../media/arrival/arrival-inspector-multi.png)
+
+### Ease: Picking a Ready-Made Curve
+
+The most used Type. Choose one of 36 curves. The two parts of a name mean:
+
+| Part | Meaning |
 |---|---|
-| `Ease` | Moves with one of the ease presets |
-| `Curve` | Uses an AnimationCurve to shape the motion |
-| `Punch` | Oscillates around the previous value and returns to it |
-| `Shake` | Like Punch, but shakes randomly on each axis every frame |
+| **In** / **Out** / **InOut** | Where it is slow. In starts slowly and speeds up. Out starts fast and arrives slowly. InOut is slow at both ends |
+| **Sine** → Quad → Cubic → Quart → Quint → **Expo** | How strong the change is. Further right, the gap between the slow and fast parts grows |
+| **Circ** | A circular arc |
+| **Back** | Goes slightly back before starting (In), or slightly past the target before coming back (Out) |
+| **Elastic** | Wobbles like a rubber band |
+| **Bounce** | Arrives as if bouncing off the floor |
 
-### Ease Presets
+![Graphs of all 36 eases. In each cell, the horizontal axis is the progress through the segment (0 to 1) and the vertical axis is 0 at the previous key's value and 1 at this key's value; the faint lines are 0 and 1. These are the values KeyTween computes.](../media/arrival/arrival-eases.png)
 
-`Ease` offers 36 presets:
+* The first 32, Linear through InOutBounce, match LitMotion's `Ease` in number and formula.
+* OutBackQuad through OutBackQuint are Unity-AnimationUI's OutBack family. Each goes further past the target before coming back.
+* CustomAnimationCurve as an Ease is the same as Linear. To draw a curve yourself, choose the **Curve** Type.
 
-* Linear
-* In, Out and InOut for each of Sine, Quad, Cubic, Quart, Quint, Expo, Circ, Elastic, Back and Bounce
-* CustomAnimationCurve (same as Linear)
-* OutBackQuad, OutBackCubic, OutBackQuart and OutBackQuint (these correspond to Unity-AnimationUI's OutBack)
+#### Choosing an Ease for UI
 
-The first 32 have the same numbers and formulas as LitMotion's `Ease`.
+There is no single right answer, but starting from these usually looks natural.
 
-### Curve
+| Animation | Try first | Why |
+|---|---|---|
+| Entering the screen, opening a popup | OutCubic, OutQuart | Appears quickly and settles softly, so it feels responsive |
+| Leaving the screen, closing | InCubic, InQuad | Starts slowly and disappears fast, so the exit does not linger |
+| From one place to another (tab switch, slide) | InOutSine, InOutCubic | Soft at both the start and the end |
+| A button press, a popup that pops out | OutBack | Goes slightly past and comes back, so it feels springy |
+| Falling and landing | OutBounce | Shows the bounce off the floor |
+| Counting a number, a progress bar | Linear, OutQuad | A constant speed, or slowing slightly only at the end |
+| Repeating breathing or pulsing (Loop) | InOutSine | The speed is 0 at both ends, so the laps join without a break |
 
-`Curve` shapes the motion with the values of an AnimationCurve.
+### Curve: Drawing Your Own
 
-* 0 is the previous key's value.
-* 1 is this key's value.
-* Values above 1 overshoot the target and come back.
+If no ease has the shape you want, choose the **Curve** Type, click the **Animation Curve** field and draw it in Unity's curve editor.
 
-### Punch and Shake
+![An example curve. The horizontal axis is the progress through the segment (0 to 1) and the vertical axis is 0 at the previous key's value and 1 at this key's value. It goes past to 1.15 around 0.6 and comes back to 1.](../media/arrival/arrival-curve.png)
 
-For Punch and Shake, the key value is not a destination but the **strength**. The formula is the same as LitMotion's.
+![The key inspector with a key of Card's Color track selected. The Arrival Type is Curve, with the Animation Curve field and a graph of the same shape.](../media/arrival/arrival-inspector-curve.png)
 
-| Field | Meaning |
-|---|---|
-| `Frequency` | The number of shakes per second |
-| `Damping` | How quickly the shaking fades |
+* The horizontal axis is the progress through the segment: 0 at the previous key's time, 1 at this key's time.
+* The vertical axis is the value: 0 at the previous key's value, 1 at this key's value. Above 1 or below 0, the track goes past the target or the other way and comes back.
+* Usually put the end point at (1, 1), so the track reaches this key's value exactly at this key's time.
+
+### Punch and Shake: Shaking and Settling Back
+
+Use these for a bump when a button is pressed, or a jitter on an error. Unlike the other Types, **this key's value is not a destination but the strength of the shake**. The value shakes around the previous key's value and, when the segment ends, **comes back to the previous key's value**.
+
+* **Punch** goes back and forth at a steady beat.
+* **Shake** jitters randomly on each axis every frame.
+
+![The key inspector with a key of Card's Rotation track selected. Strength is X 0, Y 0, Z 15, and Arrival shows Type = Punch, Ease = Out Sine, Frequency 10, Damping 1 and a graph of a shake that dies out.](../media/arrival/arrival-inspector-punch.png)
+
+| Field | Meaning | New key |
+|---|---|---|
+| **Strength** (the key's value) | How big the shake is, per axis. The example above shakes up to 15 degrees on Z | — |
+| **Frequency** | How fast it shakes. Higher shakes more often. The same value as LitMotion's frequency | 10 |
+| **Damping** | How much the shake dies out. 1 dies out toward the end; 0 keeps the same strength until it returns into place | 1 |
+| **Ease** | How the shake is spread over time. With Out Sine, the shakes crowd toward the start and slow down later | Out Sine |
+
+![Four Punch graphs: strength 1 over 1 s. Against Frequency 10 and Damping 1, Damping 0.5 and 0 die out less, and Frequency 5 shakes more slowly. All of them return to rest (0) at the end.](../media/arrival/arrival-punch.png)
+
+![Two Shake graphs: Frequency 10 with Damping 1 and 0. They jitter randomly and return to rest at the end.](../media/arrival/arrival-shake.png)
+
+* The formulas are the same as LitMotion's `LMotion.Punch` and `LMotion.Shake`.
+* Because it settles back into place, a Punch key usually comes right after a key at rest. For example, a key at 0 s (Scale 1) followed by a Punch key at 0.3 s (Strength 0.2) bumps around scale 1 and comes back to 1.
+
+### Changing It in Code
+
+To change the arrival on a particular play, use `With`. The change holds for that play only and goes back to the editor's value when it ends. It changes the track's last key (the segment that arrives at the end value).
+
+```csharp
+anim.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack).Play();
+anim.With("Hit").WithShake(icon, KeyTweenProperty.AnchoredPosition, frequency: 20f, damping: 0.5f).Play();
+```
+
+When you make a state in code, set it per key with `Key(time, value, ease)`, `KeyCurve`, `KeyPunch` and `KeyShake`. For details, see the [API](API.md#setting-up-a-play-in-code-with).
+
+### Notes
+
+* On a track whose Start is Current Value, the first segment starts from the value at play time. The arrival applies the same way.
+* Tracks that switch on and off, such as Active, have no in-between values. They change right at the key's time.
+* While playing, tracks that use only Ease are computed together with Burst. Tracks with Curve, Punch or Shake keys are computed in regular code. It makes a difference only when hundreds play at once. For details, see [Performance](Performance.md).
 
 ## 8. Track Options (Track Inspector)
 
@@ -512,7 +611,7 @@ Counts and changes only the **first number** in the text, and leaves the other c
 * Supports integers and thousands separators (`1,234`).
 * With Start set to Current Value, counting starts from the number currently shown.
 
-To set the end number at runtime, call `SetEndValue` from code. The last key's value in the window then becomes a value for preview only. For details, see [API](API.md#changing-end-values-at-runtime).
+To set the end number at runtime, play the state with `With(state).WithEndValue(...)` from code (`SetEndValue` for a state that something else plays). The last key's value in the window then becomes a value for preview only. For details, see [API](API.md#setting-up-a-play-in-code-with).
 
 ### Per-Character Tracks
 

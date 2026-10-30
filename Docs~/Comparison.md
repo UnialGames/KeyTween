@@ -109,7 +109,7 @@ OnAnimationEnded += Play
 | 맥박 반복 | 에디터(창) | 에디터(창) | 인스펙터 또는 코드 2줄 | 코드 2문장 | 인스펙터(시퀀스 4단계) + 반복 코드 1줄 |
 | 목록 등장 (현재 위치 → 0) | 에디터, Start = Current Value | 에디터, 시작 값은 클립에 고정 | 코드 2줄(`From`) | 코드 2문장 | 인스펙터 |
 | 글자 물결 (글자 단위) | **에디터**(Char 트랙 + Stagger) | 불가 | 코드: `DOTweenTMPAnimator` + 글자마다 반복문 | 코드: 글자마다 `BindToTMPCharPositionY` 반복문 | 불가 |
-| 숫자 세기 (재화) | 에디터(Number 트랙) + 끝 값 1줄(`SetEndValue`) | 확인 안 함 | 코드 | 코드 | 불가 |
+| 숫자 세기 (재화) | 에디터(Number 트랙) + 끝 값 1줄(`With(...).WithEndValue`) | 확인 안 함 | 코드 | 코드 | 불가 |
 | 공유 요소 전환 | 에디터(상태) + 상대 쪽 키 1줄(`KeyTweenSharedElement`) | 확인 안 함 | 코드 | 코드 | 불가 |
 | UIEffect 값 (디졸브 등) | **에디터**(UIEffect 트랙 14종) | 에디터(직렬화 필드 기록) | 코드(`DOTween.To`) | 코드(`Bind`) | 불가 |
 

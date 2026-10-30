@@ -39,7 +39,7 @@ To see KeyTween in action, watch these videos:
 - [Getting Started](#getting-started)
 - [Playing and Awaiting](#playing-and-awaiting)
 - [When States Overlap](#when-states-overlap)
-- [Changing End Values at Runtime](#changing-end-values-at-runtime)
+- [Setting Up a Play in Code](#setting-up-a-play-in-code)
 - [Animation Events](#animation-events)
 - [Playing Without Code (Play On)](#playing-without-code-play-on)
 - [Nested Prefabs: Child Calls and Overrides](#nested-prefabs-child-calls-and-overrides)
@@ -193,7 +193,8 @@ await anim.PlayAsync("Open");                      // completes when the state e
 await anim.PlayReversedAsync("Open");              // plays end to start; events, sounds and child calls run in reverse
 anim.Complete("Typewriter");                       // jumps to the end, raising the remaining events in order
 anim.Stop("Idle");                                 // stops at the current pose; a waiting PlayAsync is canceled
-anim.Sample("Collapse", 0.25f);                    // shows the pose at a given time, without playing
+anim.Play("Intro", 1.5f);                          // plays from 1.5 s
+anim.Stop("Collapse", 0.25f);                      // stops and shows the pose at a given time, without playing
 bool playing = anim.IsPlaying("Open");
 float length = anim.Duration("Open");              // includes overrides; 0 if the state does not exist
 ```
@@ -269,27 +270,27 @@ anim.Play("Close");       // then Close starts from the open pose
 
 For details, see [When States Overlap](Docs~/en/Guide.md#11-when-states-overlap).
 
-## Changing End Values at Runtime
+## Setting Up a Play in Code
 
-Some values are known only at runtime, such as an amount of gold or a power rating. For these, create the motion in the editor and pass only the end value from code.
-
-### Passing an End Value
+Some values are known only at runtime, such as an amount of gold or a power rating. Create the motion in the editor, and set only what changes from code with `With`: the end value, the arrival (ease), the start time, callbacks.
 
 ```csharp
 // "Count" state on the gold label: a Number (Count) track, 0.6 s OutQuad, made in the editor
-counter.SetEndValue("Count", goldLabel, KeyTweenProperty.TextNumber, gold);
-counter.Play("Count");
+counter.With("Count").WithEndValue(goldLabel, KeyTweenProperty.TextNumber, gold).Play();
+
+await popup.With("Open")
+    .WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack)
+    .WithOnComplete(EnableInput)
+    .PlayAsync(destroyCancellationToken);
 ```
 
-* The value replaces the track's last key from the next play on.
-* The saved asset does not change.
+* The changes hold for that play only. The next `Play` uses the editor's values, and the saved asset does not change.
+* Keep what `With` returns and play it again; reused, it does not allocate.
+* A value is interpreted like a key value, so Relative To Rest and Size Relative apply.
+* For a state that something else plays (Play On, a screen transition), set the end value beforehand with `SetEndValue`; it applies to every later play.
+* `Build("Pop").Track(...).Key(...).Play()` makes a state in code alone.
 
-### How the Value Is Applied
-
-* `SetEndValue(state, target, property, Vector4)` also has a `float` overload, which sets only x.
-* The value is interpreted the same way as a key value. The track's Relative To Rest and Size Relative settings apply to it.
-
-For details, see [Changing End Values at Runtime](Docs~/en/API.md#changing-end-values-at-runtime).
+For details, see [Setting Up a Play in Code](Docs~/en/API.md#setting-up-a-play-in-code-with) and [Making a State in Code](Docs~/en/API.md#making-a-state-in-code-build).
 
 ## Animation Events
 
@@ -400,11 +401,11 @@ This section shows how to set a state's pose without playing it, and how to read
 
 ### Driving a State with a Value Other Than Time
 
-`Sample` shows a state's pose at a given time without playing it. This lets you drive a state with a value other than time.
+`Stop` with a time shows a state's pose at that time without playing it. This lets you drive a state with a value other than time.
 
 ```csharp
 // Drive a state with something other than time, such as how far a header has collapsed (0..1)
-anim.Sample("Collapse", progress * anim.Duration("Collapse"));
+anim.Stop("Collapse", progress * anim.Duration("Collapse"));
 ```
 
 ### Reading and Writing One Property

@@ -109,7 +109,7 @@ The table shows where and how each effect is made with each tool.
 | Looping pulse | Editor (window) | Editor (window) | Inspector or 2 lines of code | 2 statements of code | Inspector (4-step sequence) + 1 line of loop code |
 | List entry (current position → 0) | Editor, Start = Current Value | Editor, start value fixed in the clip | 2 lines of code (`From`) | 2 statements of code | Inspector |
 | Text wave (per character) | **Editor** (Char track + Stagger) | Not possible | Code: `DOTweenTMPAnimator` + a loop over the characters | Code: a loop of `BindToTMPCharPositionY` per character | Not possible |
-| Counting a number (currency) | Editor (Number track) + 1 line for the end value (`SetEndValue`) | Not checked | Code | Code | Not possible |
+| Counting a number (currency) | Editor (Number track) + 1 line for the end value (`With(...).WithEndValue`) | Not checked | Code | Code | Not possible |
 | Shared element transition | Editor (state) + 1 line for the partner's keys (`KeyTweenSharedElement`) | Not checked | Code | Code | Not possible |
 | UIEffect values (dissolve etc.) | **Editor** (14 UIEffect tracks) | Editor (records serialized fields) | Code (`DOTween.To`) | Code (`Bind`) | Not possible |
 

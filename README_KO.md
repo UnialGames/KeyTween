@@ -39,7 +39,7 @@ KeyTween에서는 Animator 클립을 만들 때처럼 타임라인에 키를 놓
 - [시작하기](#시작하기)
 - [재생과 기다리기](#재생과-기다리기)
 - [여러 상태가 겹칠 때](#여러-상태가-겹칠-때)
-- [실행 중에 끝 값 바꾸기](#실행-중에-끝-값-바꾸기)
+- [코드에서 재생 설정하기](#코드에서-재생-설정하기)
 - [애니메이션 이벤트](#애니메이션-이벤트)
 - [코드 없이 재생 (Play On)](#코드-없이-재생-play-on)
 - [중첩 Prefab: 자식 호출과 오버라이드](#중첩-prefab-자식-호출과-오버라이드)
@@ -193,7 +193,8 @@ await anim.PlayAsync("Open");                      // 끝까지 재생되면(또
 await anim.PlayReversedAsync("Open");              // 끝에서 시작으로 재생. 이벤트, 사운드, 자식 호출도 거꾸로 실행
 anim.Complete("Typewriter");                       // 끝으로 건너뜀. 남은 이벤트는 순서대로 발생
 anim.Stop("Idle");                                 // 현재 모습에서 멈춤. 기다리던 PlayAsync는 취소됨
-anim.Sample("Collapse", 0.25f);                    // 재생하지 않고 지정한 시간의 모습만 보여 줌
+anim.Play("Intro", 1.5f);                          // 1.5초부터 재생
+anim.Stop("Collapse", 0.25f);                      // 멈추고 지정한 시간의 모습으로 둠 (재생하지 않음)
 bool playing = anim.IsPlaying("Open");
 float length = anim.Duration("Open");              // 오버라이드를 반영한 길이. 없는 상태면 0
 ```
@@ -269,27 +270,27 @@ anim.Play("Close");       // 그다음 열린 모습에서 Close 시작
 
 자세한 내용은 [여러 상태가 겹칠 때](Docs~/Guide.md#11-여러-상태가-겹칠-때)를 참고하세요.
 
-## 실행 중에 끝 값 바꾸기
+## 코드에서 재생 설정하기
 
-재화나 전투력처럼 실행 중에야 알 수 있는 값이 있습니다. 이런 값은 움직임을 에디터에서 만들어 두고, 코드에서 끝 값만 넘깁니다.
-
-### 끝 값 넘기기
+재화나 전투력처럼 실행 중에야 알 수 있는 값이 있습니다. 움직임은 에디터에서 만들어 두고, 달라지는 것만 코드에서 `With`로 정합니다. 끝 값, 도착 방식(이징), 시작 시간, 콜백입니다.
 
 ```csharp
 // 금화 라벨의 "Count" 상태: Number (Count) 트랙, 0.6초 OutQuad (에디터에서 만듦)
-counter.SetEndValue("Count", goldLabel, KeyTweenProperty.TextNumber, gold);
-counter.Play("Count");
+counter.With("Count").WithEndValue(goldLabel, KeyTweenProperty.TextNumber, gold).Play();
+
+await popup.With("Open")
+    .WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack)
+    .WithOnComplete(EnableInput)
+    .PlayAsync(destroyCancellationToken);
 ```
 
-* 넘긴 값은 다음 재생부터 그 트랙의 마지막 키를 대신합니다.
-* 저장된 에셋은 바뀌지 않습니다.
+* 바꾼 값은 그 재생에만 적용됩니다. 다음 `Play`는 에디터 값으로 재생하고, 저장된 에셋은 바뀌지 않습니다.
+* `With`가 돌려준 것은 두었다가 다시 재생할 수 있습니다. 다시 쓰면 할당이 없습니다.
+* 넘긴 값은 키 값과 똑같이 해석됩니다. Relative To Rest와 Size Relative 설정이 적용됩니다.
+* Play On이나 화면 전환처럼 다른 곳이 재생하는 상태는 `SetEndValue`로 끝 값을 미리 넣어 둡니다. 그 뒤의 모든 재생에 적용됩니다.
+* `Build("Pop").Track(...).Key(...).Play()`로 코드만으로 상태를 만들 수도 있습니다.
 
-### 넘긴 값이 적용되는 방식
-
-* `SetEndValue(state, target, property, Vector4)`에는 x 값만 바꾸는 `float` 오버로드도 있습니다.
-* 넘긴 값은 키 값과 똑같이 해석됩니다. 트랙의 Relative To Rest와 Size Relative 설정이 그대로 적용됩니다.
-
-자세한 내용은 [런타임에 끝 값 바꾸기](Docs~/API.md#런타임에-끝-값-바꾸기)를 참고하세요.
+자세한 내용은 [코드에서 재생 설정하기](Docs~/API.md#코드에서-재생-설정하기-with)와 [코드로 상태 만들기](Docs~/API.md#코드로-상태-만들기-build)를 참고하세요.
 
 ## 애니메이션 이벤트
 
@@ -400,11 +401,11 @@ Button의 `OnClick` 같은 UnityEvent에서도 상태를 재생할 수 있습니
 
 ### 시간이 아닌 값으로 상태 움직이기
 
-`Sample`은 상태를 재생하지 않고 지정한 시간의 모습만 보여 줍니다. 그래서 시간이 아닌 다른 값으로 상태를 움직일 수 있습니다.
+`Stop`에 시간을 넘기면 상태를 재생하지 않고 지정한 시간의 모습만 보여 줍니다. 그래서 시간이 아닌 다른 값으로 상태를 움직일 수 있습니다.
 
 ```csharp
 // 시간이 아닌 값으로 상태의 모습을 정함. 예: 헤더가 접힌 정도(0..1)
-anim.Sample("Collapse", progress * anim.Duration("Collapse"));
+anim.Stop("Collapse", progress * anim.Duration("Collapse"));
 ```
 
 ### 속성 하나 읽고 쓰기

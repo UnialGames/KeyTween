@@ -13,13 +13,20 @@ public sealed class KeyTween : MonoBehaviour
 {
     public void Play(string stateName);              // 인자가 하나이므로 Button OnClick 같은 UnityEvent 목록에도 나옵니다
     public void Play(string stateName, PointerEventData pointer);   // Start = Pointer 트랙(누른 자리)에 씁니다
+    public void Play(string stateName, float time);  // 그 시간(초)부터 재생합니다
     public Awaitable PlayAsync(string stateName, CancellationToken cancellationToken = default);
+    public Awaitable PlayAsync(string stateName, float time, CancellationToken cancellationToken = default);
     public void PlayReversed(string stateName);      // UnityEvent 목록에도 나옵니다
+    public void PlayReversed(string stateName, float time);   // 그 시간에서 0초로
     public Awaitable PlayReversedAsync(string stateName, CancellationToken cancellationToken = default);
+    public Awaitable PlayReversedAsync(string stateName, float time, CancellationToken cancellationToken = default);
 
     public void Complete(string stateName);         // 재생 중인 상태를 끝으로 건너뜁니다
     public void Stop(string stateName);             // 그 자리에서 멈춥니다
-    public void Sample(string stateName, float time);   // 재생하지 않고 그 시간의 모습만 씁니다
+    public void Stop(string stateName, float time); // 멈추고 그 시간의 모습으로 둡니다 (재생하지 않음)
+
+    public KeyTweenPlay With(string stateName);             // 재생 하나를 코드에서 설정 ("코드에서 재생 설정하기")
+    public KeyTweenStateBuilder Build(string stateName);    // 코드로 상태 만들기 ("코드로 상태 만들기")
 
     public bool IsPlaying(string stateName);
     public bool HasState(string stateName);
@@ -29,12 +36,13 @@ public sealed class KeyTween : MonoBehaviour
 
 | 메서드 | 동작 |
 |---|---|
-| `Play` | 재생을 시작합니다. |
+| `Play` | 재생을 시작합니다. 시간을 넘기면 그 시간부터 재생합니다. |
 | `PlayAsync` | 재생을 시작하고, 끝날 때까지 기다립니다. |
-| `PlayReversed` | 끝에서 시작 쪽으로 재생합니다. |
+| `PlayReversed` | 끝(또는 넘긴 시간)에서 시작 쪽으로 재생합니다. |
 | `Complete` | 재생 중인 상태를 끝 모습으로 건너뜁니다. |
-| `Stop` | 그 자리에서 멈춥니다. |
-| `Sample` | 재생하지 않고 그 시간의 모습만 씁니다. |
+| `Stop` | 그 자리에서 멈춥니다. 시간을 넘기면 멈춘 뒤 그 시간의 모습으로 둡니다. |
+
+시간은 모두 **초**이고, 상태 타임라인의 시간입니다(`Duration`과 같은 단위). 0보다 작거나 길이보다 크면 0이나 끝으로 자릅니다.
 
 ### 상태 재생하기
 
@@ -62,6 +70,18 @@ await anim.PlayAsync("Open", destroyCancellationToken);
 * 없는 상태면 바로 완료됩니다.
 * Unity `Awaitable`이므로 **한 번만** await할 수 있습니다.
 * 반복(Loop) 상태의 `PlayAsync`는 `Complete`나 `Stop`을 부르기 전에는 끝나지 않습니다.
+
+### 중간부터 재생하기
+
+`Play`, `PlayAsync`에 시간을 넘기면 그 시간부터 재생합니다. 그 시간의 모습을 바로 쓰고, 남은 시간만 재생합니다.
+
+```csharp
+anim.Play("Intro", 1.5f);                     // 1.5초부터
+await anim.PlayAsync("Intro", 1.5f, destroyCancellationToken);
+```
+
+* 그 시간보다 앞에 있는 이벤트, 사운드, 자식 호출은 발생하지 않습니다. 시작 시간과 같은 시간의 것은 발생합니다(0초부터 재생할 때 0초의 것이 발생하는 것과 같음).
+* `PlayReversed`, `PlayReversedAsync`에 시간을 넘기면 그 시간에서 0초 쪽으로 재생합니다.
 
 ### 역재생하기
 
@@ -95,16 +115,18 @@ anim.Complete("Open");
 anim.Stop("Idle");
 ```
 
-### 특정 시간의 모습 쓰기
+### 특정 시간에서 멈추기
 
-`Sample`은 시간을 0부터 상태 길이 사이로 잘라, 그 시간의 모습을 씁니다. 스크롤 위치처럼 시간이 아닌 값으로 모습을 정할 때 씁니다.
+`Stop`에 시간을 넘기면, 재생 중이면 멈추고(기다리던 `PlayAsync`는 취소) 그 시간의 모습을 씁니다. 재생 중이 아니어도 그 모습을 씁니다.
 
 ```csharp
-anim.Sample("Reveal", progress * anim.Duration("Reveal"));   // progress: 0 ~ 1
+anim.Stop("Open", anim.Duration("Open"));                     // 애니메이션 없이 끝 모습으로
+anim.Stop("Reveal", progress * anim.Duration("Reveal"));      // 스크롤 위치 같은 값으로 매 프레임 (progress: 0 ~ 1)
 ```
 
 * 타이머, 이벤트, 사운드는 동작하지 않습니다.
-* 상태가 재생 중이면 멈춥니다.
+* 스크롤 위치, 당긴 거리처럼 시간이 아닌 값으로 모습을 정할 때 매 프레임 불러도 됩니다.
+* 예전 이름 `Sample(state, time)`은 같은 동작으로 남아 있지만 `[Obsolete]`이며 다음 버전에서 없어집니다.
 
 ### 상태 확인하기
 
@@ -146,16 +168,36 @@ anim.Play("다음 상태");
 
 `PlayAsync`가 어떻게 끝나는지, 그리고 아직 지나지 않은 이벤트와 사운드가 어떻게 처리되는지는 다음과 같습니다.
 
-| 경우 | `PlayAsync` 결과 | 남은 이벤트 | 남은 사운드 |
-|---|---|---|---|
-| 끝에 도달 | 완료 | 모두 발생 | 모두 재생 |
-| `Complete` 호출 | 완료 | 순서대로 발생 | 재생 안 함 |
-| 다른 상태가 속성을 모두 가져감 | 취소 | 발생 안 함 | 재생 안 함 |
-| 같은 상태를 다시 재생 | 이전 재생 취소 | 발생 안 함 | 재생 안 함 |
-| 오브젝트 비활성화 | 취소 | 발생 안 함 | 재생 안 함 |
-| `Stop` 호출, 토큰 취소 | 취소 | 발생 안 함 | 재생 안 함 |
+| 경우 | `PlayAsync` 결과 | 콜백 | 남은 이벤트 | 남은 사운드 |
+|---|---|---|---|---|
+| 끝에 도달 | 완료 | On Complete | 모두 발생 | 모두 재생 |
+| `Complete` 호출 | 완료 | On Complete | 순서대로 발생 | 재생 안 함 |
+| 다른 상태가 속성을 모두 가져감 | 취소 | On Cancel | 발생 안 함 | 재생 안 함 |
+| 같은 상태를 다시 재생 | 이전 재생 취소 | 이전 재생의 On Cancel | 발생 안 함 | 재생 안 함 |
+| 오브젝트 비활성화 | 취소 | On Cancel | 발생 안 함 | 재생 안 함 |
+| `Stop` 호출, 토큰 취소 | 취소 | On Cancel | 발생 안 함 | 재생 안 함 |
 
 끝까지 가지 못한 재생은 **취소**로 끝납니다. 이렇게 하면 "재생이 실제로 끝났을 때만 다음 동작을 한다"는 흐름이 기본이 됩니다.
+
+### 시작과 끝 콜백
+
+`await`를 쓰지 않아도 재생의 시작과 끝을 받을 수 있습니다. 상태마다 에디터의 **Callbacks**(On Start, On Complete, On Cancel, [Guide](Guide.md#시작과-끝에-함수-부르기-callbacks))에 연결하거나, 코드에서 컴포넌트의 이벤트로 모든 상태를 받습니다.
+
+```csharp
+public event Action<string> StateStarted;     // 상태 이름. 첫 모습 다음, 시작 시간의 이벤트보다 먼저
+public event Action<string> StateCompleted;   // 끝에 닿았거나 Complete. PlayAsync가 끝나기 전
+public event Action<string> StateCanceled;    // 끝까지 못 감 (위 표)
+```
+
+```csharp
+anim.StateCompleted += state => { if (state == "Close") gameObject.SetActive(false); };
+```
+
+* 재생 한 번은 `StateStarted` 다음에 `StateCompleted`와 `StateCanceled` 중 **정확히 하나**로 끝납니다.
+* 같은 때에 상태의 UnityEvent(On Start 등)가 먼저, 컴포넌트의 이벤트가 다음에 불립니다.
+* 콜백이 예외를 던지면 로그만 남고, 재생과 다른 콜백은 계속됩니다.
+* On Start 안에서 그 상태를 `Stop`하면 재생은 시작하지 않고, `PlayAsync`는 취소됩니다.
+* 재생하지 않고 모습만 쓰는 `Stop(state, time)`과 에디터 미리보기는 콜백을 부르지 않습니다.
 
 ### 예: 팝업 닫기
 
@@ -220,33 +262,68 @@ await UniTask.WhenAll(anims.Select(a => a.PlayUniTaskAsync("Hover")));
 * 차례로 기다리기: 취소된 재생을 기다리는 `await`
 * `Task.WhenAll`, `UniTask.WhenAll`: `WhenAll`
 
-## 런타임에 끝 값 바꾸기
+## 코드에서 재생 설정하기 (With)
 
-재화나 전투력처럼 끝 값이 실행 중에야 정해지는 연출에 씁니다. 시간과 이징 같은 움직임은 에디터에서 만들고, 코드에서는 끝 값만 넘깁니다.
+움직임은 에디터에서 만들고, 재생할 때마다 달라지는 것만 코드에서 정합니다. 재화나 전투력의 목표 숫자, 상황에 따라 다른 도착 방식, 끝났을 때 할 일 같은 것입니다.
+
+`With(state)`로 재생 하나를 설정하고, `Play` 계열로 재생합니다. LitMotion의 `WithEase`처럼 이어 씁니다.
+
+```csharp
+// 금화 라벨의 "Count" 상태: Number (Count) 트랙, Start = Current Value, 0.6초 OutQuad (에디터에서 만듦)
+count.With("Count").WithEndValue(goldLabel, KeyTweenProperty.TextNumber, gold).Play();
+
+// 팝업 열기: 이번에는 OutBack으로 도착하고, 다 열리면 입력을 받음
+await popup.With("Open")
+    .WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack)
+    .WithOnComplete(EnableInput)
+    .PlayAsync(destroyCancellationToken);
+```
+
+### 바꿀 수 있는 것
+
+트랙은 상태 이름, 대상, 속성으로 찾고, 바꾸는 것은 그 트랙의 **마지막 키**(끝 값과 그 키로 오는 구간)입니다.
+
+| 메서드 | 바꾸는 것 |
+|---|---|
+| `WithEndValue(target, property, value)` | 마지막 키의 값 |
+| `WithEase(target, property, ease)` | 마지막 키의 도착 방식을 Ease로, 그 Ease |
+| `WithCurve(target, property, curve)` | 도착 방식을 Curve로, 그 AnimationCurve |
+| `WithPunch(target, property, frequency, damping)`, `WithShake(...)` | 도착 방식을 Punch / Shake로, 진동 값 |
+| `WithTime(time)` | 그 시간(초)부터 재생 (`Play(state, time)`과 같음) |
+| `WithEventsBefore()` | `WithTime`과 함께: 그 시간 이전의 애니메이션 이벤트도 시작할 때 순서대로 발생 (사운드, 자식 호출은 건너뜀) |
+| `WithOnStart`, `WithOnComplete`, `WithOnCancel` | 이 재생에만 거는 콜백. 상태의 On Start 등 다음에 불림 |
+| `WithOnLoop` | 반복 상태에서 한 바퀴가 끝날 때마다 |
+
+* Material 트랙은 `WithEase(renderer, "_BaseColor", ease)`처럼 셰이더 속성 이름으로, 커스텀 트랙은 `WithEase<MyTrack>(target, ease)`처럼 트랙 클래스로 찾습니다.
+* 넘긴 값은 키 값과 똑같이 해석됩니다. Relative To Rest와 Size Relative 설정이 반영됩니다.
+* 맞는 트랙이 없으면 경고 로그를 남기고 그 항목만 건너뜁니다. 재생은 합니다.
+
+### 이번 재생에만 적용됩니다
+
+바꾼 값은 재생을 시작할 때 들어가고, 그 재생이 끝나면(완료든 취소든) 원래대로 돌아옵니다. 다음 `Play`는 에디터에서 정한 값으로 재생합니다. 저장된 데이터는 바뀌지 않습니다.
+
+`With`가 돌려준 것은 변수에 두고 몇 번이든 다시 재생할 수 있습니다. 다시 쓰면 재생할 때 GC 할당이 없습니다.
+
+```csharp
+KeyTweenPlay _open;
+
+void Awake() => _open = popup.With("Open").WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+public void Show() => _open.Play();
+```
+
+### 다른 곳이 재생하는 상태의 끝 값
+
+Play On이나 화면 전환처럼 내 코드가 아닌 곳이 재생하는 상태는 `With`를 쓸 수 없습니다. 이때는 `SetEndValue`로 끝 값을 미리 넣어 둡니다. 이 값은 그 뒤의 모든 재생에 계속 적용됩니다.
 
 ```csharp
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value);
 public void SetEndValue(string stateName, Component target, KeyTweenProperty property, float value);   // x만 바꿉니다
 ```
 
-### 끝 값을 넘기고 재생하기
-
-재생하기 전에 `SetEndValue`를 호출합니다.
-
 ```csharp
-// 금화 라벨의 "Count" 상태: Number (Count) 트랙, Start = Current Value, 0.6초 OutQuad (에디터에서 만듦)
-count.SetEndValue("Count", goldLabel, KeyTweenProperty.TextNumber, gold);
-count.Play("Count");
+// 결과 화면: 화면 전환이 "Enter"를 재생할 때 금화가 이 숫자까지 올라감
+result.SetEndValue("Enter", goldLabel, KeyTweenProperty.TextNumber, reward);
 ```
-
-### 바뀌는 값
-
-`SetEndValue`는 해당 트랙의 **마지막 키 값**을 바꿉니다.
-
-* 바꾼 값은 다음 재생부터 계속 적용됩니다.
-* 저장된 데이터는 바뀌지 않습니다.
-* 넘긴 값은 키 값과 똑같이 해석됩니다. 즉 Relative To Rest와 Size Relative 설정이 반영됩니다.
-* 맞는 트랙이 없으면 경고 로그를 남깁니다.
 
 ## 애니메이션 이벤트
 
@@ -308,19 +385,50 @@ var info = await anim.WaitEventAsync("Shown");
 
 이때 이벤트 데이터는 넘어가지 않습니다.
 
-## 실행 중에 상태 추가
+## 코드로 상태 만들기 (Build)
 
-상태는 보통 에디터에서 만들지만, 코드로 상태를 추가할 수도 있습니다.
+상태는 보통 에디터에서 만들지만, 코드만으로 만들 수도 있습니다. 대상이 실행 중에야 정해지는 연출이나, 에디터를 쓰지 않는 작은 연출에 씁니다.
 
-### 코드로 상태 추가하기
+`Build(state)`로 트랙과 키를 쌓고, `Add`로 추가하거나 `Play` 계열로 추가와 재생을 함께 합니다.
 
-`AddState`는 상태를 추가합니다. 같은 이름의 상태가 있으면 바꿉니다.
+```csharp
+anim.Build("Pop")
+    .Track(button.transform, KeyTweenProperty.Scale)       // 트랙 시작. 다음 Track 전까지의 Key는 이 트랙에
+        .Key(0f, Vector3.one)
+        .Key(0.15f, Vector3.one * 1.2f, KeyTweenEase.OutBack)  // 이 키로 오는 구간을 OutBack으로
+        .Key(0.3f, Vector3.one, KeyTweenEase.InOutSine)
+    .Track(label, KeyTweenProperty.GraphicAlpha)
+        .Key(0f, 0f).Key(0.2f, 1f)
+    .Event(0.15f, "Peak")
+    .OnComplete(() => Debug.Log("popped"))
+    .Play();
+```
+
+| 메서드 | 하는 일 |
+|---|---|
+| `Track(target, property)` | 내장 속성의 트랙을 시작합니다. Material 트랙은 `Track(renderer, "_BaseColor")`, 커스텀 트랙은 `Track<MyTrack>(target)` |
+| `From(start)` | 트랙의 Start. 기본은 Key Value(첫 키)이고, Current Value(재생할 때의 값), Pointer를 고를 수 있습니다 |
+| `Key(time, value, ease)` | 키 하나. `ease`는 이 키로 오는 구간의 도착 방식(기본 OutSine, 에디터와 같음). 값은 `Vector4`나 `float`이고 `Vector3`, `Vector2`, `Color`도 넘길 수 있습니다 |
+| `KeyCurve`, `KeyPunch`, `KeyShake` | 도착 방식이 Curve, Punch, Shake인 키 |
+| `Event(time, name)`, `Sound(time, clip, volume)` | 애니메이션 이벤트와 사운드 |
+| `Loop()` | 반복 상태로 |
+| `OnStart`, `OnComplete`, `OnCancel` | 상태의 콜백 (이 상태의 모든 재생) |
+| `Add()` | 상태를 추가합니다. 이후 `anim.Play("Pop")`처럼 이름으로 재생합니다 |
+| `Play()`, `PlayAsync()`, `PlayReversed()`, `PlayReversedAsync()` | 추가하고 재생합니다 |
+| `With()` | 추가하고, 재생 설정(`With`)으로 이어 갑니다 |
+
+* 만든 상태는 실행 중에만 있는 상태입니다. 저장되지 않고, 에디터에서 만든 상태와 똑같이 `Play`, `Stop`, `Complete`, `With`를 쓸 수 있습니다.
+* 키는 넣은 순서와 상관없이 시간 순서로 놓입니다.
+* 같은 이름의 상태가 있으면 바꿉니다. 그 상태가 재생 중이면 멈추고, 기다리던 `PlayAsync`는 취소됩니다.
+* `Track` 없이 `Key`를 부르면 바로 예외가 납니다.
+
+### 상태 객체로 추가하기
+
+`KeyTweenState`를 직접 만들어 `AddState`로 넣을 수도 있습니다. `Build`는 내부에서 이 메서드를 씁니다. 화면 전환 컨테이너가 기본 전환 연출을 넣을 때도 씁니다([Screens](Screens.md)).
 
 ```csharp
 public void AddState(KeyTweenState state);
 ```
-
-화면 전환 컨테이너가 기본 전환 연출을 넣을 때 이 메서드를 씁니다([Screens](Screens.md)). 일반적인 연출은 에디터에서 만드는 것을 권장합니다.
 
 ## 값 읽고 쓰기
 
