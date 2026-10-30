@@ -439,7 +439,7 @@ For how each Type behaves, see [Arrival](#7-arrival).
 
 A key sets only **when** (its time) and **what value**. How the track gets **from one key to the next** is its arrival. When you open a drawer, you pull it fast at first and slow down as it comes out: moving the same distance in the same time feels completely different depending on how the speed changes on the way.
 
-![The same two keys (previous key 0, this key 1) passed with Linear, OutSine and OutBack. Linear moves at a constant speed, OutSine starts fast and arrives slowly, and OutBack goes slightly past the target and comes back.](../media/arrival/arrival-compare.png)
+<img src="../media/arrival/arrival-compare.png" width="480" alt="The same two keys (previous key 0, this key 1) passed with Linear, OutSine and OutBack. Linear moves at a constant speed, OutSine starts fast and arrives slowly, and OutBack goes slightly past the target and comes back.">
 
 The three lines in the graph have the same keys: 0 at 0 s and 1 at the end. Only the arrival differs.
 
@@ -447,7 +447,7 @@ The three lines in the graph have the same keys: 0 at 0 s and 1 at the end. Only
 
 Each key has one arrival, and it sets how the track moves **from the previous key to this key**. With three keys there are two segments, and each can use a different arrival.
 
-![Three keys, two segments. From key 1 to key 2 (0.4 s) the track moves with key 2's arrival, OutBack, going slightly past 1.2; from key 2 to key 3 (1 s) it moves with key 3's arrival, InOutSine, easing down to 1.](../media/arrival/arrival-segments.png)
+<img src="../media/arrival/arrival-segments.png" width="480" alt="Three keys, two segments. From key 1 to key 2 (0.4 s) the track moves with key 2's arrival, OutBack, going slightly past 1.2; from key 2 to key 3 (1 s) it moves with key 3's arrival, InOutSine, easing down to 1.">
 
 * The segment from key 1 to key 2 uses **key 2's** arrival, and the one from key 2 to key 3 uses **key 3's**.
 * The first key has no segment coming in, so its arrival is disabled. The exception is a track whose Start is Current Value with only one key: the segment from the value at play time to that key uses that key's arrival.
@@ -485,7 +485,7 @@ The most used Type. Choose one of 36 curves. The two parts of a name mean:
 | **Elastic** | Wobbles like a rubber band |
 | **Bounce** | Arrives as if bouncing off the floor |
 
-![Graphs of all 36 eases. In each cell, the horizontal axis is the progress through the segment (0 to 1) and the vertical axis is 0 at the previous key's value and 1 at this key's value; the faint lines are 0 and 1. These are the values KeyTween computes.](../media/arrival/arrival-eases.png)
+<img src="../media/arrival/arrival-eases.png" width="664" alt="Graphs of all 36 eases. In each cell, the horizontal axis is the progress through the segment (0 to 1) and the vertical axis is 0 at the previous key's value and 1 at this key's value; the faint lines are 0 and 1. These are the values KeyTween computes.">
 
 * The first 32, Linear through InOutBounce, match LitMotion's `Ease` in number and formula.
 * OutBackQuad through OutBackQuint are Unity-AnimationUI's OutBack family. Each goes further past the target before coming back.
@@ -509,7 +509,7 @@ There is no single right answer, but starting from these usually looks natural.
 
 If no ease has the shape you want, choose the **Curve** Type, click the **Animation Curve** field and draw it in Unity's curve editor.
 
-![An example curve. The horizontal axis is the progress through the segment (0 to 1) and the vertical axis is 0 at the previous key's value and 1 at this key's value. It goes past to 1.15 around 0.6 and comes back to 1.](../media/arrival/arrival-curve.png)
+<img src="../media/arrival/arrival-curve.png" width="480" alt="An example curve. The horizontal axis is the progress through the segment (0 to 1) and the vertical axis is 0 at the previous key's value and 1 at this key's value. It goes past to 1.15 around 0.6 and comes back to 1.">
 
 ![The key inspector with a key of Card's Color track selected. The Arrival Type is Curve, with the Animation Curve field and a graph of the same shape.](../media/arrival/arrival-inspector-curve.png)
 
@@ -533,9 +533,9 @@ Use these for a bump when a button is pressed, or a jitter on an error. Unlike t
 | **Damping** | How much the shake dies out. 1 dies out toward the end; 0 keeps the same strength until it returns into place | 1 |
 | **Ease** | How the shake is spread over time. With Out Sine, the shakes crowd toward the start and slow down later | Out Sine |
 
-![Four Punch graphs: strength 1 over 1 s. Against Frequency 10 and Damping 1, Damping 0.5 and 0 die out less, and Frequency 5 shakes more slowly. All of them return to rest (0) at the end.](../media/arrival/arrival-punch.png)
+<img src="../media/arrival/arrival-punch.png" width="480" alt="Four Punch graphs: strength 1 over 1 s. Against Frequency 10 and Damping 1, Damping 0.5 and 0 die out less, and Frequency 5 shakes more slowly. All of them return to rest (0) at the end.">
 
-![Two Shake graphs: Frequency 10 with Damping 1 and 0. They jitter randomly and return to rest at the end.](../media/arrival/arrival-shake.png)
+<img src="../media/arrival/arrival-shake.png" width="480" alt="Two Shake graphs: Frequency 10 with Damping 1 and 0. They jitter randomly and return to rest at the end.">
 
 * The formulas are the same as LitMotion's `LMotion.Punch` and `LMotion.Shake`.
 * Because it settles back into place, a Punch key usually comes right after a key at rest. For example, a key at 0 s (Scale 1) followed by a Punch key at 0.3 s (Strength 0.2) bumps around scale 1 and comes back to 1.

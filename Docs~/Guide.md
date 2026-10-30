@@ -439,7 +439,7 @@ Arrival 섹션에서 **Type**을 고르고, 그 Type에 맞는 칸을 정합니�
 
 키는 **언제(시간)** 어떤 **값**이 될지만 정합니다. 두 키 사이를 **어떻게 지나갈지**는 도착 방식(Arrival)이 정합니다. 서랍을 열 때 처음에는 빠르게 당기다가 끝에서 천천히 멈추는 것처럼, 같은 거리를 같은 시간에 움직여도 속도가 어떻게 바뀌느냐에 따라 느낌이 완전히 달라집니다.
 
-![같은 두 키(이전 키 0, 이 키 1)를 Linear, OutSine, OutBack으로 지나간 값. Linear는 일정한 속도로, OutSine은 빠르게 출발해 천천히 도착하고, OutBack은 목표를 조금 지나쳤다가 돌아옵니다.](media/arrival/arrival-compare.png)
+<img src="media/arrival/arrival-compare.png" width="480" alt="같은 두 키(이전 키 0, 이 키 1)를 Linear, OutSine, OutBack으로 지나간 값. Linear는 일정한 속도로, OutSine은 빠르게 출발해 천천히 도착하고, OutBack은 목표를 조금 지나쳤다가 돌아옵니다.">
 
 위 그래프의 세 선은 키가 같습니다. 0초에 0, 끝에 1입니다. 다른 것은 Arrival뿐입니다.
 
@@ -447,7 +447,7 @@ Arrival 섹션에서 **Type**을 고르고, 그 Type에 맞는 칸을 정합니�
 
 Arrival은 키마다 하나씩 있고, **이전 키에서 이 키로 들어오는 구간**의 움직임을 정합니다. 키가 셋이면 구간이 둘이고, 구간마다 다른 Arrival을 쓸 수 있습니다.
 
-![키 3개, 구간 2개. 키 1에서 키 2(0.4초)까지는 키 2의 Arrival인 OutBack으로 1.2를 조금 넘었다가 닿고, 키 2에서 키 3(1초)까지는 키 3의 Arrival인 InOutSine으로 부드럽게 1에 내려옵니다.](media/arrival/arrival-segments.png)
+<img src="media/arrival/arrival-segments.png" width="480" alt="키 3개, 구간 2개. 키 1에서 키 2(0.4초)까지는 키 2의 Arrival인 OutBack으로 1.2를 조금 넘었다가 닿고, 키 2에서 키 3(1초)까지는 키 3의 Arrival인 InOutSine으로 부드럽게 1에 내려옵니다.">
 
 * 키 1 → 키 2 구간은 **키 2의** Arrival로, 키 2 → 키 3 구간은 **키 3의** Arrival로 움직입니다.
 * 첫 키는 들어오는 구간이 없으므로 Arrival이 비활성입니다. 단, Start가 Current Value이고 키가 하나뿐이면, 재생할 때의 값에서 그 키로 들어오는 구간에 그 키의 Arrival을 씁니다.
@@ -485,7 +485,7 @@ Arrival은 키마다 하나씩 있고, **이전 키에서 이 키로 들어오�
 | **Elastic** | 고무줄처럼 출렁입니다 |
 | **Bounce** | 바닥에 튀듯이 도착합니다 |
 
-![Ease 36종의 그래프. 각 칸의 가로는 구간의 진행(0에서 1), 세로는 0이 이전 키의 값, 1이 이 키의 값이고 흐린 선이 0과 1입니다. KeyTween이 실제로 계산한 값입니다.](media/arrival/arrival-eases.png)
+<img src="media/arrival/arrival-eases.png" width="664" alt="Ease 36종의 그래프. 각 칸의 가로는 구간의 진행(0에서 1), 세로는 0이 이전 키의 값, 1이 이 키의 값이고 흐린 선이 0과 1입니다. KeyTween이 실제로 계산한 값입니다.">
 
 * Linear부터 InOutBounce까지 앞의 32종은 LitMotion `Ease`와 번호와 공식이 같습니다.
 * OutBackQuad부터 OutBackQuint까지는 Unity-AnimationUI의 OutBack 계열입니다. 뒤로 갈수록 더 크게 지나쳤다가 돌아옵니다.
@@ -509,7 +509,7 @@ Arrival은 키마다 하나씩 있고, **이전 키에서 이 키로 들어오�
 
 원하는 모양이 Ease에 없으면 Type을 **Curve**로 고르고 **Animation Curve** 칸을 눌러 Unity의 곡선 편집기에서 직접 그립니다.
 
-![Curve의 예. 가로는 구간의 진행(0에서 1), 세로는 0이 이전 키의 값, 1이 이 키의 값입니다. 0.6쯤에서 1.15까지 지나쳤다가 1로 돌아옵니다.](media/arrival/arrival-curve.png)
+<img src="media/arrival/arrival-curve.png" width="480" alt="Curve의 예. 가로는 구간의 진행(0에서 1), 세로는 0이 이전 키의 값, 1이 이 키의 값입니다. 0.6쯤에서 1.15까지 지나쳤다가 1로 돌아옵니다.">
 
 ![Card의 Color 트랙 키를 고른 키 인스펙터. Arrival의 Type = Curve이고 Animation Curve 칸과 같은 모양의 그래프가 보입니다.](media/arrival/arrival-inspector-curve.png)
 
@@ -533,9 +533,9 @@ Arrival은 키마다 하나씩 있고, **이전 키에서 이 키로 들어오�
 | **Damping** | 흔들림이 잦아드는 정도. 1이면 끝으로 갈수록 잦아들고, 0이면 끝까지 같은 세기로 흔들리다가 제자리로 돌아옵니다 | 1 |
 | **Ease** | 흔들림을 시간에 어떻게 펼칠지. Out Sine이면 흔들림이 앞쪽에 몰리고 뒤로 갈수록 느려집니다 | Out Sine |
 
-![Punch의 그래프 4개. 세기 1로 1초 동안 흔들린 값입니다. Frequency 10, Damping 1을 기준으로 Damping 0.5와 0은 덜 잦아들고, Frequency 5는 더 느리게 흔들립니다. 모두 끝에서 제자리(0)로 돌아옵니다.](media/arrival/arrival-punch.png)
+<img src="media/arrival/arrival-punch.png" width="480" alt="Punch의 그래프 4개. 세기 1로 1초 동안 흔들린 값입니다. Frequency 10, Damping 1을 기준으로 Damping 0.5와 0은 덜 잦아들고, Frequency 5는 더 느리게 흔들립니다. 모두 끝에서 제자리(0)로 돌아옵니다.">
 
-![Shake의 그래프 2개. Frequency 10에 Damping 1과 0입니다. 무작위로 흔들리다가 끝에서 제자리로 돌아옵니다.](media/arrival/arrival-shake.png)
+<img src="media/arrival/arrival-shake.png" width="480" alt="Shake의 그래프 2개. Frequency 10에 Damping 1과 0입니다. 무작위로 흔들리다가 끝에서 제자리로 돌아옵니다.">
 
 * 공식은 LitMotion의 `LMotion.Punch`, `LMotion.Shake`와 같습니다.
 * 끝나면 제자리로 돌아오므로 Punch 키는 보통 "제자리 키 다음"에 둡니다. 예를 들어 0초 키(Scale 1) 다음에 0.3초 Punch 키(Strength 0.2)를 두면, 크기 1을 중심으로 톡 튀었다가 1로 돌아옵니다.
