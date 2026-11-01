@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Nested Prefabs | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Nested Prefabs | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/nested-prefabs.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="nested-prefabs">Nested Prefabs</h1>
+
+<p>These features are for a shared prefab, such as a button, placed inside another prefab, such as a popup.</p>
+<ul>
+<li><strong>Child call</strong>: the popup's state calls the button's state.</li>
+<li><strong>Override</strong>: changes the button's animation only inside the popup.</li>
+</ul>
+<h2 id="adding-a-child-call">Adding a Child Call</h2>
+<p>A child call plays a state of a child prefab at a set time in the parent state.</p>
+<ol>
+<li>Double-click an object row, or right-click and choose <strong>Add Child Call ▸ child ▸ state</strong>.</li>
+<li>Drag the bar that appears on the parent's timeline to change its time.</li>
+<li>In the inspector, set the <strong>Child</strong>, <strong>State</strong> and <strong>Time</strong>.</li>
+</ol>
+<p>States that are already called are checked and cannot be chosen.</p>
+<h2 id="how-child-calls-play">How Child Calls Play</h2>
+<ul>
+<li>The parent state's length includes <code>call time + child state length</code>.</li>
+<li>Calling <code>Complete</code> on the parent brings the child to its end values as well.</li>
+<li>If the parent is canceled, a child that has already started keeps playing.</li>
+<li>Cycles of states calling each other are cut off at depth 8.</li>
+</ul>
+<h2 id="overriding-a-track">Overriding a Track</h2>
+<p>An override changes the child's animation per track, and only inside the current prefab. Under a child call, the child state's tracks are shown shifted by the call time. The original tracks are dimmed and read-only.</p>
+<ol>
+<li>Click a dimmed track under the child call. <strong>Only that track</strong> is overridden.</li>
+<li>Edit its keys. The edits go into the override, and the original prefab is not changed.</li>
+</ol>
+<p>In the screenshot below, Popup's Open state calls OkButton's Hover at 0.2 s and overrides OkButton's Color track inside the popup only. The overridden Color track has a blue name and an <strong>×</strong>. The Scale track, not overridden, is dimmed. The child call's heading shows how many tracks are overridden and a <strong>↺</strong>.</p>
+<p><img src="../../media/editor/editor-override.png" alt="The Open state of Popup. The OkButton row has a Hover child call bar; below it are the heading Hover 1 track(s) overridden with a ↺, a dimmed OkButton · Scale track, and an OkButton · Color track with a blue name."></p>
+<h2 id="editing-the-original-prefab">Editing the Original Prefab</h2>
+<p>Overrides are saved in the outer prefab's own <code>KeyTween</code>. Only the changed tracks are saved, so when you edit other tracks in the original, the popup picks up those changes.</p>
+<table>
+<thead>
+<tr>
+<th>In the original prefab</th>
+<th>Overridden track</th>
+<th>Track not overridden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Change key values or times</td>
+<td>The popup keeps its values</td>
+<td>The popup follows</td>
+</tr>
+<tr>
+<td>Add a track</td>
+<td>—</td>
+<td>It appears in the popup too</td>
+</tr>
+<tr>
+<td>Delete a track</td>
+<td>It stays in the popup</td>
+<td>It is removed from the popup too</td>
+</tr>
+</tbody>
+</table>
+<h2 id="overrides-on-several-levels">Overrides on Several Levels</h2>
+<p>When several levels, such as screen &gt; popup &gt; button, override the same track, <strong>the outermost level wins</strong>. This is the same rule as Unity's nested prefabs.</p>
+<ul>
+<li>Overridden tracks have blue names.</li>
+<li>Their tooltip shows which prefab overrides them.</li>
+</ul>
+<h2 id="reverting-overrides">Reverting Overrides</h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>What it reverts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>×</strong> on a track</td>
+<td>The outermost level of that track's override</td>
+</tr>
+<tr>
+<td><strong>↺</strong> on the child call title</td>
+<td>All overrides at the outermost level (like Unity's Revert All)</td>
+</tr>
+<tr>
+<td><strong>Inspector › Overrides › Revert</strong></td>
+<td>Overrides made on a scene instance</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Saving | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Saving | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/saving.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="saving">Saving</h1>
+
+<p>Your edits in the KeyTween window are saved wherever that <code>KeyTween</code> lives. The tooltips of <strong>Auto Save</strong> and <strong>Save</strong> show where the edits are saved.</p>
+<h2 id="auto-save-and-save">Auto Save and Save</h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Auto Save</strong></td>
+<td>Saves automatically. On by default</td>
+</tr>
+<tr>
+<td><strong>Save</strong></td>
+<td>Saves when you click it</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Pressing Ctrl+S (Cmd+S on Mac) while the window has focus does the same as Save.</li>
+<li>Auto Save saves 0.4 s after your last edit, so that it does not save every frame while you drag a value.</li>
+<li>Auto Save also saves any remaining edits when Play mode ends. Undo (Ctrl+Z) is saved the same way.</li>
+<li>With Auto Save off, edits are saved only when you click Save.</li>
+</ul>
+<h2 id="where-edits-are-saved">Where Edits Are Saved</h2>
+<table>
+<thead>
+<tr>
+<th>What you edit</th>
+<th>Where it is saved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An object in Prefab mode</td>
+<td>That prefab</td>
+</tr>
+<tr>
+<td>A prefab asset selected in the Project window</td>
+<td>That prefab</td>
+</tr>
+<tr>
+<td>A scene object (Edit mode)</td>
+<td>The scene (with Unity's scene save)</td>
+</tr>
+<tr>
+<td>In Play mode, a prefab copy created at runtime</td>
+<td>The original prefab</td>
+</tr>
+<tr>
+<td>In Play mode, an object placed in the scene</td>
+<td>That scene object (applied when Play mode ends)</td>
+</tr>
+</tbody>
+</table>
+<p>When you edit a scene object in Edit mode, both controls are disabled and the tooltip explains why. Edits go straight into the object and are saved with Unity's scene save (Ctrl+S).</p>
+<h2 id="saving-in-play-mode">Saving in Play Mode</h2>
+<ul>
+<li>Prefab copies created at runtime include screens and list items. Other running copies of the same prefab get the same values immediately.</li>
+<li>Unity normally discards changes to an object placed in the scene. KeyTween applies them to that scene object when Play mode ends, and the scene file is written when you save the scene.</li>
+<li>In Play mode, edits that were not saved with Save while Auto Save was off are lost when Play mode ends.</li>
+<li>Editing part of a nested prefab in Play mode saves the change as an override in the outer prefab, and the inner prefab stays as it is.</li>
+<li>Objects in a scene that has never been saved (Untitled) cannot be found again after Play mode ends, so their edits are not applied.</li>
+</ul>
+<p>For overrides, see <a href="nested-prefabs.html">Child Calls and Overrides</a>.</p>
+<h2 id="orange-dot">Orange Dot</h2>
+<p>Like the <code>*</code> on a scene name, the orange dot appears while the values on screen are not saved. Its tooltip says which values these are.</p>
+<ul>
+<li>During preview</li>
+<li>When there are unsaved edits</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

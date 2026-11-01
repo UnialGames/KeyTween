@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Adding Tracks | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Adding Tracks | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/adding-tracks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adding-tracks">Adding Tracks</h1>
+
+<p>A track animates one property of one object. You choose tracks in the Add Track window and add them to the state.</p>
+<h2 id="opening-the-add-track-window">Opening the Add Track Window</h2>
+<p>Right-click an empty part of the timeline and choose <strong>Add Track...</strong>.</p>
+<p><img src="../../media/editor/editor-add-track-menu.png" alt="The context menu on the track area, with Add Track... and Add Child Call."></p>
+<h2 id="choosing-tracks">Choosing Tracks</h2>
+<p>The left side of the Add Track window shows the object tree of the prefab. The right side shows the track cards available for the selected object, along with their current values.</p>
+<ol>
+<li>Select an object in the tree on the left. You can search the tree.</li>
+<li>Click track cards on the right to select them. You can select several.</li>
+<li>Click <strong>Add N</strong>.</li>
+</ol>
+<p><img src="../../media/editor/editor-add-track.gif" alt="Selecting an object and track cards in the Add Track window, then adding them"></p>
+<ul>
+<li>Double-click a card to add it immediately.</li>
+<li>Your selection is kept while you move between objects.</li>
+<li>Tracks that already exist are marked <code>Added</code>.</li>
+</ul>
+<h2 id="defaults-for-new-tracks">Defaults for New Tracks</h2>
+<ul>
+<li>A new track gets a key at 0 s and a key at the state's end time. Both keys hold the current value.</li>
+<li>If the state is empty, the end key is placed at 0.2 s.</li>
+<li>Start is <strong>Current Value</strong>. Only Reveal and per-character tracks start with Key Value.</li>
+<li>The end key arrives with the Ease <code>OutSine</code>.</li>
+<li>A new per-character track's Stagger is 0.05 s.</li>
+</ul>
+<p>For the Start option, see <a href="track-options.html">Track Options</a>.</p>
+<h2 id="available-tracks">Available Tracks</h2>
+<p>The Add Track window shows only the tracks that match the components on the selected object.</p>
+<p><strong>Objects</strong></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Tracks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Any object</td>
+<td>Scale, Rotation, Active</td>
+</tr>
+<tr>
+<td>Objects that are not UI (Transform)</td>
+<td>Position, World Position, World Rotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>UI</strong></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Tracks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RectTransform</td>
+<td>Position, Size, Anchor Min, Anchor Max, Pivot, Offset Min, Offset Max</td>
+</tr>
+<tr>
+<td>CanvasGroup</td>
+<td>Group Alpha</td>
+</tr>
+<tr>
+<td>Graphic (Image, RawImage, TMP, and so on)</td>
+<td>Color, Alpha</td>
+</tr>
+<tr>
+<td>Image (Image Type = Filled)</td>
+<td>Fill Amount</td>
+</tr>
+<tr>
+<td>RawImage</td>
+<td>UV Rect</td>
+</tr>
+<tr>
+<td>Shadow, Outline</td>
+<td>Effect Color, Effect Distance</td>
+</tr>
+<tr>
+<td>RectMask2D</td>
+<td>Softness, Padding</td>
+</tr>
+<tr>
+<td>Slider</td>
+<td>Value</td>
+</tr>
+<tr>
+<td>ScrollRect</td>
+<td>Scroll Position</td>
+</tr>
+<tr>
+<td>LayoutElement</td>
+<td>Min Size, Preferred Size, Flexible Size</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TextMeshPro</strong></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Tracks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TMP_Text</td>
+<td>Font Size, Character Spacing, Word Spacing, Line Spacing, Reveal (Typewriter), Number (Count)</td>
+</tr>
+<tr>
+<td>TMP_Text material</td>
+<td>Outline Width, Outline Color, Face Dilate, Underlay Color</td>
+</tr>
+<tr>
+<td>TMP_Text per character</td>
+<td>Char Scale, Char Position, Char Rotation, Char Color, Char Alpha</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2D, 3D, camera and sound</strong></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Tracks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SpriteRenderer</td>
+<td>Color, Alpha</td>
+</tr>
+<tr>
+<td>Renderer (MeshRenderer and so on)</td>
+<td>Material tracks: one per color, number and vector property of its material (e.g. <code>Material _BaseColor</code>)</td>
+</tr>
+<tr>
+<td>Light</td>
+<td>Light Color, Intensity, Range (Point, Spot), Spot Angle (Spot)</td>
+</tr>
+<tr>
+<td>Camera</td>
+<td>Camera Background, Camera Size, Field of View, Near Clip, Far Clip, Viewport Rect</td>
+</tr>
+<tr>
+<td>AudioSource</td>
+<td>Volume, Pitch</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Events and sounds</strong></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Tracks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root</td>
+<td>Animation Events, Sound</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Other tracks</strong></p>
+<ul>
+<li>With UIEffect installed, 14 UIEffect tracks are added. For details, see <a href="unitask.html">Integrations</a>.</li>
+<li>You can write your own track for a component of your project. For details, see <a href="custom-tracks.html">Custom Tracks</a>.</li>
+</ul>
+<p><strong>Things to know</strong></p>
+<ul>
+<li><code>Group Alpha</code> is for fading a whole screen or popup.</li>
+<li><code>Rotation</code> and <code>World Rotation</code> use Euler angles in degrees. Values are read in the range −180 to 180, so going from −30° to 0° does not turn the long way around.</li>
+<li><code>Active</code> does not interpolate between keys. It turns the object on or off at each key's time.</li>
+<li>Material tracks write through a MaterialPropertyBlock. The material asset does not change, and other objects that use the same material are not affected.</li>
+<li>TMP material tracks make a material instance used only by that text. When the preview stops, the original material comes back.</li>
+</ul>
+<h2 id="changing-a-tracks-target">Changing a Track's Target</h2>
+<p>To change a track's target, click the <code>path · property ▾</code> button at the top of the track inspector.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

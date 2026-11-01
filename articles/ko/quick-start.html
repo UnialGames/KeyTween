@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>빠른 시작 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="빠른 시작 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/quick-start.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="빠른-시작">빠른 시작</h1>
+
+<p>에디터에서 첫 애니메이션을 만들고, 코드에서 상태를 재생하는 방법을 알아봅니다. <em>상태</em>란 <code>Hover</code>나 <code>Open</code>처럼 이름이 붙은 애니메이션 하나를 말하며, Prefab의 <code>KeyTween</code> 컴포넌트에 저장됩니다.</p>
+<h2 id="1-에디터에서-호버-연출-만들기">1. 에디터에서 호버 연출 만들기</h2>
+<p>포인터를 올리면 버튼이 1.1배로 커지면서 밝아지고, 포인터를 빼면 원래대로 돌아오게 만듭니다. 코드는 작성하지 않습니다.</p>
+<p>다 만들고 나면 KeyTween 창은 아래처럼 보입니다.</p>
+<ul>
+<li><code>Hover</code>와 <code>Unhover</code> 상태</li>
+<li>버튼의 Scale 트랙과 Color 트랙</li>
+<li>오른쪽의 키 인스펙터</li>
+</ul>
+<p><img src="../../media/editor/editor-window.png" alt="Hover와 Unhover 상태가 있는 KeyTween 창"></p>
+<ol>
+<li><p>버튼 Prefab을 열고 <strong>Window &gt; KeyTween Editor</strong>를 엽니다.</p>
+</li>
+<li><p><strong>Add KeyTween to 'Button'</strong> 버튼을 누릅니다. <code>KeyTween</code> 컴포넌트를 직접 추가해도 됩니다.</p>
+</li>
+<li><p>상태 탭의 <strong>+</strong> 버튼을 눌러 상태를 만들고, 상태 인스펙터에서 이름을 <code>Hover</code>로 바꿉니다. 새 상태는 타임라인이 비어 있으며, 상태 인스펙터에는 Name, Loop, Duration, Play On 설정이 나옵니다.</p>
+<p><img src="../../media/editor/editor-state.png" alt="새로 만든 Hover 상태와 상태 인스펙터"></p>
+</li>
+<li><p>타임라인의 빈 곳을 우클릭하고 <strong>Add Track…</strong> 항목을 고릅니다.</p>
+</li>
+<li><p><code>RectTransform</code> 아래의 <strong>Scale</strong>과 <code>Image</code> 아래의 <strong>Color</strong>를 선택한 뒤 <strong>Add 2</strong>를 누릅니다. 트랙마다 0초 키와 0.2초 끝 키가 만들어집니다.</p>
+<img src="../../media/editor/editor-add-track.gif" width="640" alt="Add Track으로 트랙 추가">
+</li>
+<li><p>Scale 트랙의 끝 키를 클릭하고 Value를 <code>1.1</code>, Ease를 <code>OutBack</code>으로 설정합니다.</p>
+</li>
+<li><p>Color 트랙의 끝 키를 조금 더 밝은 색으로 바꿉니다.</p>
+</li>
+<li><p>눈금자를 끌거나 <strong>▶</strong> 버튼을 눌러 미리 봅니다. Play 모드에 들어갈 필요가 없습니다.</p>
+<img src="../../media/editor/editor-preview.gif" width="640" alt="에디터에서 미리보기">
+</li>
+<li><p>상태 인스펙터에서 <strong>Play On</strong>을 <code>PointerEnter</code>로 설정합니다.</p>
+</li>
+<li><p>같은 방법으로 <code>Unhover</code> 상태를 만듭니다. 끝 키는 <code>1</code>과 원래 색으로 되돌리고, Play On은 <code>PointerExit</code>로 설정합니다.</p>
+</li>
+<li><p>Play 모드에 들어가 버튼 위에 포인터를 올렸다가 뺍니다.</p>
+<img src="../../media/editor/editor-play-mode.gif" width="494" alt="Play 모드에서 본 호버 연출">
+</li>
+</ol>
+<p>전체 과정은 <a href="https://youtu.be/13JJNE4_FwI">Button Hover Editor</a> 영상에서 볼 수 있습니다. 에디터의 자세한 사용법은 <a href="concepts.html">Guide</a>를 참고하세요.</p>
+<h2 id="2-코드에서-재생하기">2. 코드에서 재생하기</h2>
+<p>스크립트에서 상태를 재생하려면 <code>KeyTween</code> 컴포넌트를 참조하고 상태 이름으로 호출합니다. 아래 팝업은 열릴 때 <code>Open</code>을 재생하고, <code>Close</code>가 끝나면 자신을 파괴합니다.</p>
+<pre><code class="lang-csharp">using System;
+using KeyTweening;
+using UnityEngine;
+
+public class Popup : MonoBehaviour
+{
+    [SerializeField] KeyTween anim;
+
+    public async Awaitable Open() =&gt; await anim.PlayAsync(&quot;Open&quot;);
+
+    public async Awaitable Close()
+    {
+        try { await anim.PlayAsync(&quot;Close&quot;, cancellationToken: destroyCancellationToken); }
+        catch (OperationCanceledException) { return; }   // 닫는 도중 다시 열렸으면 팝업을 그대로 둠
+        Destroy(gameObject);
+    }
+}
+</code></pre>
+<p>에디터와 코드는 다음과 같이 역할을 나눕니다.</p>
+<ul>
+<li>에디터는 애니메이션 자체를 정합니다. 시간, 이징, 움직일 속성이 여기에 속합니다.</li>
+<li>코드는 <em>어느 상태</em>를 재생할지와 <em>끝난 뒤 무엇을 할지</em>만 정합니다.</li>
+</ul>
+<p>자세한 내용은 <a href="playing-and-awaiting.html">API</a>를 참고하세요.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>중첩 Prefab | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="중첩 Prefab | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/nested-prefabs.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="중첩-prefab">중첩 Prefab</h1>
+
+<p>버튼 같은 공용 Prefab을 팝업 같은 다른 Prefab 안에 넣었을 때 쓰는 기능입니다.</p>
+<ul>
+<li><strong>자식 호출</strong>: 팝업의 상태에서 버튼의 상태를 부릅니다.</li>
+<li><strong>오버라이드</strong>: 버튼의 연출을 팝업 안에서만 바꿉니다.</li>
+</ul>
+<h2 id="자식-호출-추가하기">자식 호출 추가하기</h2>
+<p>자식 호출은 부모 상태의 정해진 시간에 자식 Prefab의 상태를 재생합니다.</p>
+<ol>
+<li>오브젝트 줄을 더블클릭하거나, 우클릭한 뒤 <strong>Add Child Call ▸ 자식 ▸ 상태</strong>를 고릅니다.</li>
+<li>부모 타임라인에 생긴 막대를 드래그해 시간을 옮깁니다.</li>
+<li>인스펙터에서 <strong>Child</strong>, <strong>State</strong>, <strong>Time</strong>을 정합니다.</li>
+</ol>
+<p>이미 호출 중인 상태는 체크 표시가 붙고 고를 수 없습니다.</p>
+<h2 id="자식-호출의-재생">자식 호출의 재생</h2>
+<ul>
+<li>부모 상태의 길이에는 <code>호출 시간 + 자식 상태 길이</code>가 포함됩니다.</li>
+<li>부모를 <code>Complete</code>하면 자식도 끝 값이 됩니다.</li>
+<li>부모가 취소되어도 이미 시작한 자식은 계속 재생됩니다.</li>
+<li>상태끼리 서로 부르는 순환은 깊이 8에서 끊습니다.</li>
+</ul>
+<h2 id="오버라이드하기">오버라이드하기</h2>
+<p>오버라이드는 자식의 연출을 현재 Prefab 안에서만, 트랙 단위로 바꿉니다. 자식 호출 아래에는 자식 상태의 트랙이 호출 시간만큼 밀려서 보입니다. 원본 트랙은 흐리게 보이며 읽기 전용입니다.</p>
+<ol>
+<li>자식 호출 아래의 흐린 트랙을 클릭합니다. <strong>그 트랙만</strong> 오버라이드됩니다.</li>
+<li>키를 편집합니다. 편집은 오버라이드에 들어가고, 원본 Prefab은 바뀌지 않습니다.</li>
+</ol>
+<p>아래 화면에서 Popup의 Open 상태는 0.2초에 OkButton의 Hover를 부르고, OkButton의 Color 트랙을 팝업 안에서만 오버라이드했습니다. 오버라이드한 Color 트랙은 이름이 파란색이고 **×**가 있습니다. 오버라이드하지 않은 Scale 트랙은 흐리게 보입니다. 자식 호출 제목에는 오버라이드한 트랙 수와 **↺**가 있습니다.</p>
+<p><img src="../../media/editor/editor-override.png" alt="Popup의 Open 상태. OkButton 줄에 Hover 자식 호출 막대가 있고, 그 아래 Hover 1 track(s) overridden 제목과 ↺, 흐린 OkButton · Scale 트랙, 파란 이름의 OkButton · Color 트랙이 보입니다."></p>
+<h2 id="원본-prefab을-고쳤을-때">원본 Prefab을 고쳤을 때</h2>
+<p>오버라이드는 바깥 Prefab 자신의 <code>KeyTween</code>에 저장됩니다. 바꾼 트랙만 저장하므로, 원본에서 다른 트랙을 고치면 그 내용이 팝업에도 반영됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>원본 Prefab에서</th>
+<th>오버라이드한 트랙</th>
+<th>오버라이드 안 한 트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>키 값이나 시간 수정</td>
+<td>팝업의 값이 유지됩니다</td>
+<td>팝업도 따라 바뀝니다</td>
+</tr>
+<tr>
+<td>트랙 추가</td>
+<td>—</td>
+<td>팝업에도 생깁니다</td>
+</tr>
+<tr>
+<td>트랙 삭제</td>
+<td>팝업에 남습니다</td>
+<td>팝업에서도 사라집니다</td>
+</tr>
+</tbody>
+</table>
+<h2 id="여러-단계의-오버라이드">여러 단계의 오버라이드</h2>
+<p>화면 &gt; 팝업 &gt; 버튼처럼 여러 단계가 같은 트랙을 오버라이드하면 <strong>가장 바깥이 이깁니다</strong>. Unity 중첩 Prefab의 규칙과 같습니다.</p>
+<ul>
+<li>오버라이드된 트랙은 이름이 파란색입니다.</li>
+<li>툴팁에 어느 Prefab이 덮어썼는지 나옵니다.</li>
+</ul>
+<h2 id="오버라이드-되돌리기">오버라이드 되돌리기</h2>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>되돌리는 범위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>트랙의 <strong>×</strong></td>
+<td>그 트랙의 오버라이드 가운데 가장 바깥 단계 하나</td>
+</tr>
+<tr>
+<td>자식 호출 제목의 <strong>↺</strong></td>
+<td>가장 바깥 단계의 오버라이드 전부 (Unity의 Revert All과 같음)</td>
+</tr>
+<tr>
+<td><strong>Inspector › Overrides › Revert</strong></td>
+<td>씬 인스턴스에서 만든 오버라이드</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

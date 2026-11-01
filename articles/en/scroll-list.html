@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Scroll List | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Scroll List | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/scroll-list.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="scroll-list">Scroll List</h1>
+
+<p><code>KeyTweenScrollList</code> is the component for UI that scrolls through many entries, such as rankings, quest lists, chats, carousels and banners.
+It is a <strong>virtualized list</strong> that you add to a <code>ScrollRect</code>. Only the visible items exist as objects, and those objects are reused as you scroll, so the object count stays at what fits on screen even with hundreds of entries.</p>
+<p>There is no separate component for each scroll style. Vertical lists, grids, carousels, wheel pickers and the other styles are all combinations of this list's settings.</p>
+<p>Every animation is a <strong><code>KeyTween</code> state</strong> on the item (or on a page dot or section header). A state is one named animation stored on a <code>KeyTween</code> component.</p>
+<p>To add it, select the object that has the <code>ScrollRect</code> and choose <strong>Add Component &gt; KeyTween &gt; Scroll List</strong>.</p>
+<h2 id="1-items-and-layout">1. Items and Layout</h2>
+<p>This section explains how to set the item prefabs and the layout. The list's inspector is organized like a Unity Layout Group.</p>
+<h3 id="setting-the-item-prefabs">Setting the Item Prefabs</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Item Prefab</td>
+<td>The default item prefab (number 0). Its size is the default item size.</td>
+</tr>
+<tr>
+<td>Extra Prefabs</td>
+<td>Additional prefabs for lists with several kinds of items (numbered from 1)</td>
+</tr>
+<tr>
+<td>Measure Items</td>
+<td>Measures each item from its layout preferred size.</td>
+</tr>
+<tr>
+<td>Layout</td>
+<td>One of Vertical, Horizontal, Grid and Masonry</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>You pick the kind from Extra Prefabs in code with <code>prefabOf(index)</code>. Each kind is pooled separately.</li>
+<li>Use Measure Items for a chat bubble that grows with long text.</li>
+</ul>
+<p><img src="../../media/scroll/scroll-list-inspector.png" alt="The Scroll List inspector. From the top: layout fields such as Item Prefab and Layout, Scrolling (Snap, Stick To End and so on), Animation (Entry State = Show, Appear State = Appear, Scrub State) and Preview (Items, Show, Play Entry)."></p>
+<h3 id="choosing-a-layout">Choosing a Layout</h3>
+<p>Each layout has the following settings.</p>
+<table>
+<thead>
+<tr>
+<th>Layout</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertical / Horizontal</td>
+<td>Padding, Spacing, Child Alignment, Reverse Arrangement, Control Child Size</td>
+</tr>
+<tr>
+<td>Grid</td>
+<td>Padding, Cell Size, Spacing, Child Alignment, Constraint, Constraint Count</td>
+</tr>
+<tr>
+<td>Masonry</td>
+<td>Same as Grid, but with Column Size (column width) instead of Cell Size</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Control Child Size takes Width or Height and stretches items across the scroll direction.</li>
+<li>Grid's Constraint is one of Flexible, Fixed Column Count and Fixed Row Count.</li>
+<li>Masonry places each item on the shortest column.</li>
+</ul>
+<h3 id="scroll-direction-and-item-size">Scroll Direction and Item Size</h3>
+<ul>
+<li>The layout determines the scroll direction. A Grid with Fixed Row Count scrolls horizontally.</li>
+<li>The item size along the scroll direction comes from the following, in order. Grid always uses Cell Size.
+<ol>
+<li>The <code>sizeOf(index)</code> callback</li>
+<li>Measure Items</li>
+<li>The prefab size</li>
+</ol>
+</li>
+<li>When the content is shorter than the viewport, Child Alignment also applies along the scroll direction. A chat, for example, uses Lower so that messages stack from the bottom.</li>
+</ul>
+<h3 id="layout-cost">Layout Cost</h3>
+<p>Item positions are computed once whenever the layout changes, without a <code>LayoutGroup</code>. The list costs nothing while it is not scrolling.</p>
+<h2 id="2-binding-data">2. Binding Data</h2>
+<p>This section explains how to connect data to the list. You bind data with callbacks, as with UI Toolkit's <code>ListView</code>.</p>
+<h3 id="binding-with-callbacks">Binding with Callbacks</h3>
+<p>The item prefab does not need a base class. <code>ItemView</code> in the code below stands for any component on the prefab.</p>
+<pre><code class="lang-csharp">list.SetCount(100, (ItemView view, int index) =&gt; view.Set(items[index]),
+                   (ItemView view, int index) =&gt; view.Clear());          // unbind is optional
+list.SetData(items, (ItemView view, Item item, int index) =&gt; view.Set(item));
+</code></pre>
+<ul>
+<li>The binding callback is called only when an item becomes visible.</li>
+<li>Calling <code>SetCount</code> or <code>SetData</code> with bindings refills the list from scratch.</li>
+<li>A refill returns the scroll position to the start, or to the end when Stick To End is on.</li>
+<li>With Play On Fill, the entry animation also plays.</li>
+</ul>
+<h3 id="using-several-prefab-kinds">Using Several Prefab Kinds</h3>
+<p>With several prefab kinds, take a <code>RectTransform</code> and pick the kind for each index with <code>prefabOf</code>.</p>
+<pre><code class="lang-csharp">list.prefabOf = i =&gt; items[i].isHeader ? 1 : 0;                          // set before SetCount
+list.SetCount(48, (RectTransform item, int index) =&gt; ...);               // with several prefabs
+</code></pre>
+<h3 id="changing-the-count-and-rebinding">Changing the Count and Rebinding</h3>
+<p>Changing only the count, without bindings, keeps the scroll position. The remaining items keep their objects and are bound again, without playing Appear again.</p>
+<pre><code class="lang-csharp">list.SetCount(10);      // count only: keeps the scroll position, rebinds the remaining items, only newly visible ones Appear
+list.Refresh();         // rebinds every visible item (and re-measures with Measure Items)
+list.RefreshItem(5);
+</code></pre>
+<ul>
+<li><code>SetCount(count, stickDuration = 0.25f)</code>, which changes only the count, measures only the new items.</li>
+<li>If Stick To End is on and the end was in view, the list slides to the new end over <code>stickDuration</code> seconds.</li>
+</ul>
+<h3 id="example-guild-chat">Example: Guild Chat</h3>
+<p>The guild chat in the RPG sample only raises the count when a message arrives.</p>
+<ul>
+<li>Each bubble is sized to its text (Measure Items).</li>
+<li>The list keeps the newest message in view (Stick To End).</li>
+</ul>
+<p><img src="../../media/rpg/rpg-guild.gif" alt="The guild chat in the RPG sample. New messages appear and the list follows the end."></p>
+<h2 id="3-position-and-scrolling">3. Position and Scrolling</h2>
+<p>This section explains how to read the list's current state, move to a specific item and set how the list scrolls.</p>
+<h3 id="reading-the-state">Reading the State</h3>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Count</code></td>
+<td>The item count</td>
+</tr>
+<tr>
+<td><code>VisibleRange</code></td>
+<td>The visible range</td>
+</tr>
+<tr>
+<td><code>Offset</code></td>
+<td>The pixels scrolled from the start</td>
+</tr>
+<tr>
+<td><code>AtEnd</code></td>
+<td>Whether the list is at the end</td>
+</tr>
+<tr>
+<td><code>ItemSize</code></td>
+<td>The default item size</td>
+</tr>
+<tr>
+<td><code>GetItem(index)</code>, <code>GetItem&lt;TView&gt;(index)</code></td>
+<td>The item's object if it is visible, otherwise null</td>
+</tr>
+<tr>
+<td><code>IndexAt(screenPoint, camera)</code></td>
+<td>The index of the item under a screen point (such as the pointer), or −1</td>
+</tr>
+<tr>
+<td><code>ItemPosition(index)</code>, <code>SizeOf(index)</code></td>
+<td>An item's position and size</td>
+</tr>
+<tr>
+<td><code>NearestIndex(alignment)</code></td>
+<td>The item nearest to an alignment point</td>
+</tr>
+<tr>
+<td><code>CurrentIndex</code>, <code>CurrentIndexChanged</code></td>
+<td>The item at the Snap Alignment point</td>
+</tr>
+<tr>
+<td><code>ItemShown</code></td>
+<td>Raised when an item becomes visible (after binding)</td>
+</tr>
+<tr>
+<td><code>ItemHidden</code></td>
+<td>Raised when an item is hidden (before unbinding)</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>CurrentIndex</code> for the current page or the selection of a carousel or wheel picker.</p>
+<h3 id="scrolling-to-an-item">Scrolling to an Item</h3>
+<p><code>ScrollTo(index, alignment = Start, duration = 0)</code> aligns the item to the start, center or end of the viewport.</p>
+<ul>
+<li>The move uses OutCubic.</li>
+<li>A duration of 0 jumps instantly.</li>
+<li>With Loop, it goes the shorter way.</li>
+</ul>
+<h3 id="folding-and-removing-items">Folding and Removing Items</h3>
+<p><code>ResizeItem(index, size, duration)</code> animates one item's size while the items after it follow (accordion). Call <code>RemoveItem(index)</code> after removing one entry from your data.</p>
+<pre><code class="lang-csharp">await list.ResizeItem(index, 0f, foldSeconds);   // fold; the Awaitable completes when the animation ends
+items.RemoveAt(index);                           // remove the entry from your data
+list.RemoveItem(index);                          // only that item goes away
+</code></pre>
+<ul>
+<li>After <code>RemoveItem</code>, the items below move up one slot.</li>
+<li>They keep their objects and animation state.</li>
+<li>They are not rebound and do not play the appear animation.</li>
+</ul>
+<h3 id="replaying-and-rebuilding">Replaying and Rebuilding</h3>
+<ul>
+<li><code>PlayEntry()</code> replays the entry animation.</li>
+<li><code>Rebuild()</code> recomputes the layout.</li>
+</ul>
+<h3 id="scrolling-settings">Scrolling Settings</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loop</td>
+<td>The first item follows the last one.</td>
+</tr>
+<tr>
+<td>Snap: None</td>
+<td>No snapping.</td>
+</tr>
+<tr>
+<td>Snap: Nearest</td>
+<td>Snaps to the nearest item on release.</td>
+</tr>
+<tr>
+<td>Snap: One Per Swipe</td>
+<td>Moves exactly one item per drag.</td>
+</tr>
+<tr>
+<td>Snap Alignment / Duration</td>
+<td>Where items snap to / how long the snap takes</td>
+</tr>
+<tr>
+<td>Auto Scroll (s)</td>
+<td>Moves to the next item every N seconds (banner).</td>
+</tr>
+<tr>
+<td>Stick To End</td>
+<td>When items are added while the end is in view, the list stays at the end (chat).</td>
+</tr>
+<tr>
+<td>Sticky Header</td>
+<td>Uses the chosen prefab kind as a section header.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Loop and Sticky Header work with Vertical and Horizontal only.</li>
+<li>With One Per Swipe, a drag under 30 px returns to where it was.</li>
+<li>Auto Scroll pauses while the user drags.</li>
+<li>With Sticky Header, a header that has scrolled past stays pinned at the top until the next header pushes it up.</li>
+</ul>
+<h3 id="nested-scrolling">Nested Scrolling</h3>
+<p>A drag across the list's scroll axis is passed to the enclosing <code>ScrollRect</code>. This is how these layouts behave:</p>
+<ul>
+<li>A vertical list inside a page</li>
+<li>A horizontal row inside a vertical list</li>
+</ul>
+<h3 id="example-quest-list">Example: Quest List</h3>
+<p>The quest list in the RPG sample pins its section headers with Sticky Header.</p>
+<ul>
+<li>Section headers: DAILY, WEEKLY, ACHIEVEMENTS</li>
+<li>A row whose reward has been claimed is folded with <code>ResizeItem</code> and then removed with <code>RemoveItem</code>.</li>
+</ul>
+<p><img src="../../media/rpg/rpg-quests.gif" alt="The quest list in the RPG sample. Section headers stay pinned at the top, and claimed rows fold away."></p>
+<h2 id="4-item-animation">4. Item Animation</h2>
+<p>This section explains the animations items play when they come in and as they scroll. You pick the states from the item prefab's <code>KeyTween</code>.</p>
+<h3 id="editing-states">Editing States</h3>
+<p>The buttons on each state row let you edit a state right away.</p>
+<ul>
+<li><strong>Edit</strong> opens that state in the KeyTween Editor.</li>
+<li><strong>Create</strong> adds the <code>KeyTween</code> and the state if they are missing, then opens it.</li>
+</ul>
+<p>For a prefab asset, Prefab Mode opens first.</p>
+<h3 id="entry-animation--entry-state">Entry Animation — Entry State</h3>
+<p>Entry State works together with Stagger and Play On Fill. On the first fill (or when you call <code>PlayEntry()</code>), the visible items play one after another, Stagger apart.</p>
+<ul>
+<li>Items still waiting for their turn show the state's start pose.</li>
+<li>Items that come in after the entry animation has finished show its end pose.</li>
+</ul>
+<h3 id="appear-animation--appear-state">Appear Animation — Appear State</h3>
+<p>Plays on an item that becomes visible by scrolling. It does not play in these cases:</p>
+<ul>
+<li>On the first fill</li>
+<li>On items that come into view because another item was resized or removed</li>
+</ul>
+<p>A reused object may still look like its previous index. So when an item becomes visible, the list first sets it to the entry state's end pose and then plays the appear state.</p>
+<h3 id="position-driven-animation--scrub-state">Position-Driven Animation — Scrub State</h3>
+<p>Uses the item's position in the viewport as the state time and applies the pose at that time (<code>Stop(state, time)</code>).</p>
+<ul>
+<li>0 = start edge</li>
+<li>0.5 = center</li>
+<li>1 = end</li>
+</ul>
+<p>These values are fractions of the state's length, so put the keys at 0 s, half the state's length and its full length. For example, a carousel whose center item grows, with a state 1 s long, has Scale keys at 0 s = 0.8, 0.5 s = 1.1 and 1 s = 0.8.</p>
+<p>Use it for carousel zoom, wheel picker tilt and page parallax.</p>
+<h3 id="callbacks">Callbacks</h3>
+<ul>
+<li>Entry and Appear are plays, so their states' On Start and On Complete are called. If an item leaves the view while playing and its object is reused, On Cancel is called.</li>
+<li>Scrub only sets the pose without playing, so it calls no callbacks.</li>
+</ul>
+<h3 id="example-ranking-list">Example: Ranking List</h3>
+<ul>
+<li>Rows come in one after another when the page opens.</li>
+<li>Rows that scroll into view play the appear animation.</li>
+<li>The MY RANK button uses <code>ScrollTo</code> to move to the player's row.</li>
+</ul>
+<p><img src="../../media/rpg/rpg-ranking.gif" alt="The ranking list in the RPG sample. Rows that scroll into view appear with an animation."></p>
+<h2 id="5-editor-preview">5. Editor Preview</h2>
+<p>The <strong>Preview</strong> section of the inspector lets you check the list without entering Play Mode.</p>
+<h3 id="using-the-preview">Using the Preview</h3>
+<p>It is available in Edit Mode when an Item Prefab is set.</p>
+<ul>
+<li><strong>Show</strong> / <strong>Update</strong> lays out the number of items set in Items (1–200).</li>
+<li>The <strong>Scroll</strong> slider changes the scroll position, including the effect of scrub states.</li>
+<li><strong>Play Entry</strong> plays the entry animation.</li>
+<li><strong>Clear</strong> removes the temporary objects.</li>
+</ul>
+<p>The laid-out items are temporary objects that are not saved.</p>
+<h2 id="6-helper-components">6. Helper Components</h2>
+<p>This section covers three components that work together with the list. Their animations are also <code>KeyTween</code> states, and the <strong>Edit</strong> / <strong>Create</strong> buttons on their state fields open the KeyTween Editor directly.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Use</th>
+<th>States</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyTweenPageIndicator</code></td>
+<td>Page dots, banner dots, tab bars</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td><code>KeyTweenScrollScrub</code></td>
+<td>A header that collapses as you scroll</td>
+<td>Any one state</td>
+</tr>
+<tr>
+<td><code>KeyTweenPullToRefresh</code></td>
+<td>Pull to refresh</td>
+<td>Pull / Refreshing</td>
+</tr>
+</tbody>
+</table>
+<h3 id="page-dots-and-tab-bars--keytweenpageindicator">Page Dots and Tab Bars — <code>KeyTweenPageIndicator</code></h3>
+<ul>
+<li>It creates one indicator item from its prefab for each list item.</li>
+<li>This object's Layout Group lays them out.</li>
+<li>Pressing an indicator item's Button scrolls the list to that item.</li>
+<li>Set tab text with <code>labels</code>.</li>
+</ul>
+<h3 id="collapsing-header--keytweenscrollscrub">Collapsing Header — <code>KeyTweenScrollScrub</code></h3>
+<p>Uses the scroll distance (0 to Distance px) as the state time. At 0 px the state is at its start; scrolled by Distance, it shows its end pose. Use it for a header that collapses or a toolbar that appears as the list scrolls.</p>
+<ol>
+<li>Add <strong>Add Component &gt; KeyTween &gt; Scroll Scrub</strong> to any object.</li>
+<li>Put the list in <strong>List</strong>, the header's <code>KeyTween</code> in <strong>Target</strong> and the name of the collapsing state in <strong>State</strong>.</li>
+<li>Set <strong>Distance</strong> to the scroll distance (px) at which it is fully collapsed.</li>
+</ol>
+<h3 id="pull-to-refresh--keytweenpulltorefresh">Pull to Refresh — <code>KeyTweenPullToRefresh</code></h3>
+<p>Add it to the same object as the list. It works with vertical lists only.</p>
+<ol>
+<li>When you pull past the start, the Pull state follows how far you pull.</li>
+<li>Releasing past Distance calls <code>onRefresh</code>.</li>
+<li>While refreshing, it loops the Refreshing state and keeps the top open (<code>Refreshing</code> = true).</li>
+<li>Calling <code>EndRefresh()</code> closes it.</li>
+</ol>
+<pre><code class="lang-csharp">pull.onRefresh.AddListener(async () =&gt;
+{
+    var items = await LoadItemsAsync();
+    list.SetData(items, (ItemView view, Item item, int index) =&gt; view.Bind(item));
+    pull.EndRefresh();
+});
+</code></pre>
+<h2 id="7-what-you-can-build">7. What You Can Build</h2>
+<p>This section lists the patterns you can build from the list's settings and states.</p>
+<h3 id="opening-the-example-scene">Opening the Example Scene</h3>
+<p>The <strong>UI Components</strong> sample (<strong>Package Manager &gt; KeyTween &gt; Samples</strong>) contains 18 examples in <code>Scenes/Scroll.unity</code>.</p>
+<h3 id="settings-for-each-pattern">Settings for Each Pattern</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Settings / States</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertical list, horizontal list, grid, horizontal grid</td>
+<td>Layout, Entry <code>Show</code> + Appear <code>Appear</code></td>
+</tr>
+<tr>
+<td>Carousel</td>
+<td>Scrub <code>Focus</code> (zooms the center item), Snap Nearest Center</td>
+</tr>
+<tr>
+<td>Paging</td>
+<td>One Per Swipe, Scrub <code>Parallax</code>, Page Indicator</td>
+</tr>
+<tr>
+<td>Infinite loop</td>
+<td>Loop + Scrub + Snap</td>
+</tr>
+<tr>
+<td>Auto banner</td>
+<td>Loop + One Per Swipe + Auto Scroll + Page Indicator</td>
+</tr>
+<tr>
+<td>Wheel picker</td>
+<td>Scrub <code>Wheel</code> (Rotation X, alpha, scale), Snap Nearest Center</td>
+</tr>
+<tr>
+<td>Section headers</td>
+<td>Two prefab kinds, Sticky Header</td>
+</tr>
+<tr>
+<td>Variable size, chat</td>
+<td>Measure Items (+ Stick To End, Lower alignment)</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td><code>Open</code>/<code>Close</code> states + <code>ResizeItem</code></td>
+</tr>
+<tr>
+<td>Masonry</td>
+<td>Masonry</td>
+</tr>
+<tr>
+<td>Nested scroll</td>
+<td>A horizontal list in each row of a vertical list</td>
+</tr>
+<tr>
+<td>Tabs</td>
+<td>Page Indicator (On/Off underline) + One Per Swipe</td>
+</tr>
+<tr>
+<td>Collapsing header</td>
+<td>Scroll Scrub</td>
+</tr>
+<tr>
+<td>Pull to refresh</td>
+<td>Pull To Refresh</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

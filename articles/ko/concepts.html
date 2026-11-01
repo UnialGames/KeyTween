@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>개념 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="개념 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/concepts.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="개념">개념</h1>
+
+<p>이 문서는 KeyTween 에디터에서 애니메이션을 만들고, 미리보고, 저장하는 방법을 설명합니다. 에디터 UI는 영문이므로 이 문서도 화면에 보이는 이름을 그대로 적습니다.</p>
+<p>KeyTween 에디터를 쓰기 전에 알아 두면 좋은 용어를 설명합니다.</p>
+<h2 id="keytween-컴포넌트">KeyTween 컴포넌트</h2>
+<p><code>KeyTween</code>은 애니메이션을 담는 컴포넌트입니다. Prefab이나 씬 오브젝트에 붙이면 그 아래에 있는 오브젝트들을 움직입니다.</p>
+<p>애니메이션 데이터는 별도의 에셋 없이 <code>KeyTween</code> 컴포넌트 안에 직렬화됩니다. 그래서 Prefab을 복제하거나 옮겨도 연출이 함께 따라갑니다.</p>
+<p>컴포넌트 인스펙터의 <strong>Time</strong>은 재생 시간이 <code>Time.timeScale</code>을 따를지 정합니다. 기본은 <code>Scaled</code>(따름)이고, 일시 정지 중에도 움직여야 하는 UI는 <code>Unscaled</code>로 둡니다. 자세한 내용은 <a href="playing-and-awaiting.html#%EC%9E%AC%EC%83%9D-%EC%8B%9C%EA%B0%84">재생 시간</a>을 참고하세요.</p>
+<h2 id="상태-state">상태 (State)</h2>
+<p>상태는 이름이 붙은 연출 하나입니다. 코드에서도 이 이름으로 재생합니다.</p>
+<ul>
+<li>예: <code>Hover</code>, <code>Open</code>, <code>Close</code></li>
+<li>상태 하나에 트랙이 여러 개 들어갑니다.</li>
+</ul>
+<p>자세한 내용은 <a href="states.html">상태</a>를 참고하세요.</p>
+<h2 id="트랙-track">트랙 (Track)</h2>
+<p>트랙은 오브젝트 하나의 속성 하나를 움직입니다. 예를 들어 닫기 버튼의 Scale이 트랙 하나입니다.</p>
+<p>자세한 내용은 <a href="adding-tracks.html">트랙 추가</a>를 참고하세요.</p>
+<h2 id="키-key">키 (Key)</h2>
+<p>키는 트랙의 한 시점의 값입니다. Unity Animation 창과 마찬가지로, 1 → 1.2 → 1로 움직이면 키가 3개입니다.</p>
+<p>자세한 내용은 <a href="editing-keys.html">키 편집</a>을 참고하세요.</p>
+<h2 id="도착-방식-arrival">도착 방식 (Arrival)</h2>
+<p>도착 방식은 이전 키에서 이 키로 넘어오는 방식입니다. 다음 중에서 고릅니다.</p>
+<ul>
+<li>이징 (Ease)</li>
+<li>커브 (Curve)</li>
+<li>Punch</li>
+<li>Shake</li>
+</ul>
+<p>자세한 내용은 <a href="arrival.html">도착 방식</a>을 참고하세요.</p>
+<h2 id="play-on">Play On</h2>
+<p>Play On은 상태가 저절로 재생되는 시점입니다. 고르지 않으면 코드에서 재생합니다. 고를 수 있는 시점의 예는 다음과 같습니다.</p>
+<ul>
+<li>포인터가 들어올 때</li>
+<li>클릭할 때</li>
+<li>컴포넌트가 켜질 때</li>
+</ul>
+<p>자세한 내용은 <a href="play-on.html">Play On</a>을 참고하세요.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

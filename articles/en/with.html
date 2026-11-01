@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Setting Up a Play in Code | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Setting Up a Play in Code | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/with.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="setting-up-a-play-in-code">Setting Up a Play in Code</h1>
+
+<p>Make the motion in the editor, and set in code only what changes from play to play: the target number of a currency or power rating, a different arrival for the situation, what to do when it finishes.</p>
+<p>Set up a play with <code>With(state)</code>, then play it with one of the <code>Play</code> methods. The calls chain like LitMotion's <code>WithEase</code>.</p>
+<pre><code class="lang-csharp">// &quot;Count&quot; state on the gold label: a Number (Count) track, Start = Current Value, 0.6 s OutQuad (made in the editor)
+count.With(&quot;Count&quot;).WithEndValue(goldLabel, KeyTweenProperty.TextNumber, gold).Play();
+
+// Opening a popup: arrive with OutBack this time, and take input once it is open
+await popup.With(&quot;Open&quot;)
+    .WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack)
+    .WithOnComplete(EnableInput)
+    .PlayAsync(destroyCancellationToken);
+</code></pre>
+<h2 id="what-you-can-change">What You Can Change</h2>
+<p>The track is found by state name, target and property, and what changes is its <strong>last key</strong> (the end value and the segment that arrives there).</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WithEndValue(target, property, value)</code></td>
+<td>The last key's value. The <code>float</code> overload is for built-in properties and sets x only</td>
+</tr>
+<tr>
+<td><code>WithEase(target, property, ease)</code></td>
+<td>The last key's arrival becomes Ease, with that ease</td>
+</tr>
+<tr>
+<td><code>WithCurve(target, property, curve)</code></td>
+<td>The arrival becomes Curve, with that AnimationCurve</td>
+</tr>
+<tr>
+<td><code>WithPunch(target, property, frequency = 10, damping = 1)</code>, <code>WithShake(...)</code></td>
+<td>The arrival becomes Punch / Shake, with those values. The strength stays the value written in the key</td>
+</tr>
+<tr>
+<td><code>WithTime(time)</code></td>
+<td>Plays from that time in seconds (the same as <code>Play(state, time)</code>)</td>
+</tr>
+<tr>
+<td><code>WithEventsBefore(raise = true)</code></td>
+<td>With <code>WithTime</code>: the animation events before that time are raised too, in order, at the start (sounds and child calls are skipped)</td>
+</tr>
+<tr>
+<td><code>WithOnStart</code>, <code>WithOnComplete</code>, <code>WithOnCancel</code></td>
+<td>Callbacks for this play only, called after the state's On Start and so on</td>
+</tr>
+<tr>
+<td><code>WithOnLoop</code></td>
+<td>For a looping state, each time a lap ends</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>A Material track is found by its shader property name, as in <code>WithEase(renderer, &quot;_BaseColor&quot;, ease)</code>, and a custom track by its class, as in <code>WithEase&lt;MyTrack&gt;(target, ease)</code>.</li>
+<li>A value is interpreted exactly like a key value, so the Relative To Rest and Size Relative settings apply.</li>
+<li>If no track matches, it logs a warning and skips that change. The state still plays.</li>
+<li><code>With</code> has no play that takes a <code>PointerEventData</code>. Play a state with a Start = Pointer track with <code>Play(state, eventData)</code>.</li>
+</ul>
+<p><code>WithTime</code>, <code>WithEventsBefore</code> and <code>WithOnLoop</code> are used like this:</p>
+<pre><code class="lang-csharp">// Loading a saved game: carry on from 0.8 s, and get the events before it (&quot;DoorOpened&quot; and so on) in order to catch up
+door.With(&quot;Open&quot;).WithTime(0.8f).WithEventsBefore().Play();
+
+// Count the laps of a looping state
+int laps = 0;
+wheel.With(&quot;Spin&quot;).WithOnLoop(() =&gt; laps++).Play();
+</code></pre>
+<h2 id="for-that-play-only">For That Play Only</h2>
+<p>The changes go in when the play starts and are put back when it ends, whether it completes or is canceled. The next <code>Play</code> uses the values set in the editor. The saved data is not changed.</p>
+<p>You can keep what <code>With</code> returns and play it again as often as you like. Reused, it does not allocate when it plays.</p>
+<pre><code class="lang-csharp">KeyTweenPlay _open;
+
+void Awake() =&gt; _open = popup.With(&quot;Open&quot;).WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+public void Show() =&gt; _open.Play();
+</code></pre>
+<h2 id="end-values-for-states-played-elsewhere">End Values for States Played Elsewhere</h2>
+<p>You cannot use <code>With</code> for a state that something other than your code plays, such as Play On or a screen transition. Set its end value beforehand with <code>SetEndValue</code> instead. The value then applies to every later play.</p>
+<pre><code class="lang-csharp">public void SetEndValue(string stateName, Component target, KeyTweenProperty property, Vector4 value);
+public void SetEndValue(string stateName, Component target, KeyTweenProperty property, float value);   // sets x only
+</code></pre>
+<p><code>SetEndValue</code> finds built-in property tracks only. Change the end value of a Material or custom track with <code>With</code>.</p>
+<pre><code class="lang-csharp">// Result screen: when the screen transition plays &quot;Enter&quot;, the gold counts up to this number
+result.SetEndValue(&quot;Enter&quot;, goldLabel, KeyTweenProperty.TextNumber, reward);
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>미리보기 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="미리보기 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/preview.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="미리보기">미리보기</h1>
+
+<p>미리보기로 상태가 어떻게 움직이는지 에디터에서 바로 확인합니다. 미리보기는 런타임과 같은 계산을 쓰므로 실제 재생과 결과가 같으며, 자식 호출과 오버라이드도 반영됩니다.</p>
+<h2 id="미리보기-재생하기">미리보기 재생하기</h2>
+<ol>
+<li>상태 탭에서 미리볼 상태를 고릅니다.</li>
+<li>상단 바의 <strong>▶</strong> 버튼을 누릅니다.</li>
+</ol>
+<p>특정 시간의 모습을 보려면 눈금자를 끌어 스크럽합니다. 다음은 Play 모드에 들어가지 않고 에디터에서 미리보는 모습입니다.</p>
+<p><img src="../../media/editor/editor-preview.gif" alt="Play 모드 없이 KeyTween 창에서 상태를 미리보는 모습"></p>
+<h2 id="반복-속도-사운드">반복, 속도, 사운드</h2>
+<ul>
+<li><strong>반복</strong>: <strong>⟲</strong> 버튼을 켜거나 상태의 Loop를 켜면 반복합니다.</li>
+<li><strong>속도</strong>: 0.1x~1x 중에서 고릅니다.</li>
+<li><strong>사운드</strong>: 재생하는 동안 지나간 사운드를 들려줍니다. 스크럽할 때는 소리가 나지 않습니다.</li>
+</ul>
+<h2 id="미리보는-곳에-따른-동작">미리보는 곳에 따른 동작</h2>
+<table>
+<thead>
+<tr>
+<th>어디서</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>씬 (편집 모드)</td>
+<td>바뀌는 속성을 Unity <code>AnimationMode</code>에 맡깁니다</td>
+</tr>
+<tr>
+<td>Prefab 모드</td>
+<td>시작할 때의 값을 기억해 두었다가 멈추면 되돌립니다</td>
+</tr>
+<tr>
+<td>Project 창에서 고른 Prefab</td>
+<td>그 Prefab을 Prefab 모드로 열고 같은 상태를 미리봅니다</td>
+</tr>
+<tr>
+<td>Play 모드</td>
+<td>실행 중인 오브젝트에 값을 바로 쓰고, 멈추면 되돌립니다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>씬에서는 <code>AnimationMode</code> 덕분에 멈추면 원래 값으로 돌아가고, 씬에 저장되지 않습니다.</li>
+<li>Prefab 모드에서 Prefab이 저장될 때(Ctrl+S, Unity Prefab 모드의 자동 저장)는 원래 값을 넣어 저장합니다. 그 뒤 같은 시간의 모습을 다시 보여 줍니다.</li>
+<li>Prefab 원본은 어느 화면에도 그려지지 않습니다. 그래서 Project 창에서 고른 Prefab을 재생하거나 스크럽하면 Prefab 모드로 엽니다.</li>
+</ul>
+<p>Play 모드에서도 같은 창으로 미리볼 수 있습니다.</p>
+<p><img src="../../media/editor/editor-play-mode.gif" alt="Play 모드에서 같은 KeyTween 창으로 미리보는 모습"></p>
+<h2 id="시작-모습-자동-결정">시작 모습 자동 결정</h2>
+<p>어떤 상태는 다른 상태가 끝난 모습에서 시작해야 움직임이 보입니다. 이런 상태는 그 모습에서 시작해 미리봅니다. 짝은 다음과 같습니다.</p>
+<ul>
+<li>Play On 짝: PointerExit←PointerEnter, PointerUp←PointerDown, Deselect←Select, ToggleOff←ToggleOn</li>
+<li>이름 짝: Open↔Close, Show↔Hide, In↔Out</li>
+</ul>
+<h2 id="미리보기가-멈추는-때">미리보기가 멈추는 때</h2>
+<p>다음 경우에 미리보기가 멈춥니다.</p>
+<ul>
+<li><strong>■</strong> 버튼을 누를 때</li>
+<li>대상이나 상태 탭을 바꿀 때</li>
+<li>상태를 삭제할 때</li>
+<li>Play 모드에 들어가거나 나올 때</li>
+<li>스크립트를 다시 불러올 때</li>
+<li>씬을 저장하거나 닫을 때</li>
+<li>창을 닫을 때</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

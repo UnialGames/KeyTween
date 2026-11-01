@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Performance | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Performance | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/performance.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="performance">Performance</h1>
+
+<p>This page shows how KeyTween performs compared with Animator, DOTween and LitMotion, and what to keep in mind when you use it. The values were measured on 2026-10-15~16.</p>
+<ul>
+<li>All result tables: <a href="benchmarks.html"><code>Benchmarks.md</code></a></li>
+</ul>
+<h2 id="1-conclusion">1. Conclusion</h2>
+<p>This section sums up the results measured with an IL2CPP release build and 2,000 objects.</p>
+<h3 id="results">Results</h3>
+<p>The values in parentheses show the time above setting the same values directly from a script (the baseline), which is the cost of the method itself.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">KeyTween</th>
+<th style="text-align: right;">DOTween Pro</th>
+<th style="text-align: right;">LitMotion</th>
+<th style="text-align: right;">Animator</th>
+<th style="text-align: right;">AnimationUI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Looping pulse (ms)</td>
+<td style="text-align: right;">7.69 (+0.38)</td>
+<td style="text-align: right;">7.71 (+0.40)</td>
+<td style="text-align: right;"><strong>7.66 (+0.34)</strong></td>
+<td style="text-align: right;">10.16 (+2.85)</td>
+<td style="text-align: right;">9.31 (+2.00)</td>
+</tr>
+<tr>
+<td>List entry (ms)</td>
+<td style="text-align: right;">1.70 (+0.04)</td>
+<td style="text-align: right;">1.59 (−0.06)</td>
+<td style="text-align: right;"><strong>1.53 (−0.13)</strong></td>
+<td style="text-align: right;">5.23 (+3.57)</td>
+<td style="text-align: right;">2.18 (+0.52)</td>
+</tr>
+<tr>
+<td>Text wave, 100 objects (ms)</td>
+<td style="text-align: right;"><strong>0.61</strong></td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">not supported</td>
+<td style="text-align: right;">not supported</td>
+</tr>
+<tr>
+<td>GC per frame (vs. baseline)</td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;">pulse 0, entry +11KB</td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;">+0.1KB</td>
+<td style="text-align: right;">+16KB</td>
+</tr>
+</tbody>
+</table>
+<p>These values come from a single run, so each case varies by about ±5%. Differences of less than 0.1ms between methods are within that range.</p>
+<h3 id="strengths">Strengths</h3>
+<ul>
+<li><strong>Faster than Animator and AnimationUI.</strong> With 2,000 pulses, KeyTween's own cost is about 1/5 to 1/7 of theirs (+0.38ms vs. +2.0~2.9ms).</li>
+<li><strong>On par with code tweens.</strong> With 2,000 pulses, KeyTween is within 0.05ms of DOTween Pro (+0.40) and LitMotion (+0.34). Code tweens are libraries such as DOTween and LitMotion, in which effects are written in code.</li>
+<li><strong>Text effects are the fastest.</strong> With 100 texts, KeyTween takes about 1/3 of the time of DOTween Pro and LitMotion.</li>
+<li><strong>No GC allocation during playback.</strong> By contrast, DOTween allocates on every replay (11KB per frame for 2,000 list entries). AnimationUI also allocates every time because of its coroutines.</li>
+</ul>
+<h3 id="weak-spot-starting-a-play">Weak Spot: Starting a Play</h3>
+<p>This is the time it takes to restart 2,000 objects at once in list entry.</p>
+<ul>
+<li>KeyTween: 2.31ms</li>
+<li>LitMotion: 1.34ms</li>
+<li>DOTween: 3.89ms</li>
+</ul>
+<p>It only becomes noticeable when thousands of plays start in the same frame. For details, see <a href="#the-cost-of-starting-a-play">The Cost of Starting a Play</a> below.</p>
+<h3 id="why-list-entry-shows-negative-values">Why List Entry Shows Negative Values</h3>
+<p>The negative values in list entry, which are faster than the baseline, come from how the measurement works. The baseline script keeps setting values every frame after the effect ends, while the libraries stop after 0.4 s. During that period the baseline does more work, so values near 0 should be read as &quot;no difference&quot;.</p>
+<h2 id="2-method">2. Method</h2>
+<p>All methods were compared under the same conditions.</p>
+<h3 id="how-methods-are-compared">How Methods Are Compared</h3>
+<p>The same effect is applied to the same objects (N images, N texts) with each method.</p>
+<ul>
+<li>Looping pulse</li>
+<li>List entry (played again every 0.5 s)</li>
+<li>Text wave</li>
+</ul>
+<p>The baseline (direct set) uses no animation system: one script sets the same values every frame. uGUI's redraw cost is the same in every method, so the difference from the baseline is the cost of each method.</p>
+<h3 id="environment">Environment</h3>
+<ul>
+<li>Windows 64-bit player, 1280×720 windowed</li>
+<li>VSync off, no frame limit</li>
+<li>For each case, a 1 s warm-up, then every frame recorded for 4 s</li>
+<li>CPU: AMD Ryzen 7 7800X3D</li>
+<li>Unity: 6000.6.3f1</li>
+</ul>
+<h3 id="time-and-gc">Time and GC</h3>
+<ul>
+<li><strong>Time</strong>: frame times of release builds (Mono, IL2CPP)</li>
+<li><strong>GC</strong>: measured separately with a development build. The allocation counter (<code>GC Allocated In Frame</code>) works only in development builds.</li>
+</ul>
+<h2 id="3-what-to-know-when-using-it">3. What to Know When Using It</h2>
+<p>These points affect performance on screens that use many KeyTweens.</p>
+<h3 id="cost-when-not-playing">Cost When Not Playing</h3>
+<p>A KeyTween that is not playing does nothing each frame. Even with many KeyTweens on screen, only the ones that are playing cost anything.</p>
+<h3 id="gc-allocation-while-playing">GC Allocation While Playing</h3>
+<p>Playing allocates no GC memory. This holds for looping states and for playing the same state again and again, and for states with child calls.</p>
+<p>The exception is a state that calls a child state whose tracks an outer prefab overrides. Each time such a state plays, working out its length merges the overridden child state anew.</p>
+<h3 id="with-and-build">With and Build</h3>
+<p><code>With(state)</code> and <code>Build(state)</code> make new objects each time they are called. So calling <code>With(...)</code> again for every play allocates that much.</p>
+<ul>
+<li>Keep the <code>KeyTweenPlay</code> that <code>With</code> returns in a field and play it again. Reused, it allocates nothing when it plays.</li>
+<li>Call <code>Build</code> once to make the state, then play it with <code>Play(&quot;name&quot;)</code>.</li>
+</ul>
+<h3 id="tracks-evaluated-with-burst">Tracks Evaluated with Burst</h3>
+<p>Tracks whose keys all use ease presets are gathered and evaluated together, in one Burst call for all playing tracks. The following tracks are evaluated one by one in managed code, so they are a little slower:</p>
+<ul>
+<li>AnimationCurve keys</li>
+<li>Punch and Shake keys</li>
+<li>Per-character tracks</li>
+<li>Random-character (scramble) reveal</li>
+</ul>
+<p>If you put the same effect on thousands of objects, building it with ease presets is faster. <code>com.unity.burst</code> is installed along with KeyTween for this.</p>
+<h3 id="the-cost-of-starting-a-play">The Cost of Starting a Play</h3>
+<p>Starting a play packs its keys for the Burst evaluation. Playing 2,000 again in one frame takes 2.31ms on IL2CPP.</p>
+<ul>
+<li>On a normal screen this does not show.</li>
+<li>If you start thousands in the same frame, spread them over a few frames.</li>
+</ul>
+<h3 id="text-effects">Text Effects</h3>
+<p>A text with per-character tracks is not laid out again every frame; only the per-character changes are applied to the first layout. It is laid out again only when:</p>
+<ul>
+<li>The text, size, color or number of visible characters changes</li>
+<li>The number of characters changes</li>
+<li>The text box size changes</li>
+</ul>
+<p>Changing the text often while it plays costs a layout each time.</p>
+<h3 id="allocation-on-first-use">Allocation on First Use</h3>
+<p>The first time a KeyTween plays, it reserves arrays for the Burst evaluation once. For 2,000 states this is about 1.2–1.4MB; after that, playing allocates nothing.</p>
+<p>The setup allocation in the <a href="benchmarks.html#setup-allocation">benchmarks</a> (about 6.6MB for 2,000 KeyTweens) is a different number, because that measurement includes making the states in code.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

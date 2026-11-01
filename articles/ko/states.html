@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>상태 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="상태 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/states.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="상태">상태</h1>
+
+<p>상태는 이름이 붙은 연출 하나입니다. <code>Hover</code>, <code>Open</code>, <code>Close</code>처럼 상황마다 상태를 만들고, 코드나 Play On으로 그 상태를 재생합니다.</p>
+<h2 id="상태-추가하기">상태 추가하기</h2>
+<ol>
+<li>상태 탭의 <strong>+</strong> 탭을 누릅니다. 이름은 <code>State</code>, <code>State 1</code>, … 순서로 붙습니다.</li>
+<li>새 상태의 탭을 고릅니다.</li>
+</ol>
+<p>빈 타임라인과 상태 인스펙터가 나타납니다.</p>
+<h2 id="상태-탭-다루기">상태 탭 다루기</h2>
+<table>
+<thead>
+<tr>
+<th>하려는 것</th>
+<th>방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이름 바꾸기</td>
+<td>탭을 더블클릭하고 새 이름을 입력한 뒤 Enter. Esc는 취소</td>
+</tr>
+<tr>
+<td>복제하기</td>
+<td>탭 우클릭 › <strong>Duplicate</strong>. 바로 뒤에 <code>이름 Copy</code>로 생기고, 그 상태가 열립니다</td>
+</tr>
+<tr>
+<td>순서 바꾸기</td>
+<td>탭을 옆으로 끌어 놓습니다. 탭 우클릭 › <strong>Move Left</strong> / <strong>Move Right</strong>도 됩니다</td>
+</tr>
+<tr>
+<td>삭제하기</td>
+<td>탭 우클릭 › <strong>Delete</strong> (확인을 거침)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>이름은 탭 우클릭 › <strong>Rename</strong>이나 상태 인스펙터의 <strong>Name</strong>에서도 바꿀 수 있습니다. 이름을 바꾸면 Play On 연결도 새 이름을 따라갑니다.</li>
+<li>빈 이름과 다른 상태가 이미 쓰는 이름은 받지 않습니다. 코드와 Play On이 이름으로 상태를 찾기 때문입니다.</li>
+<li>복제한 상태에는 Play On이 복사되지 않습니다. 이벤트 하나는 상태 하나를 재생합니다.</li>
+</ul>
+<p><img src="../../media/editor/editor-state.png" alt="새로 만든 Hover 상태. 타임라인은 비어 있고, 오른쪽 상태 인스펙터에 Name, Loop, Duration, Play On이 보입니다."></p>
+<h2 id="상태-인스펙터">상태 인스펙터</h2>
+<p>트랙이나 키를 선택하지 않았을 때는 인스펙터에 상태의 설정이 나옵니다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>상태의 이름. 바꾸면 Play On 연결도 새 이름을 따라갑니다</td>
+</tr>
+<tr>
+<td><strong>Loop</strong></td>
+<td>끝에 닿으면 0초로 이음매 없이 이어서 반복합니다</td>
+</tr>
+<tr>
+<td>Duration</td>
+<td>상태의 길이와 트랙 수 (예: <code>Duration 0.80s · 3 track(s)</code>)</td>
+</tr>
+<tr>
+<td><strong>Play On</strong></td>
+<td><code>None</code> 또는 이벤트 하나</td>
+</tr>
+<tr>
+<td><strong>Callbacks</strong></td>
+<td>재생이 시작할 때(<strong>On Start</strong>), 끝까지 갔을 때(<strong>On Complete</strong>), 끝까지 못 갔을 때(<strong>On Cancel</strong>) 부를 함수</td>
+</tr>
+<tr>
+<td><strong>Delete State</strong></td>
+<td>확인을 거친 뒤 상태를 삭제합니다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Loop</strong>는 Animator 클립의 Loop Time과 같은 개념입니다. 이벤트, 사운드, 자식 호출은 바퀴마다 다시 실행됩니다.</li>
+<li><strong>Play On</strong>에서 이벤트를 고르면 <code>KeyTweenTrigger</code> 컴포넌트가 자동으로 붙습니다.</li>
+</ul>
+<p>고를 수 있는 이벤트는 <a href="play-on.html">Play On</a>을 참고하세요.</p>
+<h2 id="시작과-끝에-함수-부르기-callbacks">시작과 끝에 함수 부르기 (Callbacks)</h2>
+<p>상태 설정의 <strong>Callbacks</strong>에서 재생이 시작하고 끝날 때 부를 함수를 연결합니다. Button의 <strong>OnClick</strong>과 같은 방식으로, 오브젝트를 끌어다 놓고 함수를 고릅니다. 상태마다 따로 정합니다.</p>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th>불리는 때</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>On Start</strong></td>
+<td>재생을 시작할 때(<code>Play</code>, <code>PlayAsync</code>, <code>PlayReversed</code>, <code>With(...).Play</code> 등 모든 재생 함수). 첫 모습을 쓴 다음, 시작 시간의 애니메이션 이벤트보다 먼저</td>
+</tr>
+<tr>
+<td><strong>On Complete</strong></td>
+<td>끝에 닿았을 때, 또는 <code>Complete</code>로 끝으로 건너뛰었을 때. 끝의 애니메이션 이벤트 다음, <code>PlayAsync</code>가 끝나기 전</td>
+</tr>
+<tr>
+<td><strong>On Cancel</strong></td>
+<td>끝까지 못 갔을 때: <code>Stop</code>, 다른 상태가 값을 모두 가져감, 오브젝트 비활성화, 같은 상태를 다시 재생, <code>PlayAsync</code>의 토큰 취소</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>재생 한 번은 On Start로 시작해서 <strong>On Complete와 On Cancel 중 정확히 하나</strong>로 끝납니다.</li>
+<li>반복(Loop) 상태는 On Start가 처음 한 번 불리고, On Complete는 <code>Complete</code>할 때만 불립니다.</li>
+<li>재생하지 않고 모습만 쓰는 <code>Stop(state, time)</code>은 콜백을 부르지 않습니다. 재생 중인 상태를 이것으로 멈추면 On Cancel이 불립니다.</li>
+<li>이 창의 미리보기는 콜백을 부르지 않습니다. 미리보기 중에 게임 코드가 실행되지 않게 하기 위해서입니다.</li>
+<li>콜백은 Prefab에 저장되고, Prefab 인스턴스에서 Unity의 다른 값처럼 오버라이드할 수 있습니다.</li>
+<li>코드에서는 <code>StateStarted</code>, <code>StateCompleted</code>, <code>StateCanceled</code> 이벤트로 모든 상태를 한 곳에서 받을 수 있습니다. 자세한 내용은 <a href="playing-and-awaiting.html#%EC%8B%9C%EC%9E%91%EA%B3%BC-%EB%81%9D-%EC%BD%9C%EB%B0%B1">API</a>를 참고하세요.</li>
+</ul>
+<h2 id="상태의-길이">상태의 길이</h2>
+<p>상태의 길이는 가장 늦게 끝나는 항목으로 정해집니다. 다음 가운데 가장 늦은 시간이 상태의 길이가 됩니다.</p>
+<ul>
+<li>트랙의 마지막 키</li>
+<li>이벤트</li>
+<li>사운드의 끝</li>
+<li>자식 호출의 끝</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>여러 상태가 겹칠 때 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="여러 상태가 겹칠 때 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/overlapping-states.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="여러-상태가-겹칠-때">여러 상태가 겹칠 때</h1>
+
+<p>여러 상태를 동시에 재생할 수 있습니다. 예를 들어 버튼에 호버하는 중에 버튼을 누르면 두 상태가 함께 재생됩니다.</p>
+<h2 id="속성-넘겨받기">속성 넘겨받기</h2>
+<p>새 상태는 <strong>자기가 움직이는 속성만</strong> 이전 상태에게서 그 자리에서 넘겨받습니다. 나머지 속성은 이전 상태가 계속 재생합니다.</p>
+<ul>
+<li>움직일 속성을 모두 넘겨준 상태는 멈추고, 그 상태의 <code>PlayAsync</code>는 취소됩니다.</li>
+<li>Start가 Current Value인 트랙은 멈춘 자리에서 이어서 움직입니다. 그래서 호버가 중간에 끊겨도 값이 튀지 않습니다.</li>
+</ul>
+<h2 id="같은-값을-쓰는-트랙">같은 값을 쓰는 트랙</h2>
+<p>트랙 종류가 달라도 같은 값을 쓰는 트랙끼리는 <strong>겹치는 부분(채널)만</strong> 넘겨받습니다.</p>
+<table>
+<thead>
+<tr>
+<th>같은 값을 쓰는 트랙</th>
+<th>겹치는 채널</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Color와 Alpha (Graphic, SpriteRenderer)</td>
+<td>투명도(a)</td>
+</tr>
+<tr>
+<td>Char Color와 Char Alpha</td>
+<td>투명도(a)</td>
+</tr>
+<tr>
+<td>Position, Size와 Offset Min, Offset Max (RectTransform)</td>
+<td>Offset이 바꾸는 위치와 크기</td>
+</tr>
+<tr>
+<td>Position과 World Position, Rotation과 World Rotation</td>
+<td>전체</td>
+</tr>
+</tbody>
+</table>
+<p>예를 들어 버튼의 <code>Hover</code>가 Color를 재생하는 중에 <code>Fade</code>가 Alpha를 재생하면 다음과 같습니다.</p>
+<ul>
+<li><code>Hover</code>는 R, G, B를 계속 씁니다.</li>
+<li>투명도는 <code>Fade</code>가 가져갑니다.</li>
+<li>반대로 <code>Fade</code> 중에 <code>Hover</code>가 시작되면, <code>Fade</code>는 하나뿐인 채널을 넘겨주었으므로 멈춥니다.</li>
+</ul>
+<h2 id="앞-상태를-끝내고-넘어가기">앞 상태를 끝내고 넘어가기</h2>
+<p>앞 상태를 끝 모습까지 맞추고 이벤트도 발생시킨 뒤 넘어가야 할 때가 있습니다. 이때는 코드에서 <code>Complete(&quot;앞 상태&quot;)</code>를 먼저 부르고 다음 상태를 재생합니다.</p>
+<pre><code class="lang-csharp">anim.Complete(&quot;Hover&quot;);   // 앞 상태를 끝 모습으로 맞춥니다
+anim.Play(&quot;Press&quot;);
+</code></pre>
+<p>자세한 내용은 <a href="playing-and-awaiting.html">API</a>를 참고하세요.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

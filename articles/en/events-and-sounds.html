@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Events and Sounds | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Events and Sounds | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/events-and-sounds.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="events-and-sounds">Events and Sounds</h1>
+
+<p>A state can signal your code or play a sound at a set time. Both are added as tracks from the Add Track window.</p>
+<p>Use them to keep the game logic in time with the motion. For example, put a <code>Hit</code> event at 0.3 s of a sword swing (the moment the blade lands), and the code deals the damage and spawns the particles then. When the keys move, you move the event with them; there is no wait time in the code to fix.</p>
+<h2 id="adding-an-event">Adding an Event</h2>
+<ol>
+<li>Choose <code>Animation Events</code> in the Add Track window. An event track is created.</li>
+<li>Click <strong>+</strong> on the track header, or double-click the row. Choose <code>Name Only</code> or a data struct in the menu, and the event is created.</li>
+<li>In the inspector, set the <strong>Name</strong> and <strong>Time (s)</strong>. The kind can be changed later in the <strong>Event Type</strong> section below them.</li>
+</ol>
+<p>Drag an event to move it.</p>
+<h2 id="event-type">Event Type</h2>
+<p>The Type is one of the following:</p>
+<ul>
+<li><code>Name Only</code></li>
+<li>A struct marked with <code>[KeyTweenEvent]</code> in code</li>
+</ul>
+<p>When you choose a struct, you can edit its fields right in the inspector. These field types can be edited:</p>
+<ul>
+<li>float, int, bool, string</li>
+<li>Vector2/3</li>
+<li>Color</li>
+<li>enum</li>
+</ul>
+<p><img src="../../media/editor/editor-events.png" alt="The Open state of Popup. The Animation Events row has the Popup Sound and Shown events, and the Sound row a PopupOpen bar as long as the clip. The Popup Sound event is selected, and the inspector's Event Type shows its Clip and Volume fields."></p>
+<h2 id="receiving-events">Receiving Events</h2>
+<p>Receive events in either of these ways:</p>
+<ul>
+<li><p>In code. For details, see <a href="animation-events.html">API</a>.</p>
+<pre><code class="lang-csharp">anim.EventRaised += (in KeyTweenEventInfo e) =&gt; { if (e.Name == &quot;Hit&quot;) DealDamage(); };
+await anim.WaitEventAsync(&quot;Hit&quot;);   // or wait for it once
+</code></pre>
+</li>
+<li><p>With the <code>KeyTween Event Listener</code> component, which connects a UnityEvent to each event name.</p>
+</li>
+</ul>
+<h2 id="adding-a-sound">Adding a Sound</h2>
+<ol>
+<li>Choose <code>Sound</code> in the Add Track window. A sound track is created.</li>
+<li>Click <strong>+</strong> on the track header, double-click the row, or drop an AudioClip onto the row to add a sound.</li>
+<li>In the inspector, set the <strong>Clip</strong>, <strong>Volume</strong> and <strong>Time</strong>.</li>
+<li>Click <strong>▶ Preview</strong> to listen to it.</li>
+</ol>
+<p>The length of the bar on the timeline matches the length of the clip.</p>
+<h2 id="which-audiosource-plays-the-sound">Which AudioSource Plays the Sound</h2>
+<p>The sound plays through the first AudioSource found in this order, so you do not need to add an AudioSource to every UI object:</p>
+<ol>
+<li><strong>Audio Source (optional)</strong> in the sound track's inspector</li>
+<li><code>KeyTween.audioSource</code>, set in code (it cannot be edited in the inspector)</li>
+<li>If neither exists, a hidden shared 2D AudioSource</li>
+</ol>
+<h2 id="sounds-and-state-length">Sounds and State Length</h2>
+<p>The state's length includes the end of the sound. As a result, the sound is not cut off when you Destroy the object after a close animation ends.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

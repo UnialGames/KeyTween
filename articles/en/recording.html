@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Recording | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Recording | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/recording.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="recording">Recording</h1>
+
+<p>With recording on, you can create keys simply by changing an object in the Scene view or the Inspector. This works the same way as recording in the Unity Animation window.</p>
+<h2 id="recording-keys">Recording Keys</h2>
+<ol>
+<li>Turn on <strong>●</strong> in the top bar. The button turns red.</li>
+<li>Put the playhead at the time you want.</li>
+<li>Change an object in the Scene view or the Inspector. The new value becomes a key.</li>
+</ol>
+<p>The object itself returns to its value before the change, and the view shows the new key through preview. Each change is one Undo step.</p>
+<p><img src="../../media/editor/editor-record.png" alt="The KeyTween window while recording. The ● button in the top bar is red, and a Scale key has appeared at 0.1 s, where the playhead is. The key inspector shows Time 0.1 and Value 1.04."></p>
+<h2 id="how-recording-creates-keys">How Recording Creates Keys</h2>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Properties that have a track</td>
+<td>A key is placed at the playhead. If a key already exists at that time, only its value changes</td>
+</tr>
+<tr>
+<td>Properties without a track</td>
+<td>A new track is created with a 0 s key (the value before the change) and a key at the playhead (the changed value)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>For Relative To Rest and Size Relative tracks, the value is converted to that basis.</li>
+<li>Recording at 0 s switches Start to Key Value so that the first key uses the recorded value.</li>
+</ul>
+<h2 id="recorded-properties">Recorded Properties</h2>
+<p>A changed field is recorded onto the track that writes its value. Every track except those under &quot;Not Recorded&quot; is recorded (Transform, UI, TextMeshPro, SpriteRenderer, Light, Camera, AudioSource, UIEffect).</p>
+<ul>
+<li>If the state already has a track that writes the value, the key goes on that track. For example, with a World Position track, moving the object is recorded as World Position; with an Offset Min track, changing Position or Size is recorded as Offset Min; with a Scroll Position track, moving the Content is recorded as Scroll Position.</li>
+<li>Without such a track, the field's default track is created: Position for a position, Color for a color.</li>
+<li>If you change only the alpha of a Color and the same Graphic has an Alpha track but no Color track, the change is recorded as Alpha. With only an Alpha track, changing R, G or B creates a Color track.</li>
+<li>With a Number track, changing the number in the text is recorded as Number. Changing a text does not create a Number track.</li>
+</ul>
+<h2 id="not-recorded">Not Recorded</h2>
+<ul>
+<li>Material values: Material tracks and TextMeshPro's Outline Width, Outline Color, Face Dilate and Underlay Color. They change the material asset, not a field of the object.</li>
+<li>Reveal and per-character tracks</li>
+<li>Custom tracks that do not list their serialized fields. For details, see <a href="custom-tracks.html">Custom Tracks</a>.</li>
+<li>Tracks whose Start is Pointer</li>
+<li>Objects outside the <code>KeyTween</code> being edited in the window</li>
+</ul>
+<h2 id="saving-recorded-keys">Saving Recorded Keys</h2>
+<p>Recorded keys are saved by Auto Save and Save as well. Recording also works in Play mode, and keys recorded on a runtime copy stay in the original prefab.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Editing Keys | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Editing Keys | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/editing-keys.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="editing-keys">Editing Keys</h1>
+
+<p>A key is the value of a track at one point in time. You add and move keys on the timeline, and edit their values and arrival in the key inspector.</p>
+<h2 id="selecting-and-moving-keys">Selecting and Moving Keys</h2>
+<ul>
+<li>Click a key to select it.</li>
+<li>Shift-click or Ctrl-click (Cmd-click on Mac) to add to the selection.</li>
+<li>Drag on empty space in the key area to select the keys the box touches, across tracks. You can start on a track's lane, on the event and child call lanes at the top, or in the empty space below the last track. Hold Shift or Ctrl while dragging to add to the selection.</li>
+<li>Drag one of the selected keys to move all of them by the same time. One Ctrl+Z undoes it.</li>
+<li>When two or more keys at different times are selected, a box spans them. Drag its right handle to stretch or shrink the keys around the left end, or its left handle to do it around the right end; the spacing between the keys scales evenly. A handle stops before the other end, so the keys keep their order. One Ctrl+Z undoes it.</li>
+</ul>
+<p><img src="../../media/editor/editor-box-select.png" alt="Five keys selected on the Scale, Color and Rotation tracks. A box spans the selected keys with a stretch handle at each end, and the key inspector shows 5 Keys Selected."></p>
+<p>Keys move in 0.01 s steps and never go below 0 s.</p>
+<h2 id="adding-and-deleting-keys">Adding and Deleting Keys</h2>
+<p>Add a key in any of these ways:</p>
+<ul>
+<li>Double-click an empty part of a row. The key gets the interpolated value at that time.</li>
+<li>Click <strong>◆</strong> on the track header. The key is added at the playhead.</li>
+<li>Right-click and choose <strong>Add Key Here</strong>.</li>
+</ul>
+<p><strong>Every track has a key at 0 s.</strong> If you add a key to a track that has no 0 s key, the 0 s key is created first.</p>
+<p>To delete keys, press Delete or Backspace, or right-click and choose <strong>Delete Selected Keys</strong>.</p>
+<h2 id="copying-and-pasting-keys">Copying and Pasting Keys</h2>
+<ol>
+<li>Select keys and press Ctrl+C (Cmd+C on Mac). They can be on several tracks.</li>
+<li>Put the playhead where the keys should go.</li>
+<li>Press Ctrl+V (Cmd+V on Mac). <strong>Copy Selected Keys</strong> and <strong>Paste Keys at Playhead</strong> in the context menu do the same.</li>
+</ol>
+<ul>
+<li>The earliest key lands on the playhead and the spacing between the keys stays the same. Values, arrival and curves are copied too.</li>
+<li>Keys go on the track of the same object and kind as the copied ones. Pasted into another state without that track, the track is created.</li>
+<li>Pasted into the KeyTween of another prefab, keys go on the object at the same path from the root. Keys whose object is not there are skipped.</li>
+<li>The playhead does not go past the end of the state. To paste after the end, right-click there and choose <strong>Paste Keys Here</strong>.</li>
+<li>A key already at a pasted time is replaced. The pasted keys are selected, so you can drag them right away.</li>
+</ul>
+<h2 id="navigating-the-timeline">Navigating the Timeline</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Move the playhead</td>
+<td>Click or drag on the ruler</td>
+</tr>
+<tr>
+<td>Zoom</td>
+<td>The wheel over the ruler, or Ctrl+wheel or Alt+wheel over the rows</td>
+</tr>
+<tr>
+<td>Pan</td>
+<td>Shift+wheel, a horizontal wheel, or a middle-button drag</td>
+</tr>
+<tr>
+<td>Frame all</td>
+<td><code>F</code> or <strong>⤢</strong></td>
+</tr>
+<tr>
+<td>Collapse</td>
+<td>Click an object row</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Zooming is centered on the pointer.</li>
+<li>When an object row is collapsed, the keys under it are summarized as small diamonds.</li>
+<li>The ruler shows where the state ends (<code>End 0.80s</code>), and everything after that point is shaded dark.</li>
+</ul>
+<h2 id="key-inspector">Key Inspector</h2>
+<p>When you select a key, the inspector shows a <strong>Key</strong> section followed by an <strong>Arrival</strong> section. Every key uses the same layout.</p>
+<p><img src="../../media/editor/editor-key-inspector.png" alt="The key inspector for the Card · Scale track, showing Time 0.3, Value 1.2, Arrival Type = Ease, Ease = Out Back and a curve preview."></p>
+<ul>
+<li>In the Key section, fields that do not apply are not hidden. They are disabled and show the reason.</li>
+<li>The Arrival section shows only the fields for the chosen Type.</li>
+</ul>
+<h2 id="setting-a-keys-value">Setting a Key's Value</h2>
+<p>In the Key section, set the key's <strong>Time (s)</strong> and value. The value field is labeled by what the value means, as one of the following:</p>
+<ul>
+<li><code>Value</code></li>
+<li><code>Value (rest +)</code></li>
+<li><code>Value (press point +)</code></li>
+<li><code>Value (× own size)</code></li>
+<li><code>Strength</code> (for Punch and Shake)</li>
+</ul>
+<p>How you edit the value depends on its kind:</p>
+<ul>
+<li>Scale is edited with one linked slider (0 to 2, or −1 to 1 on a Relative To Rest track). A button switches to per-axis editing.</li>
+<li>Colors use a color field.</li>
+<li>Active uses a checkbox.</li>
+</ul>
+<p>Values that are decided when playback starts are disabled. For example, the first key of a track whose Start is Current Value is disabled.</p>
+<h2 id="setting-the-arrival">Setting the Arrival</h2>
+<p>In the Arrival section, choose a <strong>Type</strong> and set the fields for that Type. A curve graph is shown as well.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ease</td>
+<td>Ease</td>
+</tr>
+<tr>
+<td>Punch, Shake</td>
+<td>Ease, Frequency, Damping</td>
+</tr>
+<tr>
+<td>Curve</td>
+<td>Animation Curve</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Arrival is disabled on the first key, since no segment arrives at it.</li>
+<li>With several keys selected, you can change Arrival for all of them at once.</li>
+</ul>
+<p>For how each Type behaves, see <a href="arrival.html">Arrival</a>.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

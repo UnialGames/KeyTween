@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Quick Start | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quick Start | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/quick-start.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quick-start">Quick Start</h1>
+
+<p>This section walks you through your first animation in the editor, and then shows how to play a state from code. A <em>state</em> is a named animation, such as <code>Hover</code> or <code>Open</code>, stored in the <code>KeyTween</code> component on a prefab.</p>
+<h2 id="1-a-hover-effect-in-the-editor">1. A hover effect, in the editor</h2>
+<p>In this example, the button grows to 1.1× and becomes lighter when the pointer enters it, and returns to normal when the pointer leaves. You do not write any code.</p>
+<p>When you finish, the KeyTween window shows the following:</p>
+<ul>
+<li>The <code>Hover</code> and <code>Unhover</code> states</li>
+<li>The button's Scale and Color tracks with their keys</li>
+<li>The key inspector on the right</li>
+</ul>
+<p><img src="../../media/editor/editor-window.png" alt="The KeyTween window with the Hover and Unhover states"></p>
+<ol>
+<li><p>Open the button prefab, then open <strong>Window &gt; KeyTween Editor</strong>.</p>
+</li>
+<li><p>Click <strong>Add KeyTween to 'Button'</strong>. You can also add the <code>KeyTween</code> component yourself.</p>
+</li>
+<li><p>Click <strong>+</strong> in the state tabs to add a state, and name it <code>Hover</code> in the state inspector. A new state starts with an empty timeline, and the state inspector shows its Name, Loop, Duration and Play On settings.</p>
+<p><img src="../../media/editor/editor-state.png" alt="A new Hover state and the state inspector"></p>
+</li>
+<li><p>Right-click an empty part of the timeline and choose <strong>Add Track…</strong>.</p>
+</li>
+<li><p>Pick <strong>Scale</strong> under <code>RectTransform</code> and <strong>Color</strong> under <code>Image</code>, then click <strong>Add 2</strong>. Each track is created with a key at 0 s and an end key at 0.2 s.</p>
+<img src="../../media/editor/editor-add-track.gif" width="640" alt="Adding tracks with Add Track">
+</li>
+<li><p>Click the Scale track's end key and set Value to <code>1.1</code> and Ease to <code>OutBack</code>.</p>
+</li>
+<li><p>Set the Color track's end key to a lighter color.</p>
+</li>
+<li><p>Drag the ruler or press <strong>▶</strong> to preview the animation. You do not need to enter Play mode.</p>
+<img src="../../media/editor/editor-preview.gif" width="640" alt="Previewing in the editor">
+</li>
+<li><p>In the state inspector, set <strong>Play On</strong> to <code>PointerEnter</code>.</p>
+</li>
+<li><p>Create an <code>Unhover</code> state the same way. Set its end keys back to <code>1</code> and the original color, and set its Play On to <code>PointerExit</code>.</p>
+</li>
+<li><p>Enter Play mode and move the pointer onto the button and off it again.</p>
+<img src="../../media/editor/editor-play-mode.gif" width="494" alt="The hover effect in Play mode">
+</li>
+</ol>
+<p>A full video of these steps is available: <a href="https://youtu.be/13JJNE4_FwI">Button Hover Editor</a>. For details on the editor, see the <a href="concepts.html">Guide</a>.</p>
+<h2 id="2-playing-it-from-code">2. Playing it from code</h2>
+<p>To play a state from a script, reference the <code>KeyTween</code> component and call it with the state name. This popup plays <code>Open</code> when it opens, and destroys itself after <code>Close</code> finishes:</p>
+<pre><code class="lang-csharp">using System;
+using KeyTweening;
+using UnityEngine;
+
+public class Popup : MonoBehaviour
+{
+    [SerializeField] KeyTween anim;
+
+    public async Awaitable Open() =&gt; await anim.PlayAsync(&quot;Open&quot;);
+
+    public async Awaitable Close()
+    {
+        try { await anim.PlayAsync(&quot;Close&quot;, cancellationToken: destroyCancellationToken); }
+        catch (OperationCanceledException) { return; }   // reopened while closing: keep the popup
+        Destroy(gameObject);
+    }
+}
+</code></pre>
+<p>The editor and the code split the work as follows:</p>
+<ul>
+<li>The editor defines the animation itself. This includes its timing, eases and animated properties.</li>
+<li>The code only decides <em>which state</em> to play and <em>what happens after</em> it ends.</li>
+</ul>
+<p>For details, see <a href="playing-and-awaiting.html">Playing</a>.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

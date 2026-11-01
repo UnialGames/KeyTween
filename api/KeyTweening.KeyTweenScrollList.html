@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Class KeyTweenScrollList | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class KeyTweenScrollList | KeyTween ">
+      
+      <meta name="description" content="A virtualized list on a ScrollRect: only the visible items exist, and they are reused as the list scrolls. Laid out like Unity&#39;s Vertical / Horizontal / Grid Layout Group (plus Masonry), filled through callbacks like UI Toolkit&#39;s ListView (bind / unbind by index), and animated with the items&#39; KeyTween states: an entry stagger, a state when scrolling brings an item into view, and a state scrubbed by the item&#39;s position. Also: several item prefabs, variable sizes, infinite loop, snapping / one page per swipe, auto scroll, sticky section headers, sticking to the end (chat), animated item resizing (accordion) and nested scrolling.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/new/main/apiSpec/new?filename=KeyTweening_KeyTweenScrollList.md&amp;value=---%0Auid%3A%20KeyTweening.KeyTweenScrollList%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KeyTweening.KeyTweenScrollList">
+
+
+
+  <h1 id="KeyTweening_KeyTweenScrollList" data-uid="KeyTweening.KeyTweenScrollList" class="text-break">
+Class KeyTweenScrollList  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="KeyTweening.html">KeyTweening</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>KeyTween.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A virtualized list on a ScrollRect: only the visible items exist, and they are reused as the list scrolls.
+Laid out like Unity's Vertical / Horizontal / Grid Layout Group (plus Masonry), filled through callbacks like
+UI Toolkit's ListView (bind / unbind by index), and animated with the items' KeyTween states:
+an entry stagger, a state when scrolling brings an item into view, and a state scrubbed by the item's position.
+Also: several item prefabs, variable sizes, infinite loop, snapping / one page per swipe, auto scroll,
+sticky section headers, sticking to the end (chat), animated item resizing (accordion) and nested scrolling.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[AddComponentMenu(&quot;KeyTween/Scroll List&quot;)]
+[RequireComponent(typeof(ScrollRect))]
+public sealed class KeyTweenScrollList : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IEventSystemHandler</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.html">Object</a></div>
+      <div><a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.html">Component</a></div>
+      <div><a class="xref" href="https://docs.unity3d.com/ScriptReference/Behaviour.html">Behaviour</a></div>
+      <div><a class="xref" href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">MonoBehaviour</a></div>
+      <div><span class="xref">KeyTweenScrollList</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><span class="xref">IBeginDragHandler</span></div>
+      <div><span class="xref">IDragHandler</span></div>
+      <div><span class="xref">IEndDragHandler</span></div>
+      <div><span class="xref">IEventSystemHandler</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <span class="xref">MonoBehaviour.IsInvoking()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.CancelInvoke.html">MonoBehaviour.CancelInvoke()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.Invoke(string, float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.InvokeRepeating(string, float, float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.CancelInvoke(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.IsInvoking(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.StartCoroutine(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.StartCoroutine(string, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">MonoBehaviour.StartCoroutine(IEnumerator)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">MonoBehaviour.StartCoroutine_Auto(IEnumerator)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerator">MonoBehaviour.StopCoroutine(IEnumerator)</a>
+    </div>
+    <div>
+      <span class="xref">MonoBehaviour.StopCoroutine(Coroutine)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">MonoBehaviour.StopCoroutine(string)</a>
+    </div>
+    <div>
+      <span class="xref">MonoBehaviour.StopAllCoroutines()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">MonoBehaviour.print(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/MonoBehaviour-destroyCancellationToken.html">MonoBehaviour.destroyCancellationToken</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/MonoBehaviour-useGUILayout.html">MonoBehaviour.useGUILayout</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/MonoBehaviour-didStart.html">MonoBehaviour.didStart</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/MonoBehaviour-didAwake.html">MonoBehaviour.didAwake</a>
+    </div>
+    <div>
+      <span class="xref">MonoBehaviour.runInEditMode</span>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Behaviour-enabled.html">Behaviour.enabled</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Behaviour-isActiveAndEnabled.html">Behaviour.isActiveAndEnabled</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponent(Type)</a>
+    </div>
+    <div>
+      <span class="xref">Component.GetComponent&lt;T&gt;()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.TryGetComponent(Type, out Component)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.TryGetComponent.html">Component.TryGetComponent&lt;T&gt;(out T)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.GetComponent(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentInChildren(Type, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentInChildren(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Component.GetComponentInChildren&lt;T&gt;(bool)</a>
+    </div>
+    <div>
+      <span class="xref">Component.GetComponentInChildren&lt;T&gt;()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentsInChildren(Type, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentsInChildren(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Component.GetComponentsInChildren&lt;T&gt;(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Component.GetComponentsInChildren&lt;T&gt;(bool, List&lt;T&gt;)</a>
+    </div>
+    <div>
+      <span class="xref">Component.GetComponentsInChildren&lt;T&gt;()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">Component.GetComponentsInChildren&lt;T&gt;(List&lt;T&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentInParent(Type, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentInParent(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Component.GetComponentInParent&lt;T&gt;(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.GetComponentInParent.html">Component.GetComponentInParent&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentsInParent(Type, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponentsInParent(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Component.GetComponentsInParent&lt;T&gt;(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Component.GetComponentsInParent&lt;T&gt;(bool, List&lt;T&gt;)</a>
+    </div>
+    <div>
+      <span class="xref">Component.GetComponentsInParent&lt;T&gt;()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponents(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Component.GetComponents(Type, List&lt;Component&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">Component.GetComponents&lt;T&gt;(List&lt;T&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.GetComponents.html">Component.GetComponents&lt;T&gt;()</a>
+    </div>
+    <div>
+      <span class="xref">Component.GetComponentIndex()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.CompareTag(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.CompareTag.html">Component.CompareTag(TagHandle)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessageUpwards(string, object, SendMessageOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessageUpwards(string, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessageUpwards(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessageUpwards(string, SendMessageOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessage(string, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessage(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessage(string, object, SendMessageOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.SendMessage(string, SendMessageOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.BroadcastMessage(string, object, SendMessageOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.BroadcastMessage(string, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.BroadcastMessage(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Component.BroadcastMessage(string, SendMessageOptions)</a>
+    </div>
+    <div>
+      <span class="xref">Component.transform</span>
+    </div>
+    <div>
+      <span class="xref">Component.transformHandle</span>
+    </div>
+    <div>
+      <span class="xref">Component.gameObject</span>
+    </div>
+    <div>
+      <span class="xref">Component.tag</span>
+    </div>
+    <div>
+      <span class="xref">Object.GetEntityId()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.GetInstanceID.html">Object.GetInstanceID()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.GetHashCode.html">Object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object.Equals(object)</a>
+    </div>
+    <div>
+      <span class="xref">Object.InstantiateAsync&lt;T&gt;(T)</span>
+    </div>
+    <div>
+      <span class="xref">Object.InstantiateAsync&lt;T&gt;(T, Transform)</span>
+    </div>
+    <div>
+      <span class="xref">Object.InstantiateAsync&lt;T&gt;(T, Vector3, Quaternion)</span>
+    </div>
+    <div>
+      <span class="xref">Object.InstantiateAsync&lt;T&gt;(T, Transform, Vector3, Quaternion)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Transform)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Vector3, Quaternion)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, ReadOnlySpan&lt;Vector3&gt;, ReadOnlySpan&lt;Quaternion&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Transform, Vector3, Quaternion)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Transform, Vector3, Quaternion, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Transform, ReadOnlySpan&lt;Vector3&gt;, ReadOnlySpan&lt;Quaternion&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Transform, ReadOnlySpan&lt;Vector3&gt;, ReadOnlySpan&lt;Quaternion&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">Object.InstantiateAsync&lt;T&gt;(T, InstantiateParameters, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, InstantiateParameters, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">Object.InstantiateAsync&lt;T&gt;(T, Vector3, Quaternion, InstantiateParameters, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, Vector3, Quaternion, InstantiateParameters, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Object.InstantiateAsync&lt;T&gt;(T, int, ReadOnlySpan&lt;Vector3&gt;, ReadOnlySpan&lt;Quaternion&gt;, InstantiateParameters, CancellationToken)</a>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate(Object, Vector3, Quaternion)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.Instantiate.html">Object.Instantiate(Object, Vector3, Quaternion, Transform)</a>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate(Object)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.Instantiate.html">Object.Instantiate(Object, Scene)</a>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate&lt;T&gt;(T, InstantiateParameters)</span>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate&lt;T&gt;(T, Vector3, Quaternion, InstantiateParameters)</span>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate(Object, Transform)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Object.Instantiate(Object, Transform, bool)</a>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate&lt;T&gt;(T)</span>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate&lt;T&gt;(T, Vector3, Quaternion)</span>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate&lt;T&gt;(T, Vector3, Quaternion, Transform)</span>
+    </div>
+    <div>
+      <span class="xref">Object.Instantiate&lt;T&gt;(T, Transform)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Object.Instantiate&lt;T&gt;(T, Transform, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Object.Destroy(Object, float)</a>
+    </div>
+    <div>
+      <span class="xref">Object.Destroy(Object)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Object.DestroyImmediate(Object, bool)</a>
+    </div>
+    <div>
+      <span class="xref">Object.DestroyImmediate(Object)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsOfType(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsOfType(Type, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsByType(Type, FindObjectsSortMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsByType(Type, FindObjectsInactive, FindObjectsSortMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsByType(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsByType(Type, FindObjectsInactive)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.DontDestroyOnLoad.html">Object.DontDestroyOnLoad(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Object.DestroyObject(Object, float)</a>
+    </div>
+    <div>
+      <span class="xref">Object.DestroyObject(Object)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindSceneObjectsOfType(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsOfTypeIncludingAssets(Type)</a>
+    </div>
+    <div>
+      <span class="xref">Object.FindObjectsOfType&lt;T&gt;()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindObjectsByType.html">Object.FindObjectsByType&lt;T&gt;(FindObjectsSortMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Object.FindObjectsOfType&lt;T&gt;(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindObjectsByType.html">Object.FindObjectsByType&lt;T&gt;(FindObjectsInactive, FindObjectsSortMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindObjectOfType.html">Object.FindObjectOfType&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Object.FindObjectOfType&lt;T&gt;(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindFirstObjectByType.html">Object.FindFirstObjectByType&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindAnyObjectByType.html">Object.FindAnyObjectByType&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindFirstObjectByType.html">Object.FindFirstObjectByType&lt;T&gt;(FindObjectsInactive)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.FindAnyObjectByType.html">Object.FindAnyObjectByType&lt;T&gt;(FindObjectsInactive)</a>
+    </div>
+    <div>
+      <span class="xref">Object.FindObjectsByType&lt;T&gt;()</span>
+    </div>
+    <div>
+      <span class="xref">Object.FindObjectsByType&lt;T&gt;(FindObjectsInactive)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectsOfTypeAll(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectOfType(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindFirstObjectByType(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindAnyObjectByType(Type)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindObjectOfType(Type, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindFirstObjectByType(Type, FindObjectsInactive)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Object.FindAnyObjectByType(Type, FindObjectsInactive)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.unity3d.com/ScriptReference/Object.ToString.html">Object.ToString()</a>
+    </div>
+    <div>
+      <span class="xref">Object.name</span>
+    </div>
+    <div>
+      <span class="xref">Object.hideFlags</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_appearState" data-uid="KeyTweening.KeyTweenScrollList.appearState">
+  appearState
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Item state played when scrolling brings an item into view.&quot;)]
+public string appearState</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_autoScrollInterval" data-uid="KeyTweening.KeyTweenScrollList.autoScrollInterval">
+  autoScrollInterval
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Seconds between automatic moves to the next item (0 = off). Pauses while dragging.&quot;)]
+[Min(0)]
+public float autoScrollInterval</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_cellSize" data-uid="KeyTweening.KeyTweenScrollList.cellSize">
+  cellSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Grid: the size of every cell. Masonry: the column width (and the default item height).&quot;)]
+public Vector2 cellSize</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector2.html">Vector2</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_childAlignment" data-uid="KeyTweening.KeyTweenScrollList.childAlignment">
+  childAlignment
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextAnchor childAlignment</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/TextAnchor.html">TextAnchor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_constraint" data-uid="KeyTweening.KeyTweenScrollList.constraint">
+  constraint
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Grid/Masonry: Flexible fits as many columns as the viewport allows. A fixed row count scrolls horizontally (Grid).&quot;)]
+public KeyTweenScrollList.GridConstraint constraint</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a>.<a class="xref" href="KeyTweening.KeyTweenScrollList.GridConstraint.html">GridConstraint</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_constraintCount" data-uid="KeyTweening.KeyTweenScrollList.constraintCount">
+  constraintCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Min(1)]
+public int constraintCount</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_controlChildSize" data-uid="KeyTweening.KeyTweenScrollList.controlChildSize">
+  controlChildSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Vertical: items stretch to the viewport width. Horizontal: to its height.&quot;)]
+public bool controlChildSize</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_entryStagger" data-uid="KeyTweening.KeyTweenScrollList.entryStagger">
+  entryStagger
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Min(0)]
+public float entryStagger</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_entryState" data-uid="KeyTweening.KeyTweenScrollList.entryState">
+  entryState
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Item state played on the visible items one after another by PlayEntry() (and when the list is filled, if On Fill).&quot;)]
+public string entryState</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_extraPrefabs" data-uid="KeyTweening.KeyTweenScrollList.extraPrefabs">
+  extraPrefabs
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;More item prefabs (1, 2, …), chosen per index with prefabOf (e.g. section headers, chat bubbles of each side).&quot;)]
+public List&lt;RectTransform&gt; extraPrefabs</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_gridSpacing" data-uid="KeyTweening.KeyTweenScrollList.gridSpacing">
+  gridSpacing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Grid/Masonry: space between cells (x between columns, y between rows).&quot;)]
+public Vector2 gridSpacing</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector2.html">Vector2</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_itemPrefab" data-uid="KeyTweening.KeyTweenScrollList.itemPrefab">
+  itemPrefab
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Instantiated for the visible items and reused while scrolling (prefab 0). Its size is the default item size.&quot;)]
+public RectTransform itemPrefab</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_layout" data-uid="KeyTweening.KeyTweenScrollList.layout">
+  layout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenScrollList.LayoutType layout</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a>.<a class="xref" href="KeyTweening.KeyTweenScrollList.LayoutType.html">LayoutType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_loop" data-uid="KeyTweening.KeyTweenScrollList.loop">
+  loop
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Vertical/Horizontal: the end continues with the first item again, forever.&quot;)]
+public bool loop</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_measureItems" data-uid="KeyTweening.KeyTweenScrollList.measureItems">
+  measureItems
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Each item&#39;s size along the scroll axis is its preferred size from its layout components (e.g. a text that wraps).&quot;)]
+public bool measureItems</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_padding" data-uid="KeyTweening.KeyTweenScrollList.padding">
+  padding
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RectOffset padding</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/RectOffset.html">RectOffset</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_playEntryOnFill" data-uid="KeyTweening.KeyTweenScrollList.playEntryOnFill">
+  playEntryOnFill
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool playEntryOnFill</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_prefabOf" data-uid="KeyTweening.KeyTweenScrollList.prefabOf">
+  prefabOf
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Which item prefab (0 = itemPrefab, 1… = extraPrefabs) an index uses. Null = all prefab 0.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NonSerialized]
+public Func&lt;int, int&gt; prefabOf</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_reverseArrangement" data-uid="KeyTweening.KeyTweenScrollList.reverseArrangement">
+  reverseArrangement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Vertical/Horizontal: the last item first.&quot;)]
+public bool reverseArrangement</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_scrubState" data-uid="KeyTweening.KeyTweenScrollList.scrubState">
+  scrubState
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Item state shown at the item&#39;s place in the viewport: 0 = start edge, 0.5 = center, 1 = end edge (carousel focus, wheel picker).&quot;)]
+public string scrubState</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_sizeOf" data-uid="KeyTweening.KeyTweenScrollList.sizeOf">
+  sizeOf
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Size of an index along the scroll axis. Null = measured (Measure Items) or the prefab's size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NonSerialized]
+public Func&lt;int, float&gt; sizeOf</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_snap" data-uid="KeyTweening.KeyTweenScrollList.snap">
+  snap
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;After a drag: Nearest settles on the closest item; One Per Swipe moves exactly one item (pages).&quot;)]
+public KeyTweenScrollList.SnapMode snap</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a>.<a class="xref" href="KeyTweening.KeyTweenScrollList.SnapMode.html">SnapMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_snapAlignment" data-uid="KeyTweening.KeyTweenScrollList.snapAlignment">
+  snapAlignment
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenScrollList.Alignment snapAlignment</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a>.<a class="xref" href="KeyTweening.KeyTweenScrollList.Alignment.html">Alignment</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_snapDuration" data-uid="KeyTweening.KeyTweenScrollList.snapDuration">
+  snapDuration
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Min(0)]
+public float snapDuration</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_spacing" data-uid="KeyTweening.KeyTweenScrollList.spacing">
+  spacing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Vertical/Horizontal: space between items.&quot;)]
+public float spacing</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_stickToEnd" data-uid="KeyTweening.KeyTweenScrollList.stickToEnd">
+  stickToEnd
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;When items are added while the list is at its end, it stays at the end (chat).&quot;)]
+public bool stickToEnd</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_stickyHeaderPrefab" data-uid="KeyTweening.KeyTweenScrollList.stickyHeaderPrefab">
+  stickyHeaderPrefab
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Tooltip(&quot;Items of this prefab are section headers; the current one stays pinned at the top (-1 = off).&quot;)]
+public int stickyHeaderPrefab</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="KeyTweening_KeyTweenScrollList_AtEnd_" data-uid="KeyTweening.KeyTweenScrollList.AtEnd*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_AtEnd" data-uid="KeyTweening.KeyTweenScrollList.AtEnd">
+  AtEnd
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L383"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The list is scrolled to its end (or shows everything).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AtEnd { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_Count_" data-uid="KeyTweening.KeyTweenScrollList.Count*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_Count" data-uid="KeyTweening.KeyTweenScrollList.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_CurrentIndex_" data-uid="KeyTweening.KeyTweenScrollList.CurrentIndex*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_CurrentIndex" data-uid="KeyTweening.KeyTweenScrollList.CurrentIndex">
+  CurrentIndex
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The index at the snap alignment (page, carousel or picker selection).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CurrentIndex { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_ItemSize_" data-uid="KeyTweening.KeyTweenScrollList.ItemSize*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_ItemSize" data-uid="KeyTweening.KeyTweenScrollList.ItemSize">
+  ItemSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L634"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Size of prefab 0's items (Vertical/Horizontal), or the cell (Grid).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 ItemSize { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector2.html">Vector2</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_Offset_" data-uid="KeyTweening.KeyTweenScrollList.Offset*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_Offset" data-uid="KeyTweening.KeyTweenScrollList.Offset">
+  Offset
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L791"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How far the list is scrolled along its axis, in pixels from the start.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Offset { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_VisibleRange_" data-uid="KeyTweening.KeyTweenScrollList.VisibleRange*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_VisibleRange" data-uid="KeyTweening.KeyTweenScrollList.VisibleRange">
+  VisibleRange
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lowest and highest index in view (inclusive). Empty when last &lt; first.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public (int first, int last) VisibleRange { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.int32,system.int32-.first">first</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.int32,system.int32-.last">last</a>)</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="KeyTweening_KeyTweenScrollList_GetItem_" data-uid="KeyTweening.KeyTweenScrollList.GetItem*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_GetItem_System_Int32_" data-uid="KeyTweening.KeyTweenScrollList.GetItem(System.Int32)">
+  GetItem(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L284"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The item object showing <code class="paramref">index</code>, or null when it is not in view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RectTransform GetItem(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_GetItem_" data-uid="KeyTweening.KeyTweenScrollList.GetItem*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_GetItem__1_System_Int32_" data-uid="KeyTweening.KeyTweenScrollList.GetItem``1(System.Int32)">
+  GetItem&lt;TView&gt;(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L287"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The item's component of type <code class="typeparamref">TView</code>, or null when it is not in view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TView GetItem&lt;TView&gt;(int index) where TView : Component</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TView</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TView</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_IndexAt_" data-uid="KeyTweening.KeyTweenScrollList.IndexAt*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_IndexAt_UnityEngine_Vector2_UnityEngine_Camera_" data-uid="KeyTweening.KeyTweenScrollList.IndexAt(UnityEngine.Vector2,UnityEngine.Camera)">
+  IndexAt(Vector2, Camera)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The index of the item under a screen point (e.g. a pointer), or -1.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int IndexAt(Vector2 screenPoint, Camera eventCamera = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>screenPoint</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector2.html">Vector2</a></dt>
+    <dd></dd>
+    <dt><code>eventCamera</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Camera.html">Camera</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_ItemPosition_" data-uid="KeyTweening.KeyTweenScrollList.ItemPosition*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_ItemPosition_System_Int32_" data-uid="KeyTweening.KeyTweenScrollList.ItemPosition(System.Int32)">
+  ItemPosition(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L666"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Top-left of an item in content space (x right, y down from the content's top-left).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 ItemPosition(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector2.html">Vector2</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_NearestIndex_" data-uid="KeyTweening.KeyTweenScrollList.NearestIndex*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_NearestIndex_KeyTweening_KeyTweenScrollList_Alignment_" data-uid="KeyTweening.KeyTweenScrollList.NearestIndex(KeyTweening.KeyTweenScrollList.Alignment)">
+  NearestIndex(Alignment)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L359"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The item closest to the given place in the viewport (start / center / end).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NearestIndex(KeyTweenScrollList.Alignment alignment)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>alignment</code> <a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a>.<a class="xref" href="KeyTweening.KeyTweenScrollList.Alignment.html">Alignment</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_OnBeginDrag_" data-uid="KeyTweening.KeyTweenScrollList.OnBeginDrag*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_OnBeginDrag_UnityEngine_EventSystems_PointerEventData_" data-uid="KeyTweening.KeyTweenScrollList.OnBeginDrag(UnityEngine.EventSystems.PointerEventData)">
+  OnBeginDrag(PointerEventData)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L571"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnBeginDrag(PointerEventData eventData)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eventData</code> <span class="xref">PointerEventData</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_OnDrag_" data-uid="KeyTweening.KeyTweenScrollList.OnDrag*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_OnDrag_UnityEngine_EventSystems_PointerEventData_" data-uid="KeyTweening.KeyTweenScrollList.OnDrag(UnityEngine.EventSystems.PointerEventData)">
+  OnDrag(PointerEventData)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L587"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnDrag(PointerEventData eventData)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eventData</code> <span class="xref">PointerEventData</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_OnEndDrag_" data-uid="KeyTweening.KeyTweenScrollList.OnEndDrag*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_OnEndDrag_UnityEngine_EventSystems_PointerEventData_" data-uid="KeyTweening.KeyTweenScrollList.OnEndDrag(UnityEngine.EventSystems.PointerEventData)">
+  OnEndDrag(PointerEventData)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L592"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnEndDrag(PointerEventData eventData)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eventData</code> <span class="xref">PointerEventData</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_PlayEntry_" data-uid="KeyTweening.KeyTweenScrollList.PlayEntry*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_PlayEntry" data-uid="KeyTweening.KeyTweenScrollList.PlayEntry">
+  PlayEntry()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L494"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Plays the entry state on the visible items, one after another (entry stagger apart).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void PlayEntry()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_Rebuild_" data-uid="KeyTweening.KeyTweenScrollList.Rebuild*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_Rebuild" data-uid="KeyTweening.KeyTweenScrollList.Rebuild">
+  Rebuild()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L814"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lays the content out again (after changing layout settings or the viewport size) and refreshes what is visible.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Rebuild()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_Refresh_" data-uid="KeyTweening.KeyTweenScrollList.Refresh*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_Refresh" data-uid="KeyTweening.KeyTweenScrollList.Refresh">
+  Refresh()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds every visible item again (the data changed). With Measure Items, sizes are measured again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Refresh()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_RefreshItem_" data-uid="KeyTweening.KeyTweenScrollList.RefreshItem*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_RefreshItem_System_Int32_" data-uid="KeyTweening.KeyTweenScrollList.RefreshItem(System.Int32)">
+  RefreshItem(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds one item again if it is in view (and measures it again, with Measure Items).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RefreshItem(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_RemoveItem_" data-uid="KeyTweening.KeyTweenScrollList.RemoveItem*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_RemoveItem_System_Int32_" data-uid="KeyTweening.KeyTweenScrollList.RemoveItem(System.Int32)">
+  RemoveItem(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L389"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>One item was removed from the data at <code class="paramref">index</code>: its object goes, and the items after it move up
+keeping their objects (no rebind, no Appear again). e.g. <code>await list.ResizeItem(i, 0); data.RemoveAt(i); list.RemoveItem(i);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RemoveItem(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_ResizeItem_" data-uid="KeyTweening.KeyTweenScrollList.ResizeItem*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_ResizeItem_System_Int32_System_Single_System_Single_" data-uid="KeyTweening.KeyTweenScrollList.ResizeItem(System.Int32,System.Single,System.Single)">
+  ResizeItem(int, float, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L438"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Changes one item's size along the scroll axis, animated; the items after it move along.
+Completes when the item has its new size (e.g. remove the item from the data only then).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Awaitable ResizeItem(int index, float size, float duration = 0.25)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>size</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Awaitable.html">Awaitable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_ScrollTo_" data-uid="KeyTweening.KeyTweenScrollList.ScrollTo*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_ScrollTo_System_Int32_KeyTweening_KeyTweenScrollList_Alignment_System_Single_" data-uid="KeyTweening.KeyTweenScrollList.ScrollTo(System.Int32,KeyTweening.KeyTweenScrollList.Alignment,System.Single)">
+  ScrollTo(int, Alignment, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L310"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Scrolls so <code class="paramref">index</code> sits at the start, center or end of the viewport (the nearest copy, in a loop).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ScrollTo(int index, KeyTweenScrollList.Alignment alignment = Alignment.Start, float duration = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>alignment</code> <a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a>.<a class="xref" href="KeyTweening.KeyTweenScrollList.Alignment.html">Alignment</a></dt>
+    <dd></dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_SetCount_" data-uid="KeyTweening.KeyTweenScrollList.SetCount*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_SetCount_System_Int32_System_Action_UnityEngine_RectTransform_System_Int32__System_Action_UnityEngine_RectTransform_System_Int32__" data-uid="KeyTweening.KeyTweenScrollList.SetCount(System.Int32,System.Action{UnityEngine.RectTransform,System.Int32},System.Action{UnityEngine.RectTransform,System.Int32})">
+  SetCount(int, Action&lt;RectTransform, int&gt;, Action&lt;RectTransform, int&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Shows <code class="paramref">count</code> items of any prefabs: bind receives the item's RectTransform.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetCount(int count, Action&lt;RectTransform, int&gt; bind, Action&lt;RectTransform, int&gt; unbind = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>bind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;<a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>unbind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;<a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_SetCount_" data-uid="KeyTweening.KeyTweenScrollList.SetCount*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_SetCount_System_Int32_System_Single_" data-uid="KeyTweening.KeyTweenScrollList.SetCount(System.Int32,System.Single)">
+  SetCount(int, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Changes the item count (items were added or removed at the end) and binds the visible items again, keeping the
+scroll position (or the end, with Stick To End). With Measure Items only the new items are measured; when the
+data of existing items changed (e.g. inserted at the top), call <a class="xref" href="KeyTweening.KeyTweenScrollList.html#KeyTweening_KeyTweenScrollList_Refresh">Refresh()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetCount(int count, float stickDuration = 0.25)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>stickDuration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_SetCount_" data-uid="KeyTweening.KeyTweenScrollList.SetCount*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_SetCount__1_System_Int32_System_Action___0_System_Int32__System_Action___0_System_Int32__" data-uid="KeyTweening.KeyTweenScrollList.SetCount``1(System.Int32,System.Action{``0,System.Int32},System.Action{``0,System.Int32})">
+  SetCount&lt;TView&gt;(int, Action&lt;TView, int&gt;, Action&lt;TView, int&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L193"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Shows <code class="paramref">count</code> items. <code class="paramref">bind</code> fills an item when it comes into view;
+<code class="paramref">unbind</code> (optional) clears it before the object is reused for another index.
+<code class="typeparamref">TView</code> is a component on the item prefab (looked up once per item object).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetCount&lt;TView&gt;(int count, Action&lt;TView, int&gt; bind, Action&lt;TView, int&gt; unbind = null) where TView : Component</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>bind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;TView, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>unbind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;TView, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TView</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_SetData_" data-uid="KeyTweening.KeyTweenScrollList.SetData*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_SetData__2_System_Collections_Generic_IReadOnlyList___0__System_Action___1___0_System_Int32__System_Action___1_System_Int32__" data-uid="KeyTweening.KeyTweenScrollList.SetData``2(System.Collections.Generic.IReadOnlyList{``0},System.Action{``1,``0,System.Int32},System.Action{``1,System.Int32})">
+  SetData&lt;TItem, TView&gt;(IReadOnlyList&lt;TItem&gt;, Action&lt;TView, TItem, int&gt;, Action&lt;TView, int&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Shows one item per element of <code class="paramref">data</code> (kept by reference: call Refresh after changing it).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetData&lt;TItem, TView&gt;(IReadOnlyList&lt;TItem&gt; data, Action&lt;TView, TItem, int&gt; bind, Action&lt;TView, int&gt; unbind = null) where TView : Component</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TItem&gt;</dt>
+    <dd></dd>
+    <dt><code>bind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-3">Action</a>&lt;TView, TItem, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>unbind</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;TView, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd></dd>
+    <dt><code>TView</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenScrollList_SizeOf_" data-uid="KeyTweening.KeyTweenScrollList.SizeOf*"></a>
+
+  <h3 id="KeyTweening_KeyTweenScrollList_SizeOf_System_Int32_" data-uid="KeyTweening.KeyTweenScrollList.SizeOf(System.Int32)">
+  SizeOf(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L480"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The size of an index along the scroll axis.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float SizeOf(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_CurrentIndexChanged" data-uid="KeyTweening.KeyTweenScrollList.CurrentIndexChanged">
+  CurrentIndexChanged
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The item at the snap alignment changed (pages, carousel, picker selection).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action&lt;int&gt; CurrentIndexChanged</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_ItemHidden" data-uid="KeyTweening.KeyTweenScrollList.ItemHidden">
+  ItemHidden
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An item left the view (before it is unbound and reused).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action&lt;int, RectTransform&gt; ItemHidden</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="KeyTweening_KeyTweenScrollList_ItemShown" data-uid="KeyTweening.KeyTweenScrollList.ItemShown">
+  ItemShown
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/ScrollList/KeyTweenScrollList.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An item came into view (after it was bound).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action&lt;int, RectTransform&gt; ItemShown</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-2">Action</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://docs.unity3d.com/ScriptReference/RectTransform.html">RectTransform</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
