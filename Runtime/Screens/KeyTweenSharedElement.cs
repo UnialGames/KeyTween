@@ -18,7 +18,7 @@ namespace KeyTweening
         public static void SetPartnerKeys(KeyTween animation, string state, RectTransform moving, RectTransform partner, bool atStart)
         {
             var (position, size) = (moving.position, moving.sizeDelta);
-            moving.sizeDelta = partner.rect.size;
+            moving.sizeDelta = SizeOf(partner, moving);
             moving.position = partner.TransformPoint(partner.rect.center) + moving.TransformVector(Pivoted(moving));
             var (partnerPosition, partnerSize) = (moving.anchoredPosition, moving.sizeDelta);
             (moving.position, moving.sizeDelta) = (position, size);
@@ -34,6 +34,14 @@ namespace KeyTweening
                     else if (track.property == KeyTweenProperty.SizeDelta) key.value = partnerSize;
                 }
             }
+        }
+
+        // The partner's on-screen size in the moving image's own units: the two may sit under differently scaled parents
+        // (a grid shown smaller, a card scaled up on hover).
+        static Vector2 SizeOf(RectTransform partner, RectTransform moving)
+        {
+            var (size, from, to) = (partner.rect.size, partner.lossyScale, moving.lossyScale);
+            return new Vector2(to.x != 0f ? size.x * from.x / to.x : size.x, to.y != 0f ? size.y * from.y / to.y : size.y);
         }
 
         // From the rect's center to its pivot, in its local space (0 for a centered pivot).

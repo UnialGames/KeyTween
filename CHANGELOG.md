@@ -2,6 +2,13 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.3.2] - 2026-11-01
+
+A bug fix for shared element transitions between differently scaled parents.
+
+### Fixed
+- `KeyTweenSharedElement.SetPartnerKeys`: the partner's size is its on-screen size, also when the partner and the moving image sit under differently scaled parents (it took the partner's own size, so the image grew or shrank to the wrong size).
+
 ## [0.3.1] - 2026-11-01
 
 Bug fixes: a throwing animation event handler, states added to `states` after the first play, and screen containers in play mode without a domain reload.

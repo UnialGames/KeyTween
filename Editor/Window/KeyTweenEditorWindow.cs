@@ -946,7 +946,12 @@ namespace KeyTweening.Editor
 
         void DeleteState(KeyTweenState state)
         {
-            if (!EditorUtility.DisplayDialog("Delete State", $"Delete the state '{state.name}'?", "Delete", "Cancel")) return;
+            if (EditorUtility.DisplayDialog("Delete State", $"Delete the state '{state.name}'?", "Delete", "Cancel")) RemoveState(state);
+        }
+
+        // Delete State after its confirmation (tests call this directly).
+        internal void RemoveState(KeyTweenState state)
+        {
             _preview.Stop();
             RenameBindings(state.name, null);
             Modify("Remove State", () => { _target.states.Remove(state); _state = 0; });

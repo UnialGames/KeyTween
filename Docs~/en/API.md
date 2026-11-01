@@ -151,7 +151,7 @@ pauseMenu.timeMode = KeyTweenTimeMode.Unscaled;   // applies from the next play
 ```
 
 * It can be overridden per prefab instance. For example, keep a shared button `Unscaled` and switch only the buttons placed on the game screen to `Scaled`.
-* A state played by a child call follows the child KeyTween's **Time**.
+* A state played by a child call follows the child KeyTween's **Time**. When the parent state ends, though, child states still playing are set to their end pose: an `Unscaled` pause menu ending while game time is stopped also brings the `Scaled` children it called to their end pose.
 * Outside Play mode (playing from code in the editor), both use real time.
 
 ### When States Overlap
