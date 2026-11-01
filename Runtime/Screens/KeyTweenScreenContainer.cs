@@ -15,6 +15,14 @@ namespace KeyTweening
 
         /// <summary>Some container is between screens.</summary>
         public static bool AnyInTransition => _transitions > 0;
+
+        // Play mode without a domain reload keeps statics: a play stopped mid-transition must not block input in the next.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        internal static void ResetStatics()
+        {
+            Containers.Clear();
+            _transitions = 0;
+        }
         public bool IsInTransition { get; private set; }
 
         protected virtual void OnEnable()

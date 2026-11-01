@@ -502,7 +502,12 @@ namespace KeyTweening
             if (handler == null) return;
             foreach (var track in p.state.eventTracks)
             foreach (var marker in track.events)
-                if (Passed(marker.time)) handler(new KeyTweenEventInfo(p.owner, p.state.name, marker));
+                if (Passed(marker.time))
+                {
+                    // Like the callbacks: a throwing handler is logged, and the play and the other events go on.
+                    try { handler(new KeyTweenEventInfo(p.owner, p.state.name, marker)); }
+                    catch (Exception e) { Debug.LogException(e, p.owner); }
+                }
         }
 
         /// <summary>The task for this play; split out so tests can drive time.</summary>
@@ -729,7 +734,15 @@ namespace KeyTweening
         {
             foreach (var p in _playbacks)
                 if (p.state.name == stateName) return p;
-            return null;
+            // A state put into `states` after the first play (not through AddState) plays too.
+            var state = _initialized ? FindState(stateName) : null;
+            if (state == null) return null;
+            var effective = EffectiveState(stateName) ?? state;
+            CaptureRest(state);
+            if (effective != state) CaptureRest(effective);
+            var playback = new Playback(this, effective);
+            _playbacks.Add(playback);
+            return playback;
         }
 
         /// <summary>Resolves key values (relative/absolute) and the live start value. Call once right before evaluating from t = 0.</summary>

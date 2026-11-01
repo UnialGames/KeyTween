@@ -2,6 +2,15 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] - 2026-11-01
+
+Bug fixes: a throwing animation event handler, states added to `states` after the first play, and screen containers in play mode without a domain reload.
+
+### Fixed
+- An animation event handler that throws no longer stops the play: like the callbacks, the exception is logged and the other events, On Complete and `PlayAsync` go on.
+- A state put into `states` after the first play (not through `AddState`) plays instead of being reported as missing.
+- Screen containers: with Enter Play Mode Options (no domain reload), a play mode that ended during a transition no longer leaves every container's input blocked in the next one.
+
 ## [0.3.0] - 2026-10-31
 
 Play from a given time and stop at a time, start and end callbacks per state, `With` to set up a play in code and `Build` to make a state in code, and the same for UniTask and R3. `Sample` is deprecated (use `Stop(state, time)`).
