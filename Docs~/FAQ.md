@@ -88,7 +88,7 @@ Input System 패키지가 필요합니다. TextMeshPro의 Essential Resources는
 
 ### 에이전트의 쓰기가 `Stale token`으로 거부됩니다
 
-읽은 뒤에 데이터가 바뀌었다는 뜻입니다. 다시 읽고, 그 문서에서 다시 고쳐서 씁니다. 자세한 내용은 [Integrations](Integrations.md)를 참고하세요.
+읽은 뒤에 데이터가 바뀌었다는 뜻입니다. 다시 읽고, 그 문서에서 다시 고쳐서 씁니다. 자세한 내용은 [AI 에이전트로 만들기](Agents.md#안전-장치)를 참고하세요.
 
 ## 다른 도구에서 옮겨 오기
 

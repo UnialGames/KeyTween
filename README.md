@@ -17,6 +17,7 @@ KeyTween lets you build UI animation the same way you build an Animator clip: by
 ### Key Features
 
 * **No extra assets.** There are no clip or controller assets, and each track refers directly to a component in the prefab.
+* **Made by AI agents, refined in the editor.** Ask a coding agent such as Claude Code or Cursor in words, "give the popup open and close animations", and it makes the states through the Unity CLI and puts them in the prefab. They are ordinary states, so you refine them in the KeyTween window. A write is checked first so it never overwrites what a person changed.
 * **Authoring in the editor.** You build animations in the KeyTween window with the Add Track picker, the key inspector and recording.
 * **Preview without Play mode.** Previews work in Edit mode, Prefab mode and Play mode.
 * **UI and game objects.** Besides UI, tracks animate world-space objects: Transform, SpriteRenderer, material properties, Light, Camera and AudioSource. You can add your own tracks for any component.
@@ -37,6 +38,7 @@ To see KeyTween in action, watch these videos:
 
 - [Installation](#installation)
 - [Getting Started](#getting-started)
+- [Creating with AI Agents](#creating-with-ai-agents)
 - [Playing and Awaiting](#playing-and-awaiting)
 - [When States Overlap](#when-states-overlap)
 - [Setting Up a Play in Code](#setting-up-a-play-in-code)
@@ -180,6 +182,35 @@ The editor and the code split the work as follows:
 * The code only decides *which state* to play and *what happens after* it ends.
 
 For details, see [Playing](Docs~/en/API.md#playing).
+
+## Creating with AI Agents
+
+Hand an animation to a coding agent in words, then carry on in the KeyTween window. KeyTween contains no AI model: it provides the commands an agent uses to read and write animation data and a contract document that describes the format, so you use the agent you like, such as Claude Code, Cursor or Codex.
+
+### Setting Up
+
+1. Run `unity pipeline install` in the project folder to install the Unity CLI package (`com.unity.pipeline`, Unity 6).
+2. Choose **Tools > KeyTween > Set Up Agent Access**. Guidance for agents is added to `AGENTS.md` and `CLAUDE.md`.
+3. With the Unity Editor open, ask the agent.
+
+```text
+Give Assets/UI/Popup.prefab an Open that grows in, and a shorter Close that shrinks out.
+```
+
+### What It Makes
+
+The agent reads the prefab and writes the states. They are the same states, tracks and keys a person makes, so you drag keys and change eases in the KeyTween window from there. Below is the `Open` state made from that request.
+
+![The Open state an agent made for a popup, opened in the KeyTween window](Docs~/media/agents/agent-popup.png)
+
+### Safeguards
+
+* A write is refused if a person edited the data after the agent read it (a token). The agent reads again and builds on that.
+* If anything is wrong, every problem is reported and nothing is changed.
+* One Ctrl+Z undoes it, and `--dry_run true` checks without changing anything.
+* Reading (`keytween_read`), scene writes (`keytween_write_scene`) and prefab writes (`keytween_write_prefab`) are separate, so you can allow each on its own.
+
+For details, see [Creating with AI Agents](Docs~/en/Agents.md).
 
 ## Playing and Awaiting
 
@@ -599,15 +630,6 @@ With UIEffect installed, 14 tracks of these kinds are added:
 * Gradation
 * Detail
 
-### AI Agents
-
-With the Unity CLI (`com.unity.pipeline`) installed, coding agents such as Claude Code and Cursor create and edit KeyTween animations. KeyTween embeds no model: it provides the commands an agent uses to read and write the data, and a contract document.
-
-* Commands: `keytween_read`, `keytween_write_scene`, `keytween_write_prefab`
-* A write is refused if a person edited the data after the read, changes nothing when it has a problem, and is undone with one Ctrl+Z.
-* The result is ordinary states, tracks and keys, so you carry on in the KeyTween window.
-* **Tools > KeyTween > Set Up Agent Access** adds the guidance to `AGENTS.md` and `CLAUDE.md`.
-
 For details, see [Integrations](Docs~/en/Integrations.md).
 
 ## Samples
@@ -687,6 +709,7 @@ The full documentation is on the [documentation site](https://unialgames.github.
 | [Installation](https://unialgames.github.io/KeyTween/articles/en/installation.html) | Requirements, Package Manager install, pinning a version, importing samples |
 | [Quick Start](https://unialgames.github.io/KeyTween/articles/en/quick-start.html) | Your first hover animation in the editor, and playing it from code |
 | [Editor](https://unialgames.github.io/KeyTween/articles/en/concepts.html) | The KeyTween window, states, tracks and keys, Play On, nested prefabs, preview, saving, recording |
+| [Creating with AI Agents](https://unialgames.github.io/KeyTween/articles/en/agents.html) | Making states with a coding agent and refining them in the editor: setup, commands, safeguards |
 | [Scripting](https://unialgames.github.io/KeyTween/articles/en/playing-and-awaiting.html) | Playing and awaiting states, start and end callbacks, [setting up a play in code (With)](https://unialgames.github.io/KeyTween/articles/en/with.html), [making a state in code (Build)](https://unialgames.github.io/KeyTween/articles/en/build.html), animation events, reading and writing values |
 | [Scroll List](https://unialgames.github.io/KeyTween/articles/en/scroll-list.html) | The virtualized scroll list, item animations and helper components |
 | [Screen Transitions](https://unialgames.github.io/KeyTween/articles/en/screens.html) | Page, modal and sheet containers, lifecycle, shared elements |

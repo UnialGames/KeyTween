@@ -88,7 +88,7 @@ Use `Stop(state, time)`. It does the same.
 
 ### An agent's write is refused as `Stale token`
 
-The data changed after it was read. Read again, redo the change on that document, and write. See [Integrations](Integrations.md).
+The data changed after it was read. Read again, redo the change on that document, and write. See [Creating with AI Agents](Agents.md#safeguards).
 
 ## Coming from Other Tools
 

@@ -17,6 +17,7 @@ KeyTween에서는 Animator 클립을 만들 때처럼 타임라인에 키를 놓
 ### 주요 특징
 
 * **별도 에셋이 없습니다.** 클립이나 컨트롤러 같은 에셋이 없고, 각 트랙은 Prefab 안의 컴포넌트를 직접 가리킵니다.
+* **AI 에이전트로 만들고, 에디터에서 고칩니다.** Claude Code, Cursor 같은 코딩 에이전트에게 "팝업에 열기·닫기 연출을 넣어 줘"처럼 말로 맡기면, 에이전트가 Unity CLI로 상태를 만들어 Prefab에 넣습니다. 결과는 평범한 상태라서 KeyTween 창에서 그대로 고칩니다. 사람이 고친 것을 덮어쓰지 않도록 쓰기 전에 확인합니다.
 * **에디터에서 만듭니다.** 타임라인 창, 트랙 추가 창, 키 인스펙터, 녹화 기능으로 애니메이션을 만듭니다.
 * **Play 모드 없이 미리 봅니다.** 미리보기는 편집 모드, Prefab 모드, Play 모드 어디서나 동작합니다.
 * **UI와 게임 오브젝트를 함께 움직입니다.** UI 말고도 Transform, SpriteRenderer, 재질 속성, Light, Camera, AudioSource 트랙으로 월드 공간의 오브젝트를 움직입니다. 원하는 컴포넌트의 트랙을 직접 만들 수도 있습니다.
@@ -37,6 +38,7 @@ KeyTween에서는 Animator 클립을 만들 때처럼 타임라인에 키를 놓
 
 - [설치](#설치)
 - [시작하기](#시작하기)
+- [AI 에이전트로 만들기](#ai-에이전트로-만들기)
 - [재생과 기다리기](#재생과-기다리기)
 - [여러 상태가 겹칠 때](#여러-상태가-겹칠-때)
 - [코드에서 재생 설정하기](#코드에서-재생-설정하기)
@@ -180,6 +182,35 @@ public class Popup : MonoBehaviour
 * 코드는 *어느 상태*를 재생할지와 *끝난 뒤 무엇을 할지*만 정합니다.
 
 자세한 내용은 [API](Docs~/API.md#재생)를 참고하세요.
+
+## AI 에이전트로 만들기
+
+코딩 에이전트에게 연출을 말로 맡기고, 결과는 KeyTween 창에서 이어서 고칩니다. KeyTween에는 AI 모델이 들어 있지 않습니다. 에이전트가 애니메이션 데이터를 읽고 쓰는 명령과, 그 형식을 설명하는 계약 문서를 제공하므로 Claude Code, Cursor, Codex 등 원하는 에이전트를 씁니다.
+
+### 준비하기
+
+1. 프로젝트 폴더에서 `unity pipeline install`을 실행해 Unity CLI 패키지(`com.unity.pipeline`, Unity 6)를 설치합니다.
+2. **Tools > KeyTween > Set Up Agent Access**를 고릅니다. `AGENTS.md`와 `CLAUDE.md`에 에이전트용 안내가 들어갑니다.
+3. Unity 에디터를 연 채로 에이전트에게 요청합니다.
+
+```text
+Assets/UI/Popup.prefab에 열릴 때 커지며 나타나는 Open과, 더 짧게 작아지며 사라지는 Close를 만들어 줘.
+```
+
+### 만들어지는 것
+
+에이전트는 Prefab을 읽고 상태를 써 넣습니다. 결과는 사람이 만든 것과 같은 상태, 트랙, 키라서 KeyTween 창에서 키를 끌고 이징을 바꾸며 이어서 고칩니다. 아래는 위 요청으로 만들어진 `Open` 상태입니다.
+
+![에이전트가 만든 팝업의 Open 상태를 KeyTween 창에서 연 모습](Docs~/media/agents/agent-popup.png)
+
+### 안전 장치
+
+* 읽은 뒤에 사람이 고쳤으면 쓰기를 거부합니다(토큰). 에이전트는 다시 읽고 그 위에서 고칩니다.
+* 문제가 하나라도 있으면 모두 알려 주고 아무것도 바꾸지 않습니다.
+* Ctrl+Z 한 번으로 되돌립니다. `--dry_run true`로 확인만 할 수도 있습니다.
+* 읽기(`keytween_read`), 씬 쓰기(`keytween_write_scene`), Prefab 쓰기(`keytween_write_prefab`)가 따로 있어 권한을 나눠 줄 수 있습니다.
+
+자세한 내용은 [AI 에이전트로 만들기](Docs~/Agents.md)를 참고하세요.
 
 ## 재생과 기다리기
 
@@ -599,15 +630,6 @@ UIEffect가 있으면 다음 종류의 트랙 14종이 추가됩니다.
 * 그라데이션
 * 디테일
 
-### AI 에이전트
-
-Unity CLI(`com.unity.pipeline`)가 있으면 Claude Code, Cursor 같은 코딩 에이전트가 KeyTween 애니메이션을 만들고 고칩니다. KeyTween은 모델을 넣지 않고, 에이전트가 데이터를 읽고 쓰는 명령과 계약 문서를 제공합니다.
-
-* 명령: `keytween_read`, `keytween_write_scene`, `keytween_write_prefab`
-* 읽은 뒤에 사람이 고쳤으면 쓰기를 거부하고, 문제가 있으면 아무것도 바꾸지 않으며, Ctrl+Z 한 번으로 되돌립니다.
-* 결과는 평범한 상태·트랙·키라서 KeyTween 창에서 이어서 고칩니다.
-* **Tools > KeyTween > Set Up Agent Access**가 `AGENTS.md`와 `CLAUDE.md`에 안내를 넣습니다.
-
 자세한 내용은 [Integrations](Docs~/Integrations.md)를 참고하세요.
 
 ## 샘플
@@ -687,6 +709,7 @@ KeyTween과 다른 애니메이션 도구의 비용을 비교한 결과입니다
 | [설치](https://unialgames.github.io/KeyTween/articles/ko/installation.html) | 요구 사항, Package Manager 설치, 버전 고정, 샘플 가져오기 |
 | [빠른 시작](https://unialgames.github.io/KeyTween/articles/ko/quick-start.html) | 에디터에서 첫 호버 연출 만들기, 코드에서 재생하기 |
 | [에디터](https://unialgames.github.io/KeyTween/articles/ko/concepts.html) | KeyTween 창, 상태·트랙·키, Play On, 중첩 Prefab, 미리보기, 저장, 녹화 |
+| [AI 에이전트로 만들기](https://unialgames.github.io/KeyTween/articles/ko/agents.html) | 코딩 에이전트로 상태를 만들고 에디터에서 고치기: 준비, 명령, 안전 장치 |
 | [코드에서 쓰기](https://unialgames.github.io/KeyTween/articles/ko/playing-and-awaiting.html) | 상태 재생과 기다리기, 시작과 끝 콜백, [코드에서 재생 설정하기(With)](https://unialgames.github.io/KeyTween/articles/ko/with.html), [코드로 상태 만들기(Build)](https://unialgames.github.io/KeyTween/articles/ko/build.html), 애니메이션 이벤트, 값 읽고 쓰기 |
 | [스크롤 리스트](https://unialgames.github.io/KeyTween/articles/ko/scroll-list.html) | 가상화 스크롤 리스트, 아이템 연출, 도우미 컴포넌트 |
 | [화면 전환](https://unialgames.github.io/KeyTween/articles/ko/screens.html) | 페이지, 모달, 시트 컨테이너, 생명주기, 공유 요소 |
