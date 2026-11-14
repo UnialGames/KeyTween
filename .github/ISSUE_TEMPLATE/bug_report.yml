@@ -1,0 +1,51 @@
+name: Bug report
+description: Something does not work as the documentation says (한국어로 적어도 됩니다)
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The smallest setup that shows it. A prefab, a state and the code that plays it is ideal.
+      placeholder: |
+        1. A Button prefab with a state "Hover" (Scale track, Start = Current Value)
+        2. Play mode, move the pointer over the button twice quickly
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: keytween
+    attributes:
+      label: KeyTween version
+      description: Package Manager > KeyTween, or "version" in the package's package.json.
+      placeholder: 0.3.2
+    validations:
+      required: true
+  - type: input
+    id: unity
+    attributes:
+      label: Unity version
+      placeholder: 6000.0.85f1
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where it happens
+      multiple: true
+      options:
+        - KeyTween Editor window (edit mode)
+        - Play mode in the editor
+        - A build (say which platform below)
+  - type: textarea
+    id: more
+    attributes:
+      label: Console output, platform, anything else
+      description: Errors or warnings from the Console (as text), the build platform and scripting backend, optional packages in use (UniTask, R3, UIEffect).

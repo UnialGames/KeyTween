@@ -1,0 +1,20 @@
+{
+    "name": "KeyTween.Editor.Cli",
+    "rootNamespace": "KeyTweening.Editor",
+    "references": [
+        "KeyTween",
+        "KeyTween.Editor",
+        "Unity.Pipeline.Attributes"
+    ],
+    "includePlatforms": [ "Editor" ],
+    "defineConstraints": [
+        "KEYTWEEN_PIPELINE"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.pipeline",
+            "expression": "0.1.0",
+            "define": "KEYTWEEN_PIPELINE"
+        }
+    ]
+}

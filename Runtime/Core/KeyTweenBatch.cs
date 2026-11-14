@@ -139,6 +139,15 @@ namespace KeyTweening
             if (p.group >= 0) _groups[p.group].alive = 0;
         }
 
+        /// <summary>The playback is gone (its state was replaced): its slot is given up and removed at the next compaction.</summary>
+        internal static void Drop(KeyTween.Playback p)
+        {
+            if (p.group < 0) return;
+            _groups[p.group].alive = 0;
+            _owners[p.group] = null;
+            Forget(p);
+        }
+
         /// <summary>Whether this frame's batch computed the playback's values at exactly t.</summary>
         internal static bool Ready(KeyTween.Playback p, float t) => p.group >= 0 && _groups[p.group].alive != 0 && _groups[p.group].t == t;
 

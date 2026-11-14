@@ -58,7 +58,7 @@ KeyTween을 프로젝트에 설치하는 방법을 설명합니다.
 
 ### 요구 사항
 
-* Unity 6000.0 이상
+* Unity 6000.0 이상. Unity 2022 LTS에서는 컴파일되지 않습니다(이유는 [버전과 지원 범위](Docs~/FAQ.md#버전과-지원-범위)).
 * 함께 설치되는 패키지
   * `com.unity.ugui` 2.0.0 (TextMeshPro 포함)
   * `com.unity.mathematics` 1.3.2
@@ -95,7 +95,7 @@ https://github.com/UnialGames/KeyTween.git
 주소 뒤에 `#`과 버전 태그를 붙이면 그 버전에 고정됩니다. 버전 목록은 [Releases](https://github.com/UnialGames/KeyTween/releases)에 있습니다.
 
 ```text
-https://github.com/UnialGames/KeyTween.git#v0.3.2
+https://github.com/UnialGames/KeyTween.git#v0.4.0
 ```
 
 * 고정한 버전은 **Update**를 눌러도 바뀌지 않습니다.
@@ -599,6 +599,15 @@ UIEffect가 있으면 다음 종류의 트랙 14종이 추가됩니다.
 * 그라데이션
 * 디테일
 
+### AI 에이전트
+
+Unity CLI(`com.unity.pipeline`)가 있으면 Claude Code, Cursor 같은 코딩 에이전트가 KeyTween 애니메이션을 만들고 고칩니다. KeyTween은 모델을 넣지 않고, 에이전트가 데이터를 읽고 쓰는 명령과 계약 문서를 제공합니다.
+
+* 명령: `keytween_read`, `keytween_write_scene`, `keytween_write_prefab`
+* 읽은 뒤에 사람이 고쳤으면 쓰기를 거부하고, 문제가 있으면 아무것도 바꾸지 않으며, Ctrl+Z 한 번으로 되돌립니다.
+* 결과는 평범한 상태·트랙·키라서 KeyTween 창에서 이어서 고칩니다.
+* **Tools > KeyTween > Set Up Agent Access**가 `AGENTS.md`와 `CLAUDE.md`에 안내를 넣습니다.
+
 자세한 내용은 [Integrations](Docs~/Integrations.md)를 참고하세요.
 
 ## 샘플
@@ -684,6 +693,7 @@ KeyTween과 다른 애니메이션 도구의 비용을 비교한 결과입니다
 | [연동](https://unialgames.github.io/KeyTween/articles/ko/unitask.html) | UniTask, R3, UIEffect |
 | [성능](https://unialgames.github.io/KeyTween/articles/ko/performance.html) · [벤치마크](https://unialgames.github.io/KeyTween/articles/ko/benchmarks.html) | 다른 도구와의 측정 비교, 사용할 때 알아 둘 점, 전체 결과 표 |
 | [비교](https://unialgames.github.io/KeyTween/articles/ko/comparison.html) | 다른 도구와 제작 편의 비교 |
+| [자주 묻는 질문](https://unialgames.github.io/KeyTween/articles/ko/faq.html) · [문제 해결](https://unialgames.github.io/KeyTween/articles/ko/troubleshooting.html) | 자주 묻는 질문, 잘 안 될 때 확인할 것, [다른 도구에서 옮겨 오기](https://unialgames.github.io/KeyTween/articles/ko/migrating.html), [버전과 지원 범위](https://unialgames.github.io/KeyTween/articles/ko/versions.html) |
 | [API 레퍼런스](https://unialgames.github.io/KeyTween/api/KeyTweening.html) | 코드의 XML 주석으로 만든 모든 공개 형식과 멤버 |
 
 ## 라이선스

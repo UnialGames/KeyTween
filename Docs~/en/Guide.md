@@ -128,6 +128,27 @@ A state is one named animation. You create a state for each situation, such as `
 
 The timeline is empty and the state inspector appears.
 
+### Starting from a Preset
+
+Common motions do not have to start from an empty timeline. Click **Presets ▾** in the state tabs and pick one: its states are added with their tracks and keys.
+
+| Preset | States it makes | Play On |
+|---|---|---|
+| Hover + Unhover | Grows under the pointer, goes back when it leaves | `PointerEnter` / `PointerExit` |
+| Press + Release | Shrinks while pressed, goes back on release | `PointerDown` / `PointerUp` |
+| Open + Close | A popup: grows in, shrinks out | None (played from code) |
+| Show + Hide | Fade in / out | None |
+| Slide In + Slide Out | Comes up from below by its own height, and goes back down | None |
+| Pulse | Grows and shrinks over and over | `OnEnable` |
+| Punch | One quick bump, back where it was | None |
+| Shake | Shakes sideways (wrong input) | None |
+
+* What it makes is an ordinary state. Edit it as usual: drag keys, change an ease.
+* Scale and position are added to the object's own values (Relative To Rest), so a preset fits an object whose scale is not 1.
+* If a state of that name exists, the new one gets a number, like `Hover 2`. If another state already uses that Play On, the new state's Play On is left empty.
+* A preset that does not fit the object is disabled, with the reason. Show + Hide, for example, needs an Image, a Text, a SpriteRenderer or a CanvasGroup.
+* One Ctrl+Z undoes adding a preset.
+
 ### Working with State Tabs
 
 | To | Do this |

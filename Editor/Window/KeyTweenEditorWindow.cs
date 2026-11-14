@@ -191,6 +191,7 @@ namespace KeyTweening.Editor
             _status = new Label();
             _status.AddToClassList("kt-status");
             topbar.Add(_status);
+            topbar.Add(IconButton("?", "Open the documentation: " + DocumentationUrl, () => Application.OpenURL(DocumentationUrl)));
             root.Add(topbar);
 
             _tabs = new VisualElement();
@@ -221,6 +222,8 @@ namespace KeyTweening.Editor
             return AssetDatabase.LoadAssetAtPath<StyleSheet>(Path.Combine(dir ?? "", "KeyTweenEditor.uss").Replace('\\', '/'));
         }
 
+        internal const string DocumentationUrl = "https://unialgames.github.io/KeyTween/";
+
         static Button IconButton(string text, string tooltip, Action onClick, bool accent = false)
         {
             var b = new Button(onClick) { text = text, tooltip = tooltip };
@@ -246,6 +249,12 @@ namespace KeyTweening.Editor
             var found = go != null ? go.GetComponentInParent<KeyTween>(true) : null;
             if (found != null) SetTarget(found);
             else if (_target == null) Rebuild();   // refresh the "add KeyTween" hint
+        }
+
+        /// <summary>The data was changed outside the window (an agent's write): every open window shows it.</summary>
+        internal static void Reload()
+        {
+            foreach (var window in Resources.FindObjectsOfTypeAll<KeyTweenEditorWindow>()) window.OnUndoRedo();
         }
 
         void OnUndoRedo()
@@ -871,6 +880,53 @@ namespace KeyTweening.Editor
             add.AddToClassList("kt-tab");
             add.AddToClassList("kt-tab--add");
             _tabs.Add(add);
+            var presets = new Button { name = "kt-presets", text = "Presets ▾", tooltip = "Add ready-made states to start from: hover, press, open / close, fade, slide, pulse, punch, shake" };
+            presets.clicked += () => ShowPresets(presets.worldBound);
+            presets.AddToClassList("kt-tab");
+            presets.AddToClassList("kt-tab--add");
+            _tabs.Add(presets);
+        }
+
+        void ShowPresets(Rect at)
+        {
+            var menu = new GenericMenu();
+            foreach (var preset in KeyTweenPresets.All)
+            {
+                var why = preset.unavailable?.Invoke(_target);
+                if (why == null) menu.AddItem(new GUIContent(preset.name), false, () => AddPreset(preset));
+                else menu.AddDisabledItem(new GUIContent($"{preset.name}: {why}"));
+            }
+            menu.DropDown(at);
+        }
+
+        /// <summary>
+        /// Adds a preset's states (a name already taken gets a number) with their Play On, as one Undo step, and opens the
+        /// first. A Play On moment another state already has is left to that state.
+        /// </summary>
+        internal void AddPreset(KeyTweenPresets.Preset preset)
+        {
+            var made = preset.make(_target);
+            var bindings = new List<(string state, KeyTweenEvent evt)>();
+            Undo.IncrementCurrentGroup();
+            Undo.SetCurrentGroupName("Add Preset");
+            var group = Undo.GetCurrentGroup();
+            Modify("Add Preset", () =>
+            {
+                foreach (var (state, playOn) in made)
+                {
+                    var name = state.name;
+                    for (var n = 2; _target.states.Any(s => s.name == name); n++) name = $"{state.name} {n}";
+                    state.name = name;
+                    _target.states.Add(state);
+                    var taken = playOn != null && _target.TryGetComponent<KeyTweenTrigger>(out var trigger) && trigger.bindings.Exists(b => b.evt == playOn.Value);
+                    if (playOn != null && !taken) bindings.Add((name, playOn.Value));
+                }
+                _state = _target.states.Count - made.Count;
+                _selTrack = null;
+                _selection.Clear();
+            });
+            foreach (var (state, evt) in bindings) SetPlayOn(state, evt);
+            Undo.CollapseUndoOperations(group);
         }
 
         bool _tabDragged;
@@ -1010,7 +1066,7 @@ namespace KeyTweening.Editor
             if (state == null)
             {
                 var section = Section("No States");
-                section.Add(Hint("Add a state with the + tab above."));
+                section.Add(Hint("Add a state with the + tab above, or start from Presets ▾ (hover, press, open / close, fade …)."));
                 _inspector.Add(section);
             }
             else if (_marker is KeyTweenEventMarker marker) BuildEventInspector(marker);

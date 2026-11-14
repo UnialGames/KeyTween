@@ -50,6 +50,7 @@ namespace KeyTweening
             public int group = -1;                                // KeyTweenBatch group while the timer runs, else -1
             public double startElapsed;                           // a play started part-way: the timer starts this far in
             public KeyTweenPlay with;                             // set up in code for this play (KeyTween.With): put back when it ends
+            public int play;                                      // goes up when a play ends (stopped or finished): whoever is raising its events sees it is over
 
             public Playback(KeyTween owner, KeyTweenState state)
             {
@@ -186,6 +187,7 @@ namespace KeyTweening
         {
             if (_initialized) return;
             _initialized = true;
+            foreach (var p in _playbacks) KeyTweenBatch.Drop(p);
             _playbacks.Clear();
             foreach (var state in states) _playbacks.Add(new Playback(this, EffectiveState(state.name) ?? state));
             CaptureRest();
@@ -455,10 +457,13 @@ namespace KeyTweening
             var wrapped = p.reversed ? t > p.lastTime : t < p.lastTime;
             if (wrapped)
             {
+                var play = p.play;
                 RaiseEvents(p, p.reversed ? 0f : duration);
+                if (p.play != play) return;   // an event at the lap's end stopped the state or played it again
                 p.lastTime = p.reversed ? float.MaxValue : -1f;
                 p.hasMarkers = p.state.soundTracks.Count > 0 || p.state.childCalls.Count > 0 || p.state.eventTracks.Count > 0;
                 if (p.with != null) p.owner.Raise(p.with.onLoop);
+                if (p.play != play) return;
             }
             Step(p, t);
         }
@@ -478,6 +483,7 @@ namespace KeyTweening
             p.lastTime = t;
             if (!p.hasMarkers) return;   // most states: nothing to raise, skip the scans (and the thread-static depth)
             var reversed = p.reversed;
+            var play = p.play;           // a child's callback or an event handler may stop this state or play it again: the rest is not raised
             // Forward: times in (from, t]. Reversed: times in [t, from), so each marker fires once either way.
             bool Passed(float time) => reversed ? time >= t && time < from : time > from && time <= t;
             if (playSounds)
@@ -494,6 +500,7 @@ namespace KeyTweening
                         {
                             if (reversed) call.child.PlayReversed(call.state);
                             else call.child.Play(call.state);
+                            if (p.play != play) return;
                         }
                 }
                 finally { _callDepth--; }
@@ -507,6 +514,7 @@ namespace KeyTweening
                     // Like the callbacks: a throwing handler is logged, and the play and the other events go on.
                     try { handler(new KeyTweenEventInfo(p.owner, p.state.name, marker)); }
                     catch (Exception e) { Debug.LogException(e, p.owner); }
+                    if (p.play != play) return;
                 }
         }
 
@@ -526,26 +534,36 @@ namespace KeyTweening
         internal static void Finish(Playback p)
         {
             // Skipped to the end: the remaining calls and events still happen, in order; skipped sounds stay silent.
+            var play = p.play;
             RaiseEvents(p, p.reversed ? float.MinValue : float.MaxValue, playSounds: false);
             foreach (var call in p.state.childCalls)
                 if (call.child != null && call.child.IsPlaying(call.state)) call.child.Complete(call.state);
+            // One of those events (or a child's callback) stopped the state or played it again: this play ended there, as
+            // canceled, and what follows would end the new one.
+            if (p.play != play) return;
+            p.play++;
             p.active = false;
             KeyTweenBatch.Unregister(p);
             var with = TakeWith(p);
+            var completion = Release(p);   // before the callbacks: one that plays the state again must not end up with this play's PlayAsync
             p.owner.Raise(p.state.onComplete, p.owner.StateCompleted, p.state.name, with?.onComplete);
-            Release(p)?.TrySetResult();
+            completion?.TrySetResult();
+            p.completion ??= completion;   // kept for the next PlayAsync
         }
 
         // Did not reach the end.
         static void Stop(Playback p)
         {
             var wasPlaying = p.active;   // OnDisable stops every playback, playing or not
+            p.play++;
             p.handle.TryCancel();
             p.active = false;
             KeyTweenBatch.Unregister(p);
             var with = TakeWith(p);
+            var completion = Release(p);
             if (wasPlaying) p.owner.Raise(p.state.onCancel, p.owner.StateCanceled, p.state.name, with?.onCancel);
-            Release(p)?.TrySetCanceled();
+            completion?.TrySetCanceled();
+            p.completion ??= completion;
         }
 
         // The play is over: the keys as they were before KeyTween.With changed them (so a callback that plays again starts clean).
@@ -584,12 +602,14 @@ namespace KeyTweening
             return source.Awaitable;
         }
 
-        // Hands the completion source out exactly once per PlayAsync (it is set once, then reused by the next one).
+        // Hands the completion source out exactly once per PlayAsync. It leaves the playback until the caller has set it (then
+        // it is put back and reused), so a PlayAsync from a callback in between gets its own instead of resetting this one.
         static AwaitableCompletionSource Release(Playback p)
         {
             if (!p.awaited) return null;
             p.awaited = false;
             var completion = p.completion;
+            p.completion = null;
             p.cancelRegistration.Dispose();
             p.cancelRegistration = default;
             return completion;
@@ -608,6 +628,8 @@ namespace KeyTweening
 
             Stop(playback);
             TakeOver(playback.state);
+            if (playback.active) Stop(playback);   // a state stopped by the takeover played this one from its On Cancel: that play is replaced too
+            var play = playback.play;              // On Start or an event at the start may stop this play or play the state again
             playback.with = with;
             with?.Apply(playback.state);   // before the key values are resolved below
 
@@ -631,16 +653,17 @@ namespace KeyTweening
             playback.active = true;   // before On Start, so IsPlaying is true there and a Stop there cancels this play
             Evaluate(playback.state, from);
             Raise(playback.state.onStart, StateStarted, playback.state.name, with?.onStart);
-            if (!playback.active) return null;   // stopped in On Start
+            if (playback.play != play) return null;   // stopped, completed or played again in On Start
             if (with != null && with.EventsBefore && time.HasValue)
             {
                 // The animation events before the start time, in order (no sounds or child calls), then those at it as usual.
                 var at = playback.lastTime;
                 playback.lastTime = reversed ? float.MaxValue : -1f;
                 RaiseEvents(playback, at, playSounds: false, callChildren: false);
+                if (playback.play != play) return null;
             }
             RaiseEvents(playback, from);
-            return playback.active ? playback : null;   // or by an event at the start
+            return playback.play == play ? playback : null;   // or by an event at the start
         }
 
         // Other playing states give up what this state animates, where they are: whole properties, or the channels of a shared
@@ -722,6 +745,8 @@ namespace KeyTweening
             EnsureInitialized();
             if (FindPlayback(state.name) is { active: true } playing) Stop(playing);   // its PlayAsync is canceled, not left waiting
             states.RemoveAll(s => s.name == state.name);
+            foreach (var p in _playbacks)
+                if (p.state.name == state.name) KeyTweenBatch.Drop(p);   // its batch slot goes with it
             _playbacks.RemoveAll(p => p.state.name == state.name);
             states.Add(state);
             var effective = EffectiveState(state.name) ?? state;

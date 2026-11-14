@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://unialgames.github.io/KeyTween/
+    about: Guides for the editor and the API, in English and Korean.
+  - name: FAQ and troubleshooting
+    url: https://unialgames.github.io/KeyTween/articles/en/troubleshooting.html
+    about: Things to check first when a state does not play or a value jumps.

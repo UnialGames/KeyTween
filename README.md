@@ -58,7 +58,7 @@ This section explains how to install KeyTween in your project.
 
 ### Requirements
 
-* Unity 6000.0 or later
+* Unity 6000.0 or later. It does not compile on Unity 2022 LTS (see [Versions and Support](Docs~/en/FAQ.md#versions-and-support)).
 * Installed along with KeyTween
   * `com.unity.ugui` 2.0.0 (includes TextMeshPro)
   * `com.unity.mathematics` 1.3.2
@@ -95,7 +95,7 @@ The URL above always points to the latest release. When a new version is out, se
 Add `#` and a version tag to the URL to stay on that version. All versions are listed on the [Releases](https://github.com/UnialGames/KeyTween/releases) page.
 
 ```text
-https://github.com/UnialGames/KeyTween.git#v0.3.2
+https://github.com/UnialGames/KeyTween.git#v0.4.0
 ```
 
 * A pinned version does not change when you click **Update**.
@@ -599,6 +599,15 @@ With UIEffect installed, 14 tracks of these kinds are added:
 * Gradation
 * Detail
 
+### AI Agents
+
+With the Unity CLI (`com.unity.pipeline`) installed, coding agents such as Claude Code and Cursor create and edit KeyTween animations. KeyTween embeds no model: it provides the commands an agent uses to read and write the data, and a contract document.
+
+* Commands: `keytween_read`, `keytween_write_scene`, `keytween_write_prefab`
+* A write is refused if a person edited the data after the read, changes nothing when it has a problem, and is undone with one Ctrl+Z.
+* The result is ordinary states, tracks and keys, so you carry on in the KeyTween window.
+* **Tools > KeyTween > Set Up Agent Access** adds the guidance to `AGENTS.md` and `CLAUDE.md`.
+
 For details, see [Integrations](Docs~/en/Integrations.md).
 
 ## Samples
@@ -684,6 +693,7 @@ The full documentation is on the [documentation site](https://unialgames.github.
 | [Integrations](https://unialgames.github.io/KeyTween/articles/en/unitask.html) | UniTask, R3, UIEffect |
 | [Performance](https://unialgames.github.io/KeyTween/articles/en/performance.html) · [Benchmarks](https://unialgames.github.io/KeyTween/articles/en/benchmarks.html) | Measurements against other tools, what to know when using it, full result tables |
 | [Comparison](https://unialgames.github.io/KeyTween/articles/en/comparison.html) | Authoring compared with other tools |
+| [FAQ](https://unialgames.github.io/KeyTween/articles/en/faq.html) · [Troubleshooting](https://unialgames.github.io/KeyTween/articles/en/troubleshooting.html) | Common questions, what to check when something does not work, [coming from other tools](https://unialgames.github.io/KeyTween/articles/en/migrating.html), [versions and support](https://unialgames.github.io/KeyTween/articles/en/versions.html) |
 | [API Reference](https://unialgames.github.io/KeyTween/api/KeyTweening.html) | Every public type and member, from the code's XML comments |
 
 ## License

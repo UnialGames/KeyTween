@@ -1,0 +1,21 @@
+name: Feature request
+description: Something you would like KeyTween to do (한국어로 적어도 됩니다)
+labels: [enhancement]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What you are trying to make
+      description: The UI or motion you want, and where KeyTween gets in the way today. A video or a link to a game that does it helps.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How you imagine it working
+      description: In the editor, in code, or both. Optional.
+  - type: textarea
+    id: now
+    attributes:
+      label: What you do instead for now
+      description: A workaround, another tool, or nothing. Optional.

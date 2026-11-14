@@ -2,6 +2,25 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-11-14
+
+AI agents can create and edit animations through the Unity CLI (`keytween_read`, `keytween_write_scene`, `keytween_write_prefab`, `keytween_contract`), the KeyTween Editor starts new states from presets, and a callback or event that plays its own state again while it starts or ends no longer leaves it half playing. New help pages: FAQ, troubleshooting, coming from other tools, versions and support.
+
+### Added
+- AI agent access (Unity CLI, optional): with `com.unity.pipeline` installed, the commands `keytween_read`, `keytween_write_scene` and `keytween_write_prefab` let a coding agent read an object's states as a JSON document and write a changed one back; `keytween_contract` prints the format and the rules. The result is ordinary states, tracks and keys, edited further in the KeyTween Editor. A write is all or nothing (every problem is reported), is refused when the data changed since it was read (a token), is one Undo step, and can be checked first with `dry_run`. Sounds, child calls and callbacks are kept when a state is replaced. The same operations are public as `KeyTweenAgent.Read` / `Write` / `ContractText`, and **Tools > KeyTween > Set Up Agent Access** adds a KeyTween section to `AGENTS.md` and `CLAUDE.md` that points agents at the contract (also the file `Editor/Agent/KEYTWEEN-CONTRACT.md`).
+- KeyTween Editor: **Presets ▾** in the state tabs adds ready-made states to start from instead of an empty timeline: Hover + Unhover, Press + Release, Open + Close, Show + Hide, Slide In + Slide Out, Pulse, Punch, Shake. They are ordinary states (scale and position relative to the object's rest value), added with their Play On as one Undo step; a preset the object cannot take is disabled with the reason.
+- KeyTween Editor: a **?** button in the top bar opens the documentation.
+
+### Fixed
+- KeyTween Editor: a ruler label at or just after the state's end was drawn over the "End" tag.
+- A callback or animation event that plays its own state again, or stops it, while that state is starting or ending:
+  - An event skipped by `Complete` whose handler played the same state again left the new play running but reported as not playing (`IsPlaying` false, `Stop` and `Complete` ignored), and On Complete was raised for the play it had replaced. The replaced play ends with On Cancel and the new one plays on.
+  - A handler that stopped the state from an event skipped by `Complete` got On Cancel and On Complete; it gets On Cancel only, as when the state reaches its end by itself.
+  - On Complete playing the same state again canceled the `PlayAsync` of the play that had just completed; it completes.
+  - On Start playing the same state again left the first play's `PlayAsync` waiting and started the state twice; the first play is canceled.
+  - A state stopped by a takeover whose On Cancel played the taking state: that state started twice; the earlier play is canceled.
+- `Build` (or `AddState`) replacing a state of the same name kept the replaced state's Burst batch slot until the KeyTween was destroyed, so making the state again and again grew the batch computed every frame. The slot is released.
+
 ## [0.3.2] - 2026-11-01
 
 A bug fix for shared element transitions between differently scaled parents.

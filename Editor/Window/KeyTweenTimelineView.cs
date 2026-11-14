@@ -817,6 +817,8 @@ namespace KeyTweening.Editor
         }
 
         static readonly float[] Steps = { 0.05f, 0.1f, 0.25f, 0.5f, 1f, 2f, 5f, 10f };
+        const float EndTagWidth = 64f;      // "End 10.25s" at the end tag's 10px font, with its padding
+        const float TickLabelWidth = 28f;   // "10.25" at the ruler's font
 
         void Layout()
         {
@@ -828,10 +830,14 @@ namespace KeyTweening.Editor
             var step = Steps[Steps.Length - 1];
             foreach (var s in Steps)
                 if (s * PxPerSecond >= 44f) { step = s; break; }
+            var endX = TimeToX(_state.Duration);
             for (var i = Mathf.FloorToInt(ViewStart / step); i * step <= ViewStart + Range + 0.0001f; i++)
             {
                 var t = i * step;
                 if (t < ViewStart - 0.0001f) continue;
+                // A tick whose label would run into the "End 0.30s" tag, or sit under it, is left out: the tag shows that time.
+                var x = TimeToX(t);
+                if (x > endX - TickLabelWidth && x < endX + EndTagWidth) continue;
                 var tick = new Label(t.ToString(step < 0.1f ? "0.00" : step < 1f ? "0.0#" : "0")) { pickingMode = PickingMode.Ignore, style = { left = TimeToX(t) } };
                 tick.AddToClassList("kt-tick");
                 _ruler.Add(tick);
