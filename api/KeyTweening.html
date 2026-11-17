@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace KeyTweening | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace KeyTweening | KeyTween ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KeyTweening">
+
+  <h1 id="KeyTweening" data-uid="KeyTweening" class="text-break">Namespace KeyTweening</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTween.html">KeyTween</a></dt>
+      <dd><p>Holds the animation states of one prefab and plays them.
+States can run at the same time; a newly played state takes over only the properties it animates.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenBinding.html">KeyTweenBinding</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenChildCall.html">KeyTweenChildCall</a></dt>
+      <dd><p>Plays another KeyTween's state at a point in this state's time (e.g. a popup showing its buttons).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenColorTrack-1.html">KeyTweenColorTrack&lt;T&gt;</a></dt>
+      <dd><p>A custom track of a Color.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenCustomTrack-1.html">KeyTweenCustomTrack&lt;T&gt;</a></dt>
+      <dd><p>A custom track on a component of type <code class="typeparamref">T</code>. Override <a class="xref" href="KeyTweening.KeyTweenCustomTrack-1.html#KeyTweening_KeyTweenCustomTrack_1_Get__0_">Get(T)</a> and <a class="xref" href="KeyTweening.KeyTweenCustomTrack-1.html#KeyTweening_KeyTweenCustomTrack_1_Set__0_UnityEngine_Vector4_">Set(T, Vector4)</a>;
+the value is a Vector4 (use x for one number, x/y for two …) as <a class="xref" href="KeyTweening.KeyTweenCustomTrack-1.html#KeyTweening_KeyTweenCustomTrack_1_Kind">Kind</a> says.</p>
+<pre><code class="lang-csharp">[Preserve] public sealed class SliderHandleTrack : KeyTweenCustomTrack&lt;Slider&gt; { … }</code></pre>
+<p>The class needs a public parameterless constructor. Mark it [UnityEngine.Scripting.Preserve] when the build strips
+code (IL2CPP with Managed Stripping Level above Minimal), because tracks are created from the saved class name.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenDefaultTransitions.html">KeyTweenDefaultTransitions</a></dt>
+      <dd><p>Default transitions, the same as UnityScreenNavigator's defaults: 0.3 s OutQuart. Pages slide by one screen width
+(Size Relative, so any resolution), modals grow from 0.3 and fade in, backdrops and sheets fade (Linear).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEasing.html">KeyTweenEasing</a></dt>
+      <dd><p>The easing formulas (easings.net, as in LitMotion's EaseUtility).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventAttribute.html">KeyTweenEventAttribute</a></dt>
+      <dd><p>Registers a struct as a custom animation event type. Its public fields become the event's parameters, edited per event
+in the KeyTween Editor; code receives them with <code>anim.AddListener((in KeyTweenEventInfo e, in HitEvent hit) =&gt; ...)</code>.</p>
+<pre><code class="lang-csharp">[KeyTweenEvent("Hit")] public struct HitEvent { public float damage; public string sfx; }</code></pre>
+<p>Fields: numbers, bool, string, Vector2/3, Color, enums (stored as JSON, so no object references).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventListener.html">KeyTweenEventListener</a></dt>
+      <dd><p>Connects animation events to UnityEvents in the Inspector, so designers can react without code
+(e.g. &quot;Shown&quot; → AudioSource.PlayOneShot). Custom [KeyTweenEvent] struct data is for code: use KeyTween.AddListener&lt;T&gt;.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventListener.Binding.html">KeyTweenEventListener.Binding</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventMarker.html">KeyTweenEventMarker</a></dt>
+      <dd><p>An animation event: a named point in a state's time, raised once when playback passes it (e.g. play a sound on impact).
+It can carry one custom <a class="xref" href="KeyTweening.KeyTweenEventAttribute.html">KeyTweenEventAttribute</a> struct, stored as JSON and converted once on first use.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventTrack.html">KeyTweenEventTrack</a></dt>
+      <dd><p>A track of animation events (added like any other track).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenExternalProperties.html">KeyTweenExternalProperties</a></dt>
+      <dd><p>Track properties of components from optional packages (UIEffect …). The core lists them in KeyTweenProperty but does
+not reference those packages: each package's integration assembly (compiled only when the package is installed)
+registers how to read and write its properties. Unregistered ones (package not installed) are skipped.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenExternalProperties.Entry.html">KeyTweenExternalProperties.Entry</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenFloatTrack-1.html">KeyTweenFloatTrack&lt;T&gt;</a></dt>
+      <dd><p>A custom track of one number. e.g. <code>class SliderValueTrack : KeyTweenFloatTrack&lt;Slider&gt;</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenKey.html">KeyTweenKey</a></dt>
+      <dd><p>A value at a time. Ease/curve describe how the track arrives at this key from the previous one.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenModalContainer.html">KeyTweenModalContainer</a></dt>
+      <dd><p>Modals on top of each other. Each has its own backdrop (a dimmed full-screen image) that fades with it;
+the modal under the new one does not move.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenOverride.html">KeyTweenOverride</a></dt>
+      <dd><p>A nested KeyTween's state changed inside this prefab only (e.g. the common button flashes differently in this popup).
+Only the changed tracks are stored, matched to the child's by target + property; every other track keeps following the
+child's own state, so later changes to the child prefab still show up here. Stored on the outer prefab, so the child's
+prefab is never touched; for the same track the outermost override wins.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenPageContainer.html">KeyTweenPageContainer</a></dt>
+      <dd><p>A history of pages: Push puts a page on top (the old one leaves at the same time), Pop goes back.
+A page pushed with stack = false is dropped from the history once the next page is in (e.g. a loading page).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenPageIndicator.html">KeyTweenPageIndicator</a></dt>
+      <dd><p>Dots or tabs for a scroll list's items (pages, banners, tab pages): one item per list item, laid out by this
+object's layout group. The current one plays the On state and the one it replaces plays Off. Clicking one scrolls there.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenPlay.html">KeyTweenPlay</a></dt>
+      <dd><p>A play of one state, set up in code before it starts (<a class="xref" href="KeyTweening.KeyTween.html#KeyTweening_KeyTween_With_System_String_">With(string)</a>): a track's end value or arrival,
+where it starts, callbacks. Nothing changes until it plays; the changes hold for that play only (put back when it
+completes or is canceled), and the same object can be played again and again, like a LitMotion builder you keep.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenPullToRefresh.html">KeyTweenPullToRefresh</a></dt>
+      <dd><p>Pull to refresh on a list: pulling past the start shows the Pull state by distance; releasing past Distance
+raises On Refresh and plays the Refreshing state (repeated) until <a class="xref" href="KeyTweening.KeyTweenPullToRefresh.html#KeyTweening_KeyTweenPullToRefresh_EndRefresh">EndRefresh()</a>, holding the list open meanwhile.
+For vertical lists (pulled down from the top).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScreen.html">KeyTweenScreen</a></dt>
+      <dd><p>A page, modal or sheet shown by a screen container. Its transitions are states of its KeyTween, by name:
+pages &quot;PushEnter&quot;, &quot;PushExit&quot;, &quot;PopEnter&quot;, &quot;PopExit&quot;; modals &quot;Enter&quot;, &quot;Exit&quot;; sheets &quot;Enter&quot;, &quot;Exit&quot;
+(and optionally &quot;EnterBackward&quot;, &quot;ExitBackward&quot;). A missing one uses the container's default.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScreenContainer.html">KeyTweenScreenContainer</a></dt>
+      <dd><p>Shared by the page, modal and sheet containers: taps are off on every container while any of them is in a
+transition (so a second tap cannot start another one), and screens get their default transitions from here.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.html">KeyTweenScrollList</a></dt>
+      <dd><p>A virtualized list on a ScrollRect: only the visible items exist, and they are reused as the list scrolls.
+Laid out like Unity's Vertical / Horizontal / Grid Layout Group (plus Masonry), filled through callbacks like
+UI Toolkit's ListView (bind / unbind by index), and animated with the items' KeyTween states:
+an entry stagger, a state when scrolling brings an item into view, and a state scrubbed by the item's position.
+Also: several item prefabs, variable sizes, infinite loop, snapping / one page per swipe, auto scroll,
+sticky section headers, sticking to the end (chat), animated item resizing (accordion) and nested scrolling.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScrollScrub.html">KeyTweenScrollScrub</a></dt>
+      <dd><p>Shows a state by how far a list is scrolled instead of by time: 0 px = the state's start, Distance = its end
+(a header that collapses as the list scrolls, a toolbar that fades in).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenSharedElement.html">KeyTweenSharedElement</a></dt>
+      <dd><p>Shared element transitions: an image on one screen appears to travel to (or from) where it sits on another screen.
+The motion is a normal state (AnchoredPosition + SizeDelta tracks on the moving image, edited in the window);
+only the other screen's end is known at run time, so this writes it into the state's first or last keys
+just before the state plays.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenSheetContainer.html">KeyTweenSheetContainer</a></dt>
+      <dd><p>Sheets (tab pages) without history: Show switches to one, the old one leaves at the same time.
+Moving to a lower index plays &quot;EnterBackward&quot; / &quot;ExitBackward&quot; when the sheet has them (e.g. slide the other way).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenSound.html">KeyTweenSound</a></dt>
+      <dd><p>A sound played once when playback passes its time, through the KeyTween's AudioSource.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenSoundTrack.html">KeyTweenSoundTrack</a></dt>
+      <dd><p>A track of sounds played through <a class="xref" href="KeyTweening.KeyTweenSoundTrack.html#KeyTweening_KeyTweenSoundTrack_source">source</a> (empty = the KeyTween's AudioSource).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenState.html">KeyTweenState</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+      <dd><p>A state made in code (<a class="xref" href="KeyTweening.KeyTween.html#KeyTweening_KeyTween_Build_System_String_">Build(string)</a>): tracks and keys, events, sounds and callbacks, added to the KeyTween
+as a runtime state (not saved) and played by name like one made in the editor. <a class="xref" href="KeyTweening.KeyTweenStateBuilder.html#KeyTweening_KeyTweenStateBuilder_Add">Add()</a> adds it; the Play
+methods add it and play it. Calls after that keep editing the same state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTrack.html">KeyTweenTrack</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTrackType.html">KeyTweenTrackType</a></dt>
+      <dd><p>What a track animates: which component it needs, how to read and write the value, and how the editor shows it.
+The built-in tracks are instances of this class; a custom track derives from <a class="xref" href="KeyTweening.KeyTweenCustomTrack-1.html">KeyTweenCustomTrack&lt;T&gt;</a>
+(or <a class="xref" href="KeyTweening.KeyTweenFloatTrack-1.html">KeyTweenFloatTrack&lt;T&gt;</a>, <a class="xref" href="KeyTweening.KeyTweenVector2Track-1.html">KeyTweenVector2Track&lt;T&gt;</a>, <a class="xref" href="KeyTweening.KeyTweenVector3Track-1.html">KeyTweenVector3Track&lt;T&gt;</a>,
+<a class="xref" href="KeyTweening.KeyTweenColorTrack-1.html">KeyTweenColorTrack&lt;T&gt;</a>) and then appears in the Add Track window for objects that have <code>T</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTrackTypes.html">KeyTweenTrackTypes</a></dt>
+      <dd><p>Finds the type of a track: built-in by its <a class="xref" href="KeyTweening.KeyTweenProperty.html">KeyTweenProperty</a>, custom by its saved class name.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTrigger.html">KeyTweenTrigger</a></dt>
+      <dd><p>Plays KeyTween states when UI events happen on this object.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenVector2Track-1.html">KeyTweenVector2Track&lt;T&gt;</a></dt>
+      <dd><p>A custom track of a Vector2.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenVector3Track-1.html">KeyTweenVector3Track&lt;T&gt;</a></dt>
+      <dd><p>A custom track of a Vector3.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventInfo.html">KeyTweenEventInfo</a></dt>
+      <dd><p>What an animation event handler receives (like Unity 6.5's AnimationEventInfo): passed by <code>in</code>, no allocation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTransition.html">KeyTweenTransition</a></dt>
+      <dd><p>What a screen gets in its lifecycle calls.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.IKeyTweenScreenLifecycle.html">IKeyTweenScreenLifecycle</a></dt>
+      <dd><p>Implement on any component of a screen's root to run code around its transitions. The Will* calls are awaited
+before the animation starts (load data, preload the next screen); the Did* calls come after it ends.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenCurveType.html">KeyTweenCurveType</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEase.html">KeyTweenEase</a></dt>
+      <dd><p>How a key arrives. Same members, order and formulas as LitMotion's Ease, so data saved with LitMotion.Ease
+(an int) reads back unchanged.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEvent.html">KeyTweenEvent</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenProperty.html">KeyTweenProperty</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScramble.html">KeyTweenScramble</a></dt>
+      <dd><p>Characters a Text Reveal track shows where text is not revealed yet. Same values as LitMotion's ScrambleMode.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.Alignment.html">KeyTweenScrollList.Alignment</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.GridConstraint.html">KeyTweenScrollList.GridConstraint</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.LayoutType.html">KeyTweenScrollList.LayoutType</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenScrollList.SnapMode.html">KeyTweenScrollList.SnapMode</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenStart.html">KeyTweenStart</a></dt>
+      <dd><p>Where a track's first key gets its value when the state starts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTimeMode.html">KeyTweenTimeMode</a></dt>
+      <dd><p>Which clock a KeyTween plays on, like Animator's Update Mode.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenTransitionKind.html">KeyTweenTransitionKind</a></dt>
+      <dd><p>Why a screen is entering or leaving.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenValueKind.html">KeyTweenValueKind</a></dt>
+      <dd><p>How a track's value is edited and how many of its four numbers (x, y, z, w) it uses.</p>
+</dd>
+    </dl>
+    <h3 id="delegates">
+Delegates
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventHandler.html">KeyTweenEventHandler</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="KeyTweening.KeyTweenEventHandler-1.html">KeyTweenEventHandler&lt;T&gt;</a></dt>
+      <dd></dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

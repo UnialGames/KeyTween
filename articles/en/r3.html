@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>R3 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R3 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/r3.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r3">R3</h1>
+
+<p>When R3 (<code>com.cysharp.r3</code> 1.0.0 or later) is installed, KeyTween gains extension methods that expose plays and animation events as observables.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PlayAsObservable(stateName)</code></td>
+<td>Starts playing on subscribe, emits one <code>Unit</code> when the play ends, and completes.</td>
+</tr>
+<tr>
+<td><code>EventsAsObservable()</code></td>
+<td>Emits every animation event.</td>
+</tr>
+<tr>
+<td><code>EventAsObservable(eventName)</code></td>
+<td>Emits only the events with that name.</td>
+</tr>
+<tr>
+<td><code>PlayAsObservable(stateName, time)</code>, <code>play.PlayAsObservable()</code></td>
+<td>Plays from that time, or a play set up with <code>With</code> (<code>KeyTweenPlay</code>). They end like <code>PlayAsObservable(stateName)</code>.</td>
+</tr>
+<tr>
+<td><code>StateStartedAsObservable()</code>, <code>StateCompletedAsObservable()</code>, <code>StateCanceledAsObservable()</code></td>
+<td>Emit a state's name when it starts, reaches its end, or does not reach it.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="installing-r3">Installing R3</h2>
+<p>R3 needs both the Unity package and the core R3 DLL.</p>
+<ol>
+<li><p>In the Package Manager, install the Unity package from the following Git URL.</p>
+<pre><code class="lang-text">https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity
+</code></pre>
+</li>
+<li><p>Install the core R3 DLL from NuGet. You can use a tool such as NuGetForUnity.</p>
+</li>
+</ol>
+<h2 id="observing-the-end-of-a-play">Observing the End of a Play</h2>
+<p><code>PlayAsObservable</code> emits one <code>Unit</code> when the play ends. Block repeated clicks with <code>ThrottleFirst</code>.</p>
+<pre><code class="lang-csharp">open.OnClickAsObservable().ThrottleFirst(TimeSpan.FromSeconds(0.5))
+    .SelectMany(_ =&gt; popup.PlayAsObservable(&quot;Open&quot;))
+    .Subscribe(_ =&gt; Debug.Log(&quot;opened&quot;)).AddTo(this);
+</code></pre>
+<ul>
+<li>If the play cannot finish, it completes with <code>OperationCanceledException</code> (<a href="playing-and-awaiting.html#how-a-play-ends">API</a>).</li>
+<li>Disposing the subscription stops the play where it is.</li>
+</ul>
+<h2 id="keeping-only-the-last-play">Keeping Only the Last Play</h2>
+<p>For a close button, use <code>Switch</code> to keep only the last play.</p>
+<pre><code class="lang-csharp">close.OnClickAsObservable()
+    .Select(_ =&gt; popup.PlayAsObservable(&quot;Close&quot;))
+    .Switch()
+    .Subscribe().AddTo(this);
+</code></pre>
+<h2 id="observing-events">Observing Events</h2>
+<p><code>EventAsObservable</code> emits only the events with that name. To receive every event, use <code>EventsAsObservable</code>.</p>
+<pre><code class="lang-csharp">popup.EventAsObservable(&quot;Shown&quot;).Subscribe(e =&gt; Debug.Log(e.Time)).AddTo(this);
+</code></pre>
+<h2 id="with-plays-and-state-notifications">With Plays and State Notifications</h2>
+<p>A play set up with <code>With</code> also starts when subscribed. Disposing the subscription stops it where it is.</p>
+<pre><code class="lang-csharp">var open = popup.With(&quot;Open&quot;).WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+openButton.OnClickAsObservable().SelectMany(_ =&gt; open.PlayAsObservable()).Subscribe().AddTo(this);
+</code></pre>
+<p>Which state started or ended comes from the state notifications, with the state's name as the value.</p>
+<pre><code class="lang-csharp">popup.StateCompletedAsObservable()
+    .Where(state =&gt; state == &quot;Open&quot;)
+    .Subscribe(_ =&gt; EnableInput()).AddTo(this);
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

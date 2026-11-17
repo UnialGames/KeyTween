@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Class KeyTweenStateBuilder | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class KeyTweenStateBuilder | KeyTween ">
+      
+      <meta name="description" content="A state made in code (): tracks and keys, events, sounds and callbacks, added to the KeyTween as a runtime state (not saved) and played by name like one made in the editor.  adds it; the Play methods add it and play it. Calls after that keep editing the same state.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/new/main/apiSpec/new?filename=KeyTweening_KeyTweenStateBuilder.md&amp;value=---%0Auid%3A%20KeyTweening.KeyTweenStateBuilder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="KeyTweening.KeyTweenStateBuilder">
+
+
+
+  <h1 id="KeyTweening_KeyTweenStateBuilder" data-uid="KeyTweening.KeyTweenStateBuilder" class="text-break">
+Class KeyTweenStateBuilder  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="KeyTweening.html">KeyTweening</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>KeyTween.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A state made in code (<a class="xref" href="KeyTweening.KeyTween.html#KeyTweening_KeyTween_Build_System_String_">Build(string)</a>): tracks and keys, events, sounds and callbacks, added to the KeyTween
+as a runtime state (not saved) and played by name like one made in the editor. <a class="xref" href="KeyTweening.KeyTweenStateBuilder.html#KeyTweening_KeyTweenStateBuilder_Add">Add()</a> adds it; the Play
+methods add it and play it. Calls after that keep editing the same state.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class KeyTweenStateBuilder</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">KeyTweenStateBuilder</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="KeyTweening_KeyTweenStateBuilder_examples">Examples</h2>
+  <pre><code class="lang-csharp">anim.Build("Pop")
+    .Track(button.transform, KeyTweenProperty.Scale)
+        .Key(0f, Vector3.one)
+        .Key(0.15f, Vector3.one * 1.2f, KeyTweenEase.OutBack)
+        .Key(0.3f, Vector3.one, KeyTweenEase.InOutSine)
+    .Play();</code></pre>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_State_" data-uid="KeyTweening.KeyTweenStateBuilder.State*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_State" data-uid="KeyTweening.KeyTweenStateBuilder.State">
+  State
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The state being built.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenState State { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenState.html">KeyTweenState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Add_" data-uid="KeyTweening.KeyTweenStateBuilder.Add*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Add" data-uid="KeyTweening.KeyTweenStateBuilder.Add">
+  Add()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds the state to the KeyTween (once; a state of the same name is stopped and replaced). Returns the KeyTween.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTween Add()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTween.html">KeyTween</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Event_" data-uid="KeyTweening.KeyTweenStateBuilder.Event*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Event_System_Single_System_String_" data-uid="KeyTweening.KeyTweenStateBuilder.Event(System.Single,System.String)">
+  Event(float, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An animation event (received with EventRaised, AddListener, WaitEventAsync).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Event(float time, string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_From_" data-uid="KeyTweening.KeyTweenStateBuilder.From*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_From_KeyTweening_KeyTweenStart_" data-uid="KeyTweening.KeyTweenStateBuilder.From(KeyTweening.KeyTweenStart)">
+  From(KeyTweenStart)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Where the track starts: Key Value (its first key, the default), Current Value (the value when it plays), Pointer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder From(KeyTweenStart start)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="KeyTweening.KeyTweenStart.html">KeyTweenStart</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Key_" data-uid="KeyTweening.KeyTweenStateBuilder.Key*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Key_System_Single_System_Single_KeyTweening_KeyTweenEase_" data-uid="KeyTweening.KeyTweenStateBuilder.Key(System.Single,System.Single,KeyTweening.KeyTweenEase)">
+  Key(float, float, KeyTweenEase)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html#KeyTweening_KeyTweenStateBuilder_Key_System_Single_UnityEngine_Vector4_KeyTweening_KeyTweenEase_">Key(float, Vector4, KeyTweenEase)</a> for one-number properties (x).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Key(float time, float value, KeyTweenEase ease = KeyTweenEase.OutSine)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>ease</code> <a class="xref" href="KeyTweening.KeyTweenEase.html">KeyTweenEase</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Key_" data-uid="KeyTweening.KeyTweenStateBuilder.Key*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Key_System_Single_UnityEngine_Vector4_KeyTweening_KeyTweenEase_" data-uid="KeyTweening.KeyTweenStateBuilder.Key(System.Single,UnityEngine.Vector4,KeyTweening.KeyTweenEase)">
+  Key(float, Vector4, KeyTweenEase)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A key at <code class="paramref">time</code> seconds, arriving there with <code class="paramref">ease</code> (Vector3, Vector2 and Color convert to Vector4).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Key(float time, Vector4 value, KeyTweenEase ease = KeyTweenEase.OutSine)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector4.html">Vector4</a></dt>
+    <dd></dd>
+    <dt><code>ease</code> <a class="xref" href="KeyTweening.KeyTweenEase.html">KeyTweenEase</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_KeyCurve_" data-uid="KeyTweening.KeyTweenStateBuilder.KeyCurve*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_KeyCurve_System_Single_UnityEngine_Vector4_UnityEngine_AnimationCurve_" data-uid="KeyTweening.KeyTweenStateBuilder.KeyCurve(System.Single,UnityEngine.Vector4,UnityEngine.AnimationCurve)">
+  KeyCurve(float, Vector4, AnimationCurve)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A key arriving along <code class="paramref">curve</code> (0 = the previous key's value, 1 = this key's).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder KeyCurve(float time, Vector4 value, AnimationCurve curve)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector4.html">Vector4</a></dt>
+    <dd></dd>
+    <dt><code>curve</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/AnimationCurve.html">AnimationCurve</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_KeyPunch_" data-uid="KeyTweening.KeyTweenStateBuilder.KeyPunch*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_KeyPunch_System_Single_UnityEngine_Vector4_System_Single_System_Single_" data-uid="KeyTweening.KeyTweenStateBuilder.KeyPunch(System.Single,UnityEngine.Vector4,System.Single,System.Single)">
+  KeyPunch(float, Vector4, float, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A Punch segment ending at <code class="paramref">time</code>: shakes around the previous value by <code class="paramref">strength</code> and returns to it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder KeyPunch(float time, Vector4 strength, float frequency = 10, float damping = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>strength</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector4.html">Vector4</a></dt>
+    <dd></dd>
+    <dt><code>frequency</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>damping</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_KeyShake_" data-uid="KeyTweening.KeyTweenStateBuilder.KeyShake*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_KeyShake_System_Single_UnityEngine_Vector4_System_Single_System_Single_" data-uid="KeyTweening.KeyTweenStateBuilder.KeyShake(System.Single,UnityEngine.Vector4,System.Single,System.Single)">
+  KeyShake(float, Vector4, float, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A Shake segment ending at <code class="paramref">time</code>: like <a class="xref" href="KeyTweening.KeyTweenStateBuilder.html#KeyTweening_KeyTweenStateBuilder_KeyPunch_System_Single_UnityEngine_Vector4_System_Single_System_Single_">KeyPunch(float, Vector4, float, float)</a>, random on each axis every frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder KeyShake(float time, Vector4 strength, float frequency = 10, float damping = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>strength</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Vector4.html">Vector4</a></dt>
+    <dd></dd>
+    <dt><code>frequency</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>damping</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Loop_" data-uid="KeyTweening.KeyTweenStateBuilder.Loop*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Loop_System_Boolean_" data-uid="KeyTweening.KeyTweenStateBuilder.Loop(System.Boolean)">
+  Loop(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Plays over and over until stopped or replaced (the state's Loop).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Loop(bool loop = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>loop</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_OnCancel_" data-uid="KeyTweening.KeyTweenStateBuilder.OnCancel*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_OnCancel_UnityEngine_Events_UnityAction_" data-uid="KeyTweening.KeyTweenStateBuilder.OnCancel(UnityEngine.Events.UnityAction)">
+  OnCancel(UnityAction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The state's On Cancel (every play of it).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder OnCancel(UnityAction action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Events.UnityAction.html">UnityAction</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_OnComplete_" data-uid="KeyTweening.KeyTweenStateBuilder.OnComplete*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_OnComplete_UnityEngine_Events_UnityAction_" data-uid="KeyTweening.KeyTweenStateBuilder.OnComplete(UnityEngine.Events.UnityAction)">
+  OnComplete(UnityAction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The state's On Complete (every play of it).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder OnComplete(UnityAction action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Events.UnityAction.html">UnityAction</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_OnStart_" data-uid="KeyTweening.KeyTweenStateBuilder.OnStart*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_OnStart_UnityEngine_Events_UnityAction_" data-uid="KeyTweening.KeyTweenStateBuilder.OnStart(UnityEngine.Events.UnityAction)">
+  OnStart(UnityAction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The state's On Start (every play of it).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder OnStart(UnityAction action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Events.UnityAction.html">UnityAction</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Play_" data-uid="KeyTweening.KeyTweenStateBuilder.Play*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Play" data-uid="KeyTweening.KeyTweenStateBuilder.Play">
+  Play()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Play()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_PlayAsync_" data-uid="KeyTweening.KeyTweenStateBuilder.PlayAsync*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_PlayAsync_System_Threading_CancellationToken_" data-uid="KeyTweening.KeyTweenStateBuilder.PlayAsync(System.Threading.CancellationToken)">
+  PlayAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Awaitable PlayAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Awaitable.html">Awaitable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_PlayReversed_" data-uid="KeyTweening.KeyTweenStateBuilder.PlayReversed*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_PlayReversed" data-uid="KeyTweening.KeyTweenStateBuilder.PlayReversed">
+  PlayReversed()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void PlayReversed()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_PlayReversedAsync_" data-uid="KeyTweening.KeyTweenStateBuilder.PlayReversedAsync*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_PlayReversedAsync_System_Threading_CancellationToken_" data-uid="KeyTweening.KeyTweenStateBuilder.PlayReversedAsync(System.Threading.CancellationToken)">
+  PlayReversedAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Awaitable PlayReversedAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://docs.unity3d.com/ScriptReference/Awaitable.html">Awaitable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Sound_" data-uid="KeyTweening.KeyTweenStateBuilder.Sound*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Sound_System_Single_UnityEngine_AudioClip_System_Single_" data-uid="KeyTweening.KeyTweenStateBuilder.Sound(System.Single,UnityEngine.AudioClip,System.Single)">
+  Sound(float, AudioClip, float)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A sound, played through the KeyTween's Audio Source (or the shared 2D one).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Sound(float time, AudioClip clip, float volume = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+    <dt><code>clip</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a></dt>
+    <dd></dd>
+    <dt><code>volume</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Track_" data-uid="KeyTweening.KeyTweenStateBuilder.Track*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Track_UnityEngine_Component_KeyTweening_KeyTweenProperty_" data-uid="KeyTweening.KeyTweenStateBuilder.Track(UnityEngine.Component,KeyTweening.KeyTweenProperty)">
+  Track(Component, KeyTweenProperty)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts a track of a built-in property on <code class="paramref">target</code>; its Start is Key Value (see <a class="xref" href="KeyTweening.KeyTweenStateBuilder.html#KeyTweening_KeyTweenStateBuilder_From_KeyTweening_KeyTweenStart_">From(KeyTweenStart)</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Track(Component target, KeyTweenProperty property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>target</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.html">Component</a></dt>
+    <dd></dd>
+    <dt><code>property</code> <a class="xref" href="KeyTweening.KeyTweenProperty.html">KeyTweenProperty</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Track_" data-uid="KeyTweening.KeyTweenStateBuilder.Track*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Track_UnityEngine_Renderer_System_String_" data-uid="KeyTweening.KeyTweenStateBuilder.Track(UnityEngine.Renderer,System.String)">
+  Track(Renderer, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts a Material track: a color, number or vector property of the renderer's material.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Track(Renderer target, string shaderProperty)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>target</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Renderer.html">Renderer</a></dt>
+    <dd></dd>
+    <dt><code>shaderProperty</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_Track_" data-uid="KeyTweening.KeyTweenStateBuilder.Track*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_Track__1_UnityEngine_Component_" data-uid="KeyTweening.KeyTweenStateBuilder.Track``1(UnityEngine.Component)">
+  Track&lt;TTrack&gt;(Component)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts a custom track (<code class="typeparamref">TTrack</code>, see &quot;Custom Tracks&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenStateBuilder Track&lt;TTrack&gt;(Component target) where TTrack : KeyTweenTrackType</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>target</code> <a class="xref" href="https://docs.unity3d.com/ScriptReference/Component.html">Component</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenStateBuilder.html">KeyTweenStateBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TTrack</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="KeyTweening_KeyTweenStateBuilder_With_" data-uid="KeyTweening.KeyTweenStateBuilder.With*"></a>
+
+  <h3 id="KeyTweening_KeyTweenStateBuilder_With" data-uid="KeyTweening.KeyTweenStateBuilder.With">
+  With()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/UnialGames/KeyTween-Dev/blob/main/Assets/KeyTween/Runtime/Core/KeyTweenStateBuilder.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds the state and returns a <a class="xref" href="KeyTweening.KeyTweenPlay.html">KeyTweenPlay</a> of it, to set up a play.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KeyTweenPlay With()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="KeyTweening.KeyTweenPlay.html">KeyTweenPlay</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

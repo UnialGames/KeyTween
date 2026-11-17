@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>R3 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R3 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/r3.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r3">R3</h1>
+
+<p>R3(<code>com.cysharp.r3</code> 1.0.0 이상)를 설치하면, 재생과 애니메이션 이벤트를 Observable로 다루는 확장 메서드가 추가됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PlayAsObservable(stateName)</code></td>
+<td>구독하면 재생을 시작하고, 재생이 끝나면 <code>Unit</code> 하나를 내보낸 뒤 완료됩니다.</td>
+</tr>
+<tr>
+<td><code>EventsAsObservable()</code></td>
+<td>모든 애니메이션 이벤트를 내보냅니다.</td>
+</tr>
+<tr>
+<td><code>EventAsObservable(eventName)</code></td>
+<td>이름이 같은 이벤트만 내보냅니다.</td>
+</tr>
+<tr>
+<td><code>PlayAsObservable(stateName, time)</code>, <code>play.PlayAsObservable()</code></td>
+<td>그 시간부터 재생, <code>With</code>로 설정한 재생(<code>KeyTweenPlay</code>). 끝나는 규칙은 <code>PlayAsObservable(stateName)</code>과 같습니다.</td>
+</tr>
+<tr>
+<td><code>StateStartedAsObservable()</code>, <code>StateCompletedAsObservable()</code>, <code>StateCanceledAsObservable()</code></td>
+<td>상태가 시작하거나, 끝에 닿거나, 끝까지 못 갔을 때 그 상태 이름을 내보냅니다.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="r3-설치하기">R3 설치하기</h2>
+<p>R3는 Unity 패키지와 R3 본체 DLL이 모두 필요합니다.</p>
+<ol>
+<li><p>Package Manager에서 다음 Git 주소로 Unity 패키지를 설치합니다.</p>
+<pre><code class="lang-text">https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity
+</code></pre>
+</li>
+<li><p>NuGet에서 R3 본체 DLL을 설치합니다. NuGetForUnity 같은 도구를 쓸 수 있습니다.</p>
+</li>
+</ol>
+<h2 id="재생-끝-받기">재생 끝 받기</h2>
+<p><code>PlayAsObservable</code>은 재생이 끝나면 <code>Unit</code> 하나를 내보냅니다. 연타는 <code>ThrottleFirst</code>로 막습니다.</p>
+<pre><code class="lang-csharp">open.OnClickAsObservable().ThrottleFirst(TimeSpan.FromSeconds(0.5))
+    .SelectMany(_ =&gt; popup.PlayAsObservable(&quot;Open&quot;))
+    .Subscribe(_ =&gt; Debug.Log(&quot;열림&quot;)).AddTo(this);
+</code></pre>
+<ul>
+<li>끝나지 못하면 <code>OperationCanceledException</code>으로 완료됩니다(<a href="playing-and-awaiting.html#%EB%81%9D%EB%82%98%EB%8A%94-%EA%B2%BD%EC%9A%B0">API</a>).</li>
+<li>구독을 해제하면 재생이 그 자리에서 멈춥니다.</li>
+</ul>
+<h2 id="마지막-재생만-남기기">마지막 재생만 남기기</h2>
+<p>닫기 버튼에서는 <code>Switch</code>로 마지막 재생만 남깁니다.</p>
+<pre><code class="lang-csharp">close.OnClickAsObservable()
+    .Select(_ =&gt; popup.PlayAsObservable(&quot;Close&quot;))
+    .Switch()
+    .Subscribe().AddTo(this);
+</code></pre>
+<h2 id="이벤트-받기">이벤트 받기</h2>
+<p><code>EventAsObservable</code>은 이름이 같은 이벤트만 내보냅니다. 모든 이벤트를 받으려면 <code>EventsAsObservable</code>을 씁니다.</p>
+<pre><code class="lang-csharp">popup.EventAsObservable(&quot;Shown&quot;).Subscribe(e =&gt; Debug.Log(e.Time)).AddTo(this);
+</code></pre>
+<h2 id="with-재생과-상태-알림">With 재생과 상태 알림</h2>
+<p><code>With</code>로 설정한 재생도 구독하면 재생을 시작합니다. 구독을 해제하면 재생이 그 자리에서 멈춥니다.</p>
+<pre><code class="lang-csharp">var open = popup.With(&quot;Open&quot;).WithEase(panel, KeyTweenProperty.Scale, KeyTweenEase.OutBack);
+openButton.OnClickAsObservable().SelectMany(_ =&gt; open.PlayAsObservable()).Subscribe().AddTo(this);
+</code></pre>
+<p>어느 상태가 시작하고 끝났는지는 상태 알림으로 받습니다. 상태 이름이 값으로 옵니다.</p>
+<pre><code class="lang-csharp">popup.StateCompletedAsObservable()
+    .Where(state =&gt; state == &quot;Open&quot;)
+    .Subscribe(_ =&gt; EnableInput()).AddTo(this);
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

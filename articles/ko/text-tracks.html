@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>텍스트 트랙 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="텍스트 트랙 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/text-tracks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="텍스트-트랙">텍스트 트랙</h1>
+
+<p>텍스트 트랙은 TMP_Text의 글자를 움직입니다. 글자를 차례로 드러내거나, 숫자를 세거나, 글자마다 따로 움직이게 할 수 있습니다.</p>
+<p>이런 곳에 씁니다.</p>
+<ul>
+<li>대사창에 글자가 한 자씩 나오는 타자기: Reveal</li>
+<li>보상 화면에서 골드가 0부터 올라가는 숫자: Number</li>
+<li>제목 글자가 물결처럼 차례로 튀어 오르는 연출: 글자별 Position, Scale</li>
+</ul>
+<p>트랙 추가 창에서 TMP_Text가 있는 오브젝트의 카드를 열면 이 트랙들이 나옵니다.</p>
+<p>코드에서는 이렇게 씁니다. 숫자를 그때그때 다른 값까지 세려면 <code>With</code>로 끝 값을 줍니다. 타자기를 클릭으로 건너뛰려면 <code>Complete</code>를 부릅니다.</p>
+<pre><code class="lang-csharp">anim.With(&quot;Count&quot;).WithEndValue(goldText, KeyTweenProperty.TextNumber, gold).Play();
+anim.Complete(&quot;Type&quot;);   // 대사를 끝까지 바로 보여 줍니다
+</code></pre>
+<h2 id="reveal-typewriter">Reveal (Typewriter)</h2>
+<p>보이는 글자 수를 0~1 비율로 정합니다. 리치 텍스트 태그는 글자 수에 넣지 않습니다.</p>
+<p><strong>Scramble</strong>은 아직 나오지 않은 글자를 무작위 문자로 채웁니다. 원문의 공백은 그대로 두므로 줄바꿈 위치가 튀지 않습니다. 문자 종류는 다음 중에서 고릅니다.</p>
+<ul>
+<li>Uppercase</li>
+<li>Lowercase</li>
+<li>Numerals</li>
+<li>All</li>
+</ul>
+<h2 id="number-count">Number (Count)</h2>
+<p>텍스트 안의 <strong>첫 숫자</strong>만 세어 바꾸고, 나머지 글자는 그대로 둡니다.</p>
+<ul>
+<li>예: <code>21/100</code>, <code>Lv. 3</code></li>
+<li>정수와 천 단위 쉼표(<code>1,234</code>)를 지원합니다.</li>
+<li>Start를 Current Value로 두면 지금 보이는 숫자에서 세기 시작합니다.</li>
+</ul>
+<p>끝 숫자를 실행 중에 정하려면 코드에서 <code>With(state).WithEndValue(...)</code>로 재생합니다(다른 곳이 재생하는 상태는 <code>SetEndValue</code>). 이때 창에 있는 마지막 키 값은 미리보기용 값이 됩니다. 자세한 내용은 <a href="with.html">API</a>를 참고하세요.</p>
+<h2 id="글자별-트랙">글자별 트랙</h2>
+<p>Char Scale, Char Position, Char Rotation, Char Color, Char Alpha가 글자별 트랙입니다. 글자별 트랙의 키는 <strong>글자 하나의 움직임</strong>을 나타냅니다.</p>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stagger (s)</strong></td>
+<td>i번째 글자가 i × stagger초 늦게 시작합니다</td>
+</tr>
+<tr>
+<td><strong>Duration per Char (s)</strong></td>
+<td>0보다 크면 i번째 글자가 자기 키 전체를 i × 이 값(초) 동안 재생합니다</td>
+</tr>
+</tbody>
+</table>
+<p>타임라인에서 마지막 키 뒤에 이어지는 연한 꼬리가 뒤쪽 글자들이 재생되는 구간입니다. 꼬리 끝을 끌면 Stagger가 바뀝니다.</p>
+<p><img src="../../media/editor/editor-text-chars.png" alt="Title의 Intro 상태. Reveal 트랙과 Char Position 트랙이 있고, Char Position의 마지막 키 뒤로 연한 꼬리가 이어집니다. 트랙 인스펙터에 Stagger 0.05와 Duration per Char가 보입니다."></p>
+<h2 id="글자별-트랙-합치기">글자별 트랙 합치기</h2>
+<p>같은 텍스트에 글자별 트랙이 여러 개 있으면 결과가 합쳐집니다.</p>
+<table>
+<thead>
+<tr>
+<th>속성</th>
+<th>합치는 방식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>크기</td>
+<td>곱합니다</td>
+</tr>
+<tr>
+<td>위치, 회전</td>
+<td>더합니다</td>
+</tr>
+<tr>
+<td>색, 알파</td>
+<td>덮어씁니다</td>
+</tr>
+</tbody>
+</table>
+<h2 id="텍스트를-바꾼-뒤-재생하기">텍스트를 바꾼 뒤 재생하기</h2>
+<p>텍스트 트랙이 있는 상태는 재생할 때 글자 수를 새로 읽습니다. 그래서 text를 바꾼 뒤 재생하면 길이와 간격이 새 텍스트를 기준으로 정해집니다.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

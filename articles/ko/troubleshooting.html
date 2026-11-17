@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>문제 해결 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="문제 해결 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/troubleshooting.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="문제-해결">문제 해결</h1>
+
+<h2 id="재생했는데-아무-일도-일어나지-않습니다">재생했는데 아무 일도 일어나지 않습니다</h2>
+<ul>
+<li><strong>콘솔에 경고가 있는지 봅니다.</strong> 상태 이름이 틀리면 <code>has no state</code> 경고가 남습니다.</li>
+<li><strong>Time 설정을 봅니다.</strong> <code>Time.timeScale</code>이 0이면 Time이 <code>Scaled</code>인 KeyTween은 멈춰 있습니다.</li>
+<li><strong>트랙의 대상을 봅니다.</strong> 대상 오브젝트가 지워졌거나 비어 있는 트랙은 아무것도 쓰지 않습니다.</li>
+<li><strong>다른 상태를 봅니다.</strong> 나중에 재생한 상태가 같은 속성을 가져갑니다. 자세한 내용은 <a href="overlapping-states.html">여러 상태가 겹칠 때</a>를 참고하세요.</li>
+<li><strong>레이아웃 그룹을 봅니다.</strong> Layout Group 안의 오브젝트는 위치와 크기를 레이아웃이 다시 정합니다. 그 안에 자식을 하나 두고 그 자식을 움직이거나, Scale 트랙을 씁니다.</li>
+</ul>
+<h2 id="에디터-미리보기는-되는데-play-모드에서-재생되지-않습니다">에디터 미리보기는 되는데 Play 모드에서 재생되지 않습니다</h2>
+<ul>
+<li>상태에 Play On이 없으면 코드에서 재생해야 합니다.</li>
+<li>포인터로 재생하는 상태는 씬에 EventSystem이 있고, 그 오브젝트의 그래픽에 Raycast Target이 켜져 있어야 합니다.</li>
+<li>같은 오브젝트의 Selectable(Button 등)이 <code>interactable</code>이 아니면 입력으로 재생하는 Play On은 무시됩니다.</li>
+</ul>
+<h2 id="playasync가-operationcanceledexception을-던집니다"><code>PlayAsync</code>가 <code>OperationCanceledException</code>을 던집니다</h2>
+<p>재생이 끝까지 가지 못했다는 뜻입니다. 같은 상태를 다시 재생했거나, 다른 상태가 속성을 모두 가져갔거나, 오브젝트가 꺼졌거나, <code>Stop</code>을 불렀을 때입니다. 전체 경우는 <a href="playing-and-awaiting.html#%EB%81%9D%EB%82%98%EB%8A%94-%EA%B2%BD%EC%9A%B0">끝나는 경우</a>에 있습니다.</p>
+<ul>
+<li>끝까지 갔을 때만 다음 코드를 실행하려는 것이라면 정상 동작입니다. <code>try</code> / <code>catch (OperationCanceledException)</code>로 받습니다.</li>
+<li>앞 상태를 끝 모습으로 마무리하고 넘어가려면 다음 상태를 재생하기 전에 <code>Complete</code>를 부릅니다.</li>
+</ul>
+<h2 id="연출이-중간에-끊기면-값이-튑니다">연출이 중간에 끊기면 값이 튑니다</h2>
+<p>그 트랙의 <strong>Start</strong>가 <code>Key Value</code>이면 재생할 때마다 첫 키의 값에서 시작합니다. 포인터로 끊길 수 있는 연출(호버, 누르기)은 Start를 <code>Current Value</code>로 둡니다. 그러면 지금 값에서 이어집니다.</p>
+<h2 id="많은-오브젝트를-한꺼번에-재생하면-그-프레임이-끊깁니다">많은 오브젝트를 한꺼번에 재생하면 그 프레임이 끊깁니다</h2>
+<p>재생을 시작할 때 드는 비용이 있습니다. 수천 개를 같은 프레임에 시작한다면 몇 프레임에 나눠 시작합니다. 수치는 <a href="performance.html">성능</a>에 있습니다.</p>
+<h2 id="커스텀-트랙이-missing으로-나오거나-빌드에서-움직이지-않습니다">커스텀 트랙이 <code>(missing)</code>으로 나오거나 빌드에서 움직이지 않습니다</h2>
+<p>커스텀 트랙은 저장된 클래스 이름으로 찾습니다.</p>
+<ul>
+<li>클래스의 이름, 네임스페이스, 어셈블리를 바꾸면 예전 트랙이 클래스를 찾지 못합니다.</li>
+<li>빌드에서 코드가 제거되는 설정(IL2CPP, Managed Stripping Level이 Minimal보다 높음)이면 클래스에 <code>[Preserve]</code>를 붙입니다.</li>
+</ul>
+<h2 id="prefab-모드에서-고친-내용이-실행-중인-화면에-보이지-않습니다">Prefab 모드에서 고친 내용이 실행 중인 화면에 보이지 않습니다</h2>
+<p>이미 만들어진 실행 중 복사본에는 반영되지 않고, 새로 만들어지는 것부터 반영됩니다. Play 모드에서 그 복사본을 골라 직접 고치면 바로 보이고 Prefab에도 저장됩니다.</p>
+<h2 id="sample이-폐기되었다는-경고가-나옵니다"><code>Sample</code>이 폐기되었다는 경고가 나옵니다</h2>
+<p><code>Stop(state, time)</code>으로 바꿉니다. 하는 일은 같습니다.</p>
+<h2 id="에이전트의-쓰기가-stale-token으로-거부됩니다">에이전트의 쓰기가 <code>Stale token</code>으로 거부됩니다</h2>
+<p>읽은 뒤에 데이터가 바뀌었다는 뜻입니다. 다시 읽고, 그 문서에서 다시 고쳐서 씁니다. 자세한 내용은 <a href="agents.html#%EC%95%88%EC%A0%84-%EC%9E%A5%EC%B9%98">AI 에이전트로 만들기</a>를 참고하세요.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

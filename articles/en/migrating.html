@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Coming from Other Tools | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Coming from Other Tools | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/migrating.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="coming-from-other-tools">Coming from Other Tools</h1>
+
+<p>There is no converter. You make the animation again in the KeyTween window. Move one screen or prefab at a time; the old tool can stay in use meanwhile.</p>
+<h2 id="from-dotween-or-litmotion">From DOTween or LitMotion</h2>
+<table>
+<thead>
+<tr>
+<th>Code tween</th>
+<th>KeyTween</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One tween, one sequence</td>
+<td>One state</td>
+</tr>
+<tr>
+<td><code>DOScale</code>, <code>DOColor</code>, <code>BindToLocalScale</code> …</td>
+<td>A track of that property and its keys</td>
+</tr>
+<tr>
+<td><code>SetEase</code>, <code>WithEase</code></td>
+<td>The key's Arrival (Ease)</td>
+</tr>
+<tr>
+<td>A sequence's <code>Append</code>, <code>Insert</code>, <code>SetDelay</code></td>
+<td>The times of the keys. Several tracks share one timeline</td>
+</tr>
+<tr>
+<td><code>SetLoops(-1)</code>, <code>WithLoops(-1)</code></td>
+<td>The state's Loop</td>
+</tr>
+<tr>
+<td>Starting from the current value</td>
+<td>The track's Start = <code>Current Value</code></td>
+</tr>
+<tr>
+<td><code>From</code></td>
+<td>The track's Start = <code>Key Value</code></td>
+</tr>
+<tr>
+<td><code>DOPunch…</code>, <code>DOShake…</code>, <code>LMotion.Punch</code>, <code>LMotion.Shake</code></td>
+<td>The key's Arrival = Punch / Shake</td>
+</tr>
+<tr>
+<td>Revealing text character by character</td>
+<td>A Reveal (Typewriter) track</td>
+</tr>
+<tr>
+<td>Counting a number</td>
+<td>A Number (Count) track; the end value with <code>With(...).WithEndValue(...)</code></td>
+</tr>
+<tr>
+<td><code>OnComplete</code></td>
+<td><code>await anim.PlayAsync(...)</code>, the state's On Complete, <code>WithOnComplete</code></td>
+</tr>
+<tr>
+<td><code>Kill</code>, <code>Cancel</code></td>
+<td><code>Stop</code></td>
+</tr>
+<tr>
+<td><code>Complete</code></td>
+<td><code>Complete</code></td>
+</tr>
+<tr>
+<td><code>Goto</code>, <code>handle.Time</code></td>
+<td><code>Play(state, time)</code>, <code>Stop(state, time)</code></td>
+</tr>
+<tr>
+<td><code>SetUpdate(true)</code> (ignores pausing)</td>
+<td>The KeyTween's Time = <code>Unscaled</code></td>
+</tr>
+</tbody>
+</table>
+<p>Animations you would rather keep making in code can be made with <code>Build(...)</code>. The point of KeyTween is keeping the animation in the editor, though, so passing only the values known at runtime with <code>With</code> is the recommended split.</p>
+<h2 id="from-animator">From Animator</h2>
+<table>
+<thead>
+<tr>
+<th>Animator</th>
+<th>KeyTween</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A clip</td>
+<td>A state</td>
+</tr>
+<tr>
+<td>The controller's states and transitions, <code>SetTrigger</code></td>
+<td><code>Play(&quot;name&quot;)</code> in code, or Play On</td>
+</tr>
+<tr>
+<td>The clip's Loop Time</td>
+<td>The state's Loop</td>
+</tr>
+<tr>
+<td>Animation Event</td>
+<td>An event track</td>
+</tr>
+<tr>
+<td>Override Controller</td>
+<td>Overriding a child state's tracks</td>
+</tr>
+<tr>
+<td>Update Mode = Unscaled Time</td>
+<td>The KeyTween's Time = <code>Unscaled</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>There is no transition graph. Code or Play On decides which state plays when.</li>
+<li>A clip's keys cannot be imported. With <a href="recording.html">recording</a>, changing values in the Scene view and the Inspector is enough to make keys.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

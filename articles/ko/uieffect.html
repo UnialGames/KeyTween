@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>UIEffect | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="UIEffect | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/uieffect.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="uieffect">UIEffect</h1>
+
+<p>UIEffect(<code>com.coffee.ui-effect</code> 5.x)를 설치하면, UIEffect가 붙은 오브젝트의 트랙 추가 창에 <strong>UIEffect 트랙 14종</strong>이 나옵니다. 트랙 이름은 <code>UIEffect · …</code> 형식이며, UIEffect가 제공하는 Timeline 트랙과 같은 목록입니다.</p>
+<h2 id="추가되는-트랙">추가되는 트랙</h2>
+<table>
+<thead>
+<tr>
+<th>트랙</th>
+<th>범위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tone Intensity, Color Intensity, Sampling Intensity, Transition Rate(디졸브 등), Edge Shiny Rate, Gradation Intensity, Detail Intensity</td>
+<td>0 ~ 1</td>
+</tr>
+<tr>
+<td>Gradation Offset</td>
+<td>−1 ~ 1</td>
+</tr>
+<tr>
+<td>Gradation Rotation</td>
+<td>0 ~ 360</td>
+</tr>
+<tr>
+<td>Gradation Scale</td>
+<td>0.01 ~ 10</td>
+</tr>
+<tr>
+<td>Color, Transition Color, Edge Color, Detail Color</td>
+<td>색</td>
+</tr>
+</tbody>
+</table>
+<h2 id="트랙-편집하기">트랙 편집하기</h2>
+<p>다른 트랙과 똑같이 다음 기능을 모두 쓸 수 있습니다.</p>
+<ul>
+<li>키</li>
+<li>이징</li>
+<li>Start(Current 등)</li>
+<li>미리보기</li>
+<li>역재생</li>
+<li>반복</li>
+</ul>
+<p>숫자 트랙은 범위에 맞는 슬라이더로, 색 트랙은 색 칸으로 편집합니다.</p>
+<h2 id="uieffect를-제거하면">UIEffect를 제거하면</h2>
+<p>UIEffect를 제거하면 이 트랙들은 목록에 나오지 않습니다. 이미 저장된 트랙은 아무 동작도 하지 않으며, 오류도 나지 않습니다.</p>
+<h2 id="연동-구조">연동 구조</h2>
+<p>코어 어셈블리는 UIEffect를 참조하지 않습니다.</p>
+<ul>
+<li><code>KeyTweenProperty</code>에는 속성 이름만 있습니다.</li>
+<li>읽기와 쓰기, 범위는 연동 어셈블리가 <code>KeyTweenExternalProperties.Register</code>로 등록합니다.</li>
+</ul>
+<p>다른 라이브러리도 같은 방식으로 연동할 수 있습니다. 자세한 내용은 Design을 참고하세요.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

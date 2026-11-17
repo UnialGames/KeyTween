@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>녹화 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="녹화 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/recording.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="녹화">녹화</h1>
+
+<p>녹화를 켜면 Scene 뷰나 Inspector에서 오브젝트를 바꾸는 것만으로 키를 만들 수 있습니다. Unity Animation 창의 녹화와 같은 방식입니다.</p>
+<h2 id="녹화하기">녹화하기</h2>
+<ol>
+<li>상단 바의 <strong>●</strong> 버튼을 켭니다. 버튼이 빨갛게 바뀝니다.</li>
+<li>재생 막대를 원하는 시간에 둡니다.</li>
+<li>Scene 뷰나 Inspector에서 오브젝트를 바꿉니다. 그 값이 키가 됩니다.</li>
+</ol>
+<p>오브젝트 자체는 바꾸기 전 값으로 돌아가고, 화면에는 미리보기로 새 키가 반영된 모습이 보입니다. 변경 한 번이 Undo 한 번입니다.</p>
+<p><img src="../../media/editor/editor-record.png" alt="녹화 중인 KeyTween 창. 상단 바의 ● 버튼이 빨갛고, 재생 막대가 있는 0.1초에 Scale 키가 생겼습니다. 키 인스펙터에 Time 0.1, Value 1.04가 보입니다."></p>
+<h2 id="녹화로-키가-생기는-방식">녹화로 키가 생기는 방식</h2>
+<table>
+<thead>
+<tr>
+<th>경우</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>트랙이 있는 속성</td>
+<td>재생 막대 위치에 키를 넣습니다. 그 시간에 이미 키가 있으면 값만 바꿉니다</td>
+</tr>
+<tr>
+<td>트랙이 없는 속성</td>
+<td>트랙을 새로 만들고, 0초 키(바꾸기 전 값)와 재생 막대 위치의 키(바꾼 값)를 넣습니다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Relative To Rest나 Size Relative 트랙에는 그 기준에 맞춘 값을 넣습니다.</li>
+<li>0초에서 녹화하면 첫 키가 그 값을 쓰도록 Start가 Key Value로 바뀝니다.</li>
+</ul>
+<h2 id="녹화되는-속성">녹화되는 속성</h2>
+<p>바꾼 필드는 그 값을 쓰는 트랙으로 녹화됩니다. 아래 &quot;녹화되지 않는 것&quot;을 뺀 트랙은 모두 녹화됩니다(Transform, UI, TextMeshPro, SpriteRenderer, Light, Camera, AudioSource, UIEffect).</p>
+<ul>
+<li>상태에 그 값을 쓰는 트랙이 이미 있으면 그 트랙에 키가 들어갑니다. 예를 들어 World Position 트랙이 있으면 오브젝트를 옮긴 것이 World Position으로, Offset Min 트랙이 있으면 Position·Size를 바꾼 것이 Offset Min으로, Scroll Position 트랙이 있으면 Content를 움직인 것이 Scroll Position으로 녹화됩니다.</li>
+<li>그런 트랙이 없으면 그 필드의 기본 트랙이 새로 생깁니다. 위치는 Position, 색은 Color 트랙입니다.</li>
+<li>Color에서 알파만 바꿨고 같은 Graphic에 Alpha 트랙만 있으면(Color 트랙은 없으면) Alpha로 녹화됩니다. Alpha 트랙만 있을 때 R·G·B를 바꾸면 Color 트랙이 생깁니다.</li>
+<li>Number 트랙이 있으면 텍스트 속 숫자를 바꾼 것이 Number로 녹화됩니다. 텍스트를 바꿔도 Number 트랙이 새로 생기지는 않습니다.</li>
+</ul>
+<h2 id="녹화되지-않는-것">녹화되지 않는 것</h2>
+<ul>
+<li>재질 값: Material 트랙과 TextMeshPro의 Outline Width, Outline Color, Face Dilate, Underlay Color. 재질 에셋을 바꾸는 것이라 오브젝트의 필드가 바뀌지 않습니다.</li>
+<li>Reveal과 글자별 트랙</li>
+<li>직렬화 필드를 알려 주지 않은 커스텀 트랙. 자세한 내용은 <a href="custom-tracks.html">커스텀 트랙 만들기</a>를 참고하세요.</li>
+<li>Start가 Pointer인 트랙</li>
+<li>창에서 편집 중인 <code>KeyTween</code> 밖의 오브젝트</li>
+</ul>
+<h2 id="녹화한-키-저장하기">녹화한 키 저장하기</h2>
+<p>녹화한 키도 Auto Save와 Save로 저장됩니다. Play 중에도 녹화할 수 있으며, 실행 중 복사본에서 녹화한 키는 원본 Prefab에 남습니다.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

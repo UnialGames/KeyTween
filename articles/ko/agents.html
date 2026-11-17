@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>AI 에이전트로 만들기 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="AI 에이전트로 만들기 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/agents.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="ai-에이전트로-만들기">AI 에이전트로 만들기</h1>
+
+<p>Claude Code, Cursor, Codex 같은 코딩 에이전트에게 연출을 말로 맡길 수 있습니다. 에이전트가 만든 결과는 사람이 만든 것과 같은 상태, 트랙, 키입니다. 그래서 KeyTween 창에서 그대로 열어 키를 끌고, 이징을 바꾸고, 미리 보며 이어서 고칩니다.</p>
+<p>KeyTween에는 AI 모델이 들어 있지 않습니다. 에이전트가 애니메이션 데이터를 읽고 쓰는 명령과, 그 형식을 설명하는 계약 문서를 제공합니다. 어떤 에이전트를 쓸지는 사용자가 고릅니다.</p>
+<h2 id="준비하기">준비하기</h2>
+<p>필요한 것은 Unity 6과 Unity CLI 패키지(<code>com.unity.pipeline</code>)입니다. Unity CLI가 없어도 KeyTween은 그대로 동작하고, 명령만 빠집니다.</p>
+<ol>
+<li><strong>Unity CLI 패키지를 설치합니다.</strong> 프로젝트 폴더에서 <code>unity pipeline install</code>을 실행합니다. Unity Hub에서 새 프로젝트를 만들 때 <strong>Unity CLI 사용</strong>을 체크했다면 이미 들어 있으므로 건너뜁니다. 설치되면 KeyTween의 명령이 자동으로 컴파일됩니다.</li>
+<li><strong>Tools &gt; KeyTween &gt; Set Up Agent Access</strong>를 고릅니다. 프로젝트 폴더의 <code>AGENTS.md</code>와 <code>CLAUDE.md</code>에 KeyTween 구역이 들어가고, 에이전트는 거기서 명령과 계약 문서를 읽는 방법을 알게 됩니다.
+<ul>
+<li>다시 골라도 구역은 하나만 남습니다.</li>
+<li>패키지를 업데이트한 뒤에는 한 번 더 골라 계약 문서의 파일 경로를 새로 적습니다. 명령 <code>keytween_contract</code>는 업데이트와 상관없이 동작합니다.</li>
+</ul>
+</li>
+<li><strong>Unity 에디터를 연 채로 에이전트에게 요청합니다.</strong></li>
+</ol>
+<pre><code class="lang-text">Assets/UI/Popup.prefab에 열릴 때 살짝 작은 크기에서 커지며 나타나는 Open과,
+조금 작아지며 사라지는 Close를 만들어 줘. Close는 Open보다 짧게. 내 코드에서 재생할 거야.
+</code></pre>
+<p>MCP 클라이언트에서 쓰려면 <code>unity mcp configure &lt;클라이언트&gt;</code>로 Unity CLI를 MCP 서버로 등록합니다. 지원하는 클라이언트는 <code>unity mcp configure --list</code>로 봅니다.</p>
+<h2 id="만들어지는-것">만들어지는 것</h2>
+<p>에이전트는 Prefab을 읽고(<code>keytween_read</code>), 만든 상태를 써 넣습니다(<code>keytween_write_prefab</code>). 아래는 위 요청을 받은 에이전트가 만든 <code>Open</code> 상태를 KeyTween 창에서 연 모습입니다. 팝업의 Scale과, 팝업 전체를 페이드하는 Group Alpha 트랙이 들어 있고, 끝 키를 고르면 값과 이징을 바로 바꿀 수 있습니다. 팝업에 <code>CanvasGroup</code>이 없어서 쓰기 명령이 붙였습니다.</p>
+<p><img src="../../media/agents/agent-popup.png" alt="에이전트가 만든 팝업의 Open 상태를 KeyTween 창에서 연 모습. Scale 트랙과 Group Alpha 트랙이 하나씩 있고, 오른쪽 키 인스펙터에 Out Back 이징이 보입니다."></p>
+<ul>
+<li>상태는 Prefab 안에 저장됩니다. 에디터에서 만든 상태와 구별되지 않습니다.</li>
+<li>코드에서는 이름으로 재생합니다: <code>await popup.PlayAsync(&quot;Open&quot;)</code></li>
+<li>마음에 들지 않는 부분은 KeyTween 창에서 고치거나, 에이전트에게 다시 요청합니다. 에이전트는 다시 읽고 그 위에서 고칩니다.</li>
+<li>KeyTween 창은 <strong>Window &gt; KeyTween Editor</strong>로 엽니다. Prefab을 열거나 씬에서 그 오브젝트를 고르면 상태가 나옵니다.</li>
+</ul>
+<h2 id="명령">명령</h2>
+<p>읽기와 두 가지 쓰기가 따로 있어서, 읽기만 허용하거나 씬 수정만 허용할 수 있습니다.</p>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>바꾸는 것</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keytween_contract</code></td>
+<td>없음</td>
+<td>계약 문서(형식과 규칙)를 설치된 버전 그대로 돌려줍니다. 에이전트가 처음 쓰기 전에 읽습니다.</td>
+</tr>
+<tr>
+<td><code>keytween_read</code></td>
+<td>없음</td>
+<td>대상의 상태(트랙, 키, Play On)와, 움직일 수 있는 오브젝트·트랙 목록을 JSON 문서로 돌려줍니다. 대상을 주지 않으면 열린 씬과 Prefab 모드의 KeyTween 목록을 돌려줍니다.</td>
+</tr>
+<tr>
+<td><code>keytween_write_scene</code></td>
+<td>열린 씬의 오브젝트</td>
+<td>메모리에서만 바꿉니다. 씬은 저장되지 않은 상태로 표시되고, 이 명령은 씬을 저장하지 않습니다.</td>
+</tr>
+<tr>
+<td><code>keytween_write_prefab</code></td>
+<td>Prefab 애셋</td>
+<td>그 Prefab의 모든 인스턴스에 적용되고 저장됩니다. Prefab 모드에 열려 있으면 열린 오브젝트를 바꾸고, 저장은 KeyTween 창의 Auto Save 또는 Save를 따릅니다.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-text">unity --json command keytween_read --target Assets/UI/Button.prefab
+unity --json command keytween_write_prefab --file Temp/hover.json --dry_run true
+unity --json command keytween_write_prefab --file Temp/hover.json
+</code></pre>
+<p><code>--json</code>을 붙이면 결과가 JSON으로 나오고, 읽은 문서는 그 안의 <code>data.result</code>에 있습니다. 붙이지 않으면 표 형식으로 나와 줄바꿈이 사라집니다.</p>
+<p>대상은 <code>KeyTween</code>이 있는(또는 붙일) 오브젝트입니다. Prefab 애셋은 <code>Assets/UI/Button.prefab</code>, 그 안의 오브젝트는 <code>Assets/UI/Popup.prefab:Panel/OkButton</code>, 열린 씬의 오브젝트는 <code>/Canvas/Button</code>으로 적습니다.</p>
+<h2 id="안전-장치">안전 장치</h2>
+<p>사람과 에이전트가 같은 데이터를 고치므로, 서로의 작업을 덮어쓰지 않게 합니다.</p>
+<ul>
+<li><strong>읽은 뒤에 바뀌었으면 거부합니다.</strong> 읽기는 토큰을 돌려주고, 쓰기는 그 토큰을 함께 보냅니다. 그 사이에 사람이 고쳤거나 다른 쓰기가 있었으면 쓰기를 거부하므로, 에이전트는 다시 읽고 그 문서에서 다시 고칩니다.</li>
+<li><strong>전부 적용하거나 전혀 적용하지 않습니다.</strong> 없는 경로, 없는 트랙, 개수가 틀린 값, 없는 이징 이름을 한 번에 모두 알려 주고 아무것도 바꾸지 않습니다. 트랙 자체가 틀렸으면 그 트랙의 키는 검사하지 않습니다.</li>
+<li><strong>Ctrl+Z 한 번으로 되돌립니다.</strong> 컴포넌트 추가와 Play On 설정까지 하나의 Undo 단계입니다.</li>
+<li><strong>확인만 할 수 있습니다.</strong> <code>--dry_run true</code>는 문서를 검사하고 무엇이 바뀔지만 알려 줍니다.</li>
+<li><strong>Play 모드에서는 쓰지 않습니다.</strong> 열려 있지 않은 씬을 대신 열지도 않습니다.</li>
+</ul>
+<h2 id="할-수-있는-것과-없는-것">할 수 있는 것과 없는 것</h2>
+<ul>
+<li>쓸 수 있는 것: 상태 만들기·바꾸기·지우기, 반복, Play On, 트랙(내장, Material, 커스텀), 키와 도착 방식, 애니메이션 이벤트</li>
+<li>그대로 남기는 것: 사운드, 자식 호출, 콜백. 상태를 바꿔 써도 지워지지 않습니다.</li>
+<li>지원하지 않는 것: 오버라이드, 상태 이름 바꾸기</li>
+<li>명령이 추가하는 컴포넌트는 <code>KeyTween</code>, Play On용 <code>KeyTweenTrigger</code>, 묶음 페이드용 <code>CanvasGroup</code> 셋뿐입니다. <code>CanvasGroup</code>은 <code>CanvasGroupAlpha</code> 트랙이 움직이는 UI 오브젝트에 없을 때만 붙고, 같은 Undo 단계에 들어갑니다. 그래서 팝업 전체의 페이드가 트랙 하나로 만들어집니다(<a href="adding-tracks.html#%EC%97%AC%EB%9F%AC-%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8%EB%A5%BC-%ED%95%A8%EA%BB%98-%ED%8E%98%EC%9D%B4%EB%93%9C%ED%95%98%EA%B8%B0-canvasgroup">여러 오브젝트를 함께 페이드하기</a>).</li>
+</ul>
+<p>형식과 규칙은 패키지의 <code>Editor/Agent/KEYTWEEN-CONTRACT.md</code>에 있고, <code>unity --json command keytween_contract</code>로도 읽습니다. 필드 이름을 잘못 적으면 그 필드는 무시되고 기본값이 쓰이므로, 에이전트에게는 <code>--dry_run true</code>로 먼저 확인하게 하는 편이 안전합니다.</p>
+<h2 id="다른-경로에서-부르기">다른 경로에서 부르기</h2>
+<p>명령은 <code>KeyTweenAgent</code>의 공개 메서드를 감싼 것입니다. Unity CLI를 쓰지 않는 도구는 에디터 코드에서 직접 부를 수 있습니다.</p>
+<pre><code class="lang-csharp">using KeyTweening.Editor;
+
+string contract = KeyTweenAgent.ContractText();
+KeyTweenAgentDocument doc = KeyTweenAgent.Read(&quot;Assets/UI/Button.prefab&quot;);
+KeyTweenAgentResult result = KeyTweenAgent.Write(json, KeyTweenAgentScope.Prefab, dryRun: true);
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

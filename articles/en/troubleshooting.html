@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Troubleshooting | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Troubleshooting | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/troubleshooting.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="troubleshooting">Troubleshooting</h1>
+
+<h2 id="i-played-a-state-and-nothing-happens">I played a state and nothing happens</h2>
+<ul>
+<li><strong>Look for a warning in the Console.</strong> A wrong state name logs <code>has no state</code>.</li>
+<li><strong>Check Time.</strong> With <code>Time.timeScale</code> at 0, a KeyTween whose Time is <code>Scaled</code> stands still.</li>
+<li><strong>Check the tracks' objects.</strong> A track whose object was deleted or is empty writes nothing.</li>
+<li><strong>Check the other states.</strong> A state played later takes the properties it animates. See <a href="overlapping-states.html">When States Overlap</a>.</li>
+<li><strong>Check for a Layout Group.</strong> The layout sets the position and size of objects inside a Layout Group. Put a child inside and animate that child, or use a Scale track.</li>
+</ul>
+<h2 id="the-editor-preview-works-but-it-does-not-play-in-play-mode">The editor preview works but it does not play in Play mode</h2>
+<ul>
+<li>A state without a Play On has to be played from code.</li>
+<li>A state played by the pointer needs an EventSystem in the scene and Raycast Target enabled on the object's graphic.</li>
+<li>If a Selectable on the same object (a Button …) is not <code>interactable</code>, Play On moments that come from input are ignored.</li>
+</ul>
+<h2 id="playasync-throws-operationcanceledexception"><code>PlayAsync</code> throws <code>OperationCanceledException</code></h2>
+<p>The play did not reach its end: the same state was played again, another state took all of its properties, the object was disabled, or <code>Stop</code> was called. Every case is in <a href="playing-and-awaiting.html#how-a-play-ends">How a Play Ends</a>.</p>
+<ul>
+<li>If the code after the <code>await</code> should run only when the state really finished, this is the intended behavior. Catch it with <code>try</code> / <code>catch (OperationCanceledException)</code>.</li>
+<li>To bring the earlier state to its end pose first, call <code>Complete</code> on it before playing the next one.</li>
+</ul>
+<h2 id="the-value-jumps-when-an-animation-is-interrupted">The value jumps when an animation is interrupted</h2>
+<p>If the track's <strong>Start</strong> is <code>Key Value</code>, every play starts from the first key's value. For animations the pointer can interrupt (hover, press), set Start to <code>Current Value</code>, and the track carries on from where the property is.</p>
+<h2 id="playing-many-objects-at-once-makes-that-frame-slow">Playing many objects at once makes that frame slow</h2>
+<p>Starting a play has a cost. If thousands start in the same frame, spread them over a few frames. The numbers are in <a href="performance.html">Performance</a>.</p>
+<h2 id="a-custom-track-shows-missing-or-does-not-move-in-a-build">A custom track shows <code>(missing)</code>, or does not move in a build</h2>
+<p>A custom track is found by its saved class name.</p>
+<ul>
+<li>Renaming the class, its namespace or its assembly makes existing tracks lose it.</li>
+<li>If the build strips code (IL2CPP with Managed Stripping Level above Minimal), put <code>[Preserve]</code> on the class.</li>
+</ul>
+<h2 id="edits-made-in-prefab-mode-do-not-show-on-the-running-screen">Edits made in Prefab Mode do not show on the running screen</h2>
+<p>Running copies that already exist do not get them; copies made afterwards do. Selecting the running copy in Play mode and editing it shows at once, and is saved to the prefab too.</p>
+<h2 id="a-warning-says-sample-is-obsolete">A warning says <code>Sample</code> is obsolete</h2>
+<p>Use <code>Stop(state, time)</code>. It does the same.</p>
+<h2 id="an-agents-write-is-refused-as-stale-token">An agent's write is refused as <code>Stale token</code></h2>
+<p>The data changed after it was read. Read again, redo the change on that document, and write. See <a href="agents.html#safeguards">Creating with AI Agents</a>.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

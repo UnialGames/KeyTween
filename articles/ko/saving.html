@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>저장 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="저장 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/saving.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="저장">저장</h1>
+
+<p>KeyTween 창에서 고친 내용은 그 <code>KeyTween</code>이 있는 곳에 저장됩니다. 어디에 저장되는지는 <strong>Auto Save</strong>와 <strong>Save</strong>의 툴팁에 나옵니다.</p>
+<h2 id="auto-save와-save">Auto Save와 Save</h2>
+<table>
+<thead>
+<tr>
+<th>컨트롤</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Auto Save</strong></td>
+<td>자동으로 저장합니다. 기본으로 켜져 있습니다</td>
+</tr>
+<tr>
+<td><strong>Save</strong></td>
+<td>누를 때 저장합니다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>창에 포커스가 있을 때 Ctrl+S(Mac은 Cmd+S)를 누르면 Save와 같습니다.</li>
+<li>Auto Save는 마지막으로 고친 뒤 0.4초가 지나면 저장합니다. 값을 끄는 동안 매 프레임 저장하지 않기 위해서입니다.</li>
+<li>Auto Save는 Play를 끝낼 때 남아 있는 수정도 저장합니다. Ctrl+Z로 되돌린 내용도 같은 방식으로 저장됩니다.</li>
+<li>Auto Save를 끄면 Save를 눌러야 저장됩니다.</li>
+</ul>
+<h2 id="저장되는-곳">저장되는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>편집하는 것</th>
+<th>저장되는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prefab 모드의 오브젝트</td>
+<td>그 Prefab</td>
+</tr>
+<tr>
+<td>Project 창에서 고른 Prefab 원본</td>
+<td>그 Prefab</td>
+</tr>
+<tr>
+<td>씬 오브젝트 (편집 모드)</td>
+<td>씬 (Unity의 씬 저장으로 저장)</td>
+</tr>
+<tr>
+<td>Play 중, 실행 중에 만든 Prefab 복사본</td>
+<td>원본 Prefab</td>
+</tr>
+<tr>
+<td>Play 중, 씬에 놓여 있던 오브젝트</td>
+<td>그 씬 오브젝트 (Play가 끝날 때 반영)</td>
+</tr>
+</tbody>
+</table>
+<p>편집 모드에서 씬 오브젝트를 고치면 두 컨트롤이 꺼지고, 그 이유가 툴팁에 나옵니다. 고친 값은 오브젝트에 바로 들어가며, Unity의 씬 저장(Ctrl+S)으로 저장됩니다.</p>
+<h2 id="play-중에-저장하기">Play 중에 저장하기</h2>
+<ul>
+<li>실행 중에 만든 Prefab 복사본은 화면이나 목록 아이템 같은 것입니다. 같은 Prefab에서 나온 다른 실행 중 복사본도 곧바로 같은 값이 됩니다.</li>
+<li>씬에 놓여 있던 오브젝트의 변경은 Unity가 원래 버립니다. KeyTween은 Play가 끝날 때 그 변경을 씬 오브젝트에 반영하며, 씬 파일은 씬을 저장할 때 써집니다.</li>
+<li>Play 중에 Auto Save를 끈 채 Save하지 않은 수정은 Play가 끝나면 사라집니다.</li>
+<li>Play 중에 중첩 Prefab의 안쪽 부분을 고치면 바깥 Prefab에 오버라이드로 저장되고, 안쪽 Prefab은 그대로입니다.</li>
+<li>한 번도 저장하지 않은 씬(Untitled)의 오브젝트는 Play가 끝난 뒤 다시 찾을 수 없으므로, 고친 내용이 반영되지 않습니다.</li>
+</ul>
+<p>오버라이드는 <a href="nested-prefabs.html">자식 호출과 오버라이드</a>를 참고하세요.</p>
+<h2 id="주황-점">주황 점</h2>
+<p>주황 점은 씬 이름의 <code>*</code>처럼, 화면의 값이 저장되지 않은 동안 표시됩니다. 어떤 값인지는 점의 툴팁에 나옵니다.</p>
+<ul>
+<li>미리보기 중일 때</li>
+<li>저장하지 않은 수정이 있을 때</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

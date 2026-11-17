@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Comparison | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Comparison | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/comparison.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="comparison">Comparison</h1>
+
+<p>This page compares the steps needed to build the same effect with each tool. Every comparison is based on work actually done in this repository.</p>
+<ul>
+<li><code>Benchmarks/Assets/Bench/*Driver.cs</code>: code that implements the same three effects (pulse, list entry and text wave) with each method</li>
+<li><code>Assets/Reference</code>: recreations of the Unity-AnimationUI and UnityScreenNavigator demos</li>
+<li><code>Assets/KeyTween/Samples/RPG</code>: the RPG sample</li>
+</ul>
+<p>For the other tools, only the features used in this work are described. Features that were not tried are marked &quot;Not checked&quot;. Performance is covered separately on the <a href="performance.html">Performance</a> page.</p>
+<h2 id="1-making-one-effect--button-pulse-scale--color-looping">1. Making one effect — button pulse (scale + color, looping)</h2>
+<p>This section uses a pulse effect, in which a button's scale and color change repeatedly, to compare the authoring steps and the code needed to run it with each tool.</p>
+<h3 id="at-a-glance">At a Glance</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Made in</th>
+<th>Code to run</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td>KeyTween window</td>
+<td><strong>0 lines</strong> (1 line from code)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td>Animation window + Animator window</td>
+<td>0 lines (default state)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td>Inspector (<code>DOTweenAnimation</code>) or code</td>
+<td><strong>2 lines</strong></td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td>Code</td>
+<td><strong>2 statements (4 lines)</strong></td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td>Inspector (<code>AnimationUI</code> sequence list)</td>
+<td><strong>1 line</strong> to loop</td>
+</tr>
+</tbody>
+</table>
+<h3 id="making-it-with-keytween">Making It with KeyTween</h3>
+<p>The effect is made in the KeyTween window.</p>
+<ol>
+<li>Add <code>KeyTween</code> to the button.</li>
+<li>Make a state &quot;Pulse&quot; and turn on <strong>Loop</strong>.</li>
+<li>Pick Scale and Color in the Add Track picker.</li>
+<li>Add keys at 0 / 0.5 / 1 s and set the ease to InOutSine.</li>
+<li>Set <strong>Play On</strong> to OnEnable.</li>
+</ol>
+<p>The state plays when the object is enabled, so the code to run is <strong>0 lines</strong>. From code, it takes 1 line.</p>
+<pre><code class="lang-csharp">anim.Play(&quot;Pulse&quot;);
+</code></pre>
+<h3 id="states-tracks-and-keys-in-keytween">States, Tracks and Keys in KeyTween</h3>
+<p>These are the three concepts used in the steps above.</p>
+<ul>
+<li><strong>State</strong>: one named effect</li>
+<li><strong>Track</strong>: a row in the state that changes a single value such as scale or color</li>
+<li><strong>Key</strong>: the value at a point in time on a track</li>
+</ul>
+<p>Creating states, adding tracks and editing keys all happen in the KeyTween window shown below.</p>
+<p><img src="../../media/editor/editor-window.png" alt="The KeyTween window, with the state tabs at the top, the track list on the left, keys on the timeline in the middle and the key inspector on the right."></p>
+<h3 id="making-it-with-animator">Making It with Animator</h3>
+<p>The effect is made in the Animation window and the Animator window.</p>
+<ol>
+<li>Click <strong>Create</strong> in the Animation window. This creates 2 assets: a clip and a controller.</li>
+<li>Record the keys with <strong>Record</strong>.</li>
+<li>Check the clip's <strong>Loop Time</strong>.</li>
+<li>Check the default state in the controller.</li>
+</ol>
+<p>The default state plays on its own, so the code to run is 0 lines. To switch to another effect, use states and transitions, or call <code>Play</code>.</p>
+<h3 id="making-it-with-dotween-pro">Making It with DOTween Pro</h3>
+<p>The effect is made in the inspector (<code>DOTweenAnimation</code>) or in code.</p>
+<ul>
+<li><strong>Inspector</strong>: Add one component per effect (1 for scale + 1 for color). Set Loops to −1 and Yoyo.</li>
+<li><strong>Code</strong>: The <strong>2 lines</strong> below.</li>
+</ul>
+<pre><code class="lang-csharp">DOScale(...).SetLoops(-1, Yoyo)
+DOColor(...)...
+</code></pre>
+<h3 id="making-it-with-litmotion">Making It with LitMotion</h3>
+<p>The effect is made in code only. You create one Motion per value and bind it to the target, and the whole pulse takes <strong>2 statements (4 lines)</strong>. The scale part looks like this.</p>
+<pre><code class="lang-csharp">LMotion.Create(...).WithLoops(-1, Yoyo).BindToLocalScale(rt)
+</code></pre>
+<h3 id="making-it-with-animationui">Making It with AnimationUI</h3>
+<p>Add steps to the <code>AnimationUI</code> sequence list in the inspector.</p>
+<ol>
+<li>Scale and color step</li>
+<li>Wait</li>
+<li>Step back</li>
+<li>Wait</li>
+</ol>
+<p>There is no loop feature, so looping takes <strong>1 line</strong> of code.</p>
+<pre><code class="lang-csharp">OnAnimationEnded += Play
+</code></pre>
+<h2 id="2-work-per-effect">2. Work per effect</h2>
+<p>In the benchmark project, every method was implemented in code so that all of them could be measured under the same conditions. In real use, however, the difference that matters is whether an effect <strong>can be made in the editor</strong>.</p>
+<h3 id="where-each-effect-is-made">Where Each Effect Is Made</h3>
+<p>The table shows where and how each effect is made with each tool.</p>
+<table>
+<thead>
+<tr>
+<th>Effect</th>
+<th>KeyTween</th>
+<th>Animator</th>
+<th>DOTween Pro</th>
+<th>LitMotion</th>
+<th>AnimationUI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Looping pulse</td>
+<td>Editor (window)</td>
+<td>Editor (window)</td>
+<td>Inspector or 2 lines of code</td>
+<td>2 statements of code</td>
+<td>Inspector (4-step sequence) + 1 line of loop code</td>
+</tr>
+<tr>
+<td>List entry (current position → 0)</td>
+<td>Editor, Start = Current Value</td>
+<td>Editor, start value fixed in the clip</td>
+<td>2 lines of code (<code>From</code>)</td>
+<td>2 statements of code</td>
+<td>Inspector</td>
+</tr>
+<tr>
+<td>Text wave (per character)</td>
+<td><strong>Editor</strong> (Char track + Stagger)</td>
+<td>Not possible</td>
+<td>Code: <code>DOTweenTMPAnimator</code> + a loop over the characters</td>
+<td>Code: a loop of <code>BindToTMPCharPositionY</code> per character</td>
+<td>Not possible</td>
+</tr>
+<tr>
+<td>Counting a number (currency)</td>
+<td>Editor (Number track) + 1 line for the end value (<code>With(...).WithEndValue</code>)</td>
+<td>Not checked</td>
+<td>Code</td>
+<td>Code</td>
+<td>Not possible</td>
+</tr>
+<tr>
+<td>Shared element transition</td>
+<td>Editor (state) + 1 line for the partner's keys (<code>KeyTweenSharedElement</code>)</td>
+<td>Not checked</td>
+<td>Code</td>
+<td>Code</td>
+<td>Not possible</td>
+</tr>
+<tr>
+<td>UIEffect values (dissolve etc.)</td>
+<td><strong>Editor</strong> (14 UIEffect tracks)</td>
+<td>Editor (records serialized fields)</td>
+<td>Code (<code>DOTween.To</code>)</td>
+<td>Code (<code>Bind</code>)</td>
+<td>Not possible</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-feature-comparison-what-was-checked-in-this-repository">3. Feature comparison (what was checked in this repository)</h2>
+<p>Only features checked directly in this repository are listed.</p>
+<h3 id="symbols-in-the-table">Symbols in the Table</h3>
+<ul>
+<li>✅: supported</li>
+<li>❌: not supported</li>
+<li>Not checked: a feature that was not tried</li>
+</ul>
+<h3 id="feature-table">Feature Table</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>KeyTween</th>
+<th>Animator</th>
+<th>DOTween Pro</th>
+<th>LitMotion</th>
+<th>AnimationUI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keyframe editing in the editor</td>
+<td>✅ Timeline window</td>
+<td>✅ Animation window</td>
+<td>Inspector values (not keyframes)</td>
+<td>❌ (separate packages not checked)</td>
+<td>Sequence list (start, duration)</td>
+</tr>
+<tr>
+<td>Recording</td>
+<td>✅ ● (Scene/Inspector changes → keys)</td>
+<td>✅ Record</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Preview in Edit mode</td>
+<td>✅ Play, scrub, loop</td>
+<td>✅</td>
+<td>Not checked</td>
+<td>❌</td>
+<td>Not checked</td>
+</tr>
+<tr>
+<td>Keeping values changed in Play mode</td>
+<td>✅ Auto Save · Save</td>
+<td>Edits in the Animation window are kept</td>
+<td>❌</td>
+<td>❌</td>
+<td>Not checked</td>
+</tr>
+<tr>
+<td>Start from the current value</td>
+<td>✅ Start = Current Value</td>
+<td>❌ (clip values)</td>
+<td>✅ when <code>From</code> is omitted</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Reverse play</td>
+<td>✅ <code>PlayReversed</code> (a current-value start also returns to its original place)</td>
+<td>Speed −1 (parameter)</td>
+<td>✅ <code>PlayBackwards</code></td>
+<td>Not checked</td>
+<td>✅ <code>PlayReversed</code></td>
+</tr>
+<tr>
+<td>Loop</td>
+<td>✅ State Loop</td>
+<td>✅ Loop Time</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌ (Play again)</td>
+</tr>
+<tr>
+<td>Per character</td>
+<td>✅ Editor</td>
+<td>❌</td>
+<td>Code</td>
+<td>Code</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Event and sound tracks</td>
+<td>✅</td>
+<td>Events ✅</td>
+<td>Callbacks (code)</td>
+<td>Callbacks (code)</td>
+<td>✅ Event and sound steps</td>
+</tr>
+<tr>
+<td>Screen transition containers</td>
+<td>✅ Page, Modal, Sheet</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>await</td>
+<td>✅ <code>Awaitable</code>, UniTask optional</td>
+<td>❌</td>
+<td>✅ (<code>AsyncWaitForCompletion</code>)</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Start and end callbacks</td>
+<td>✅ Editor (the state's Callbacks) + code (<code>StateCompleted</code> and so on, <code>WithOnComplete</code>)</td>
+<td>Not checked</td>
+<td>Code (<code>OnComplete</code> and so on)</td>
+<td>Code (<code>WithOnComplete</code> and so on)</td>
+<td>Not checked</td>
+</tr>
+<tr>
+<td>Making an effect in code</td>
+<td>✅ <code>Build(state).Track(...).Key(...)</code></td>
+<td>Not checked</td>
+<td>✅ The usual way</td>
+<td>✅ The usual way</td>
+<td>Not checked</td>
+</tr>
+<tr>
+<td>Playing from a given time</td>
+<td>✅ <code>Play(state, time)</code></td>
+<td>Not checked</td>
+<td>Not checked</td>
+<td>Not checked</td>
+<td>Not checked</td>
+</tr>
+<tr>
+<td>Time that ignores pausing</td>
+<td>✅ Time = Unscaled</td>
+<td>✅ Update Mode</td>
+<td>Not checked</td>
+<td>Not checked</td>
+<td>Not checked</td>
+</tr>
+<tr>
+<td>Required packages</td>
+<td>Unity packages only (uGUI, Mathematics, Burst)</td>
+<td>Built in</td>
+<td>DOTween (Pro is paid)</td>
+<td>LitMotion (+ Burst, Collections)</td>
+<td>AnimationUI source</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-work-when-changing-it">4. Work when changing it</h2>
+<p>This section compares the work needed to change an effect that already exists.</p>
+<h3 id="work-per-change">Work per Change</h3>
+<p>&quot;Code tweens&quot; refers to libraries such as DOTween and LitMotion, in which effects are written in code.</p>
+<table>
+<thead>
+<tr>
+<th>What to change</th>
+<th>KeyTween</th>
+<th>Code tweens (DOTween, LitMotion)</th>
+<th>Animator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Duration and ease</td>
+<td>Drag keys or pick an ease in the window, preview at once</td>
+<td>Edit code → compile → check in Play mode</td>
+<td>Move keys in the Animation window (ease through curve tangents)</td>
+</tr>
+<tr>
+<td>Adding an effect</td>
+<td>Add one state</td>
+<td>Add methods and fields</td>
+<td>Add a clip, a state and transitions</td>
+</tr>
+<tr>
+<td>Slightly different per prefab</td>
+<td>Child state override (in the current prefab)</td>
+<td>Branch in code or expose values</td>
+<td>Override Controller</td>
+</tr>
+<tr>
+<td>Designers do it themselves</td>
+<td>✅ No code</td>
+<td>❌ (partly possible with the DOTween Pro inspector)</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-summary">5. Summary</h2>
+<p>This section sums up each tool and the performance comparison.</p>
+<h3 id="keytween">KeyTween</h3>
+<p>You build effects in the KeyTween window without writing code, and you can preview them immediately. The following features used to require a code tween and are also available in the editor.</p>
+<ul>
+<li>Starting from the current value</li>
+<li>Per-character effects</li>
+<li>await</li>
+</ul>
+<p>What changes from play to play (the end value, the ease, the start time, callbacks) is set in code with <code>With</code>, and <code>Build</code> makes a state in code alone. So the code-first style of a code tween is there too.</p>
+<h3 id="performance">Performance</h3>
+<p>The own cost of 2,000 pulses was compared in an IL2CPP build. The own cost is the time a method takes beyond setting the same values directly from a script.</p>
+<ul>
+<li>KeyTween: +0.38ms</li>
+<li>DOTween Pro: +0.40ms</li>
+<li>LitMotion: +0.34ms</li>
+<li>Animator: +2.85ms</li>
+<li>AnimationUI: +2.00ms</li>
+</ul>
+<p>KeyTween is on par with DOTween Pro and LitMotion, and much lighter than Animator and AnimationUI.</p>
+<ul>
+<li>Text effects are the fastest: 0.61ms for 100 texts, compared with about 2.1ms for code tweens.</li>
+<li>KeyTween makes no GC allocations during playback.</li>
+</ul>
+<p>For details, see <a href="performance.html">Performance</a>.</p>
+<h3 id="code-tweens-litmotion-dotween">Code Tweens (LitMotion, DOTween)</h3>
+<p>LitMotion has the lowest cost for starting a play. However, because the effect lives in code, every preview or change requires a compile. With KeyTween you can split the two: keep the motion in the editor and set only the values that change in code with <code>With</code>.</p>
+<h3 id="animator">Animator</h3>
+<p>You can author and record effects in the editor, but Animator is the heaviest option for UI effects. It lacks the following features.</p>
+<ul>
+<li>Per-character effects</li>
+<li>Starting from the current value</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

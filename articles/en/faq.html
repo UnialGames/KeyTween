@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>FAQ | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="FAQ | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/faq.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="faq">FAQ</h1>
+
+<p>Questions that come up when starting out, what to check when something does not work, how other tools map to KeyTween, and versions and support.</p>
+<h2 id="can-i-use-it-with-unity-2022-lts">Can I use it with Unity 2022 LTS?</h2>
+<p>No. It needs Unity 6 (6000.0) or later. The reason is in <a href="versions.html">Versions and Support</a>.</p>
+<h2 id="does-it-work-with-ui-toolkit">Does it work with UI Toolkit?</h2>
+<p>KeyTween is for uGUI (Canvas). There are no tracks that animate UI Toolkit elements. Objects that are not UI can be animated: there are Transform, SpriteRenderer, material property, Light, Camera and AudioSource tracks, and other components are added with <a href="custom-tracks.html">custom tracks</a>.</p>
+<h2 id="can-i-use-it-together-with-dotween-or-litmotion">Can I use it together with DOTween or LitMotion?</h2>
+<p>Yes. KeyTween does not depend on another tween library, and they do not affect each other. If both animate the same property of the same object at the same time, the value written last in each frame is what you see. Animate one property from one side only.</p>
+<h2 id="where-is-an-animation-stored">Where is an animation stored?</h2>
+<p>In the <code>KeyTween</code> component of the prefab (or scene object). There are no separate assets such as clips or controllers. In version control it shows as a change to that prefab file.</p>
+<h2 id="can-i-use-it-without-writing-code">Can I use it without writing code?</h2>
+<p>Choose when each state plays (pointer enter, click, when enabled …) in its <a href="play-on.html">Play On</a>, and it plays without code. You can also pick <code>KeyTween.Play (string)</code> in a UnityEvent such as a Button's <code>OnClick</code>.</p>
+<h2 id="state-names-are-strings-what-happens-with-a-typo">State names are strings. What happens with a typo?</h2>
+<p>Playing a name that does not exist logs a warning (<code>[KeyTween] 'object' has no state 'name'.</code>) and <code>PlayAsync</code> completes at once. If a name is used in several places, keeping it in a constant is safer. <code>anim.HasState(&quot;name&quot;)</code> tells whether a state exists.</p>
+<h2 id="the-ui-animations-stop-when-the-game-is-paused-timescale-0">The UI animations stop when the game is paused (timeScale 0).</h2>
+<p>By default they follow game time. For UI that must move while the game is paused, such as a pause menu, set that <code>KeyTween</code>'s <strong>Time</strong> to <code>Unscaled</code>.</p>
+<h2 id="which-platforms-has-it-been-checked-on">Which platforms has it been checked on?</h2>
+<p>Development, tests and performance measurements were done on Windows (the editor and an IL2CPP player). Other platforms have not been checked. There is no platform-specific code, and eases are computed with Burst.</p>
+<h2 id="what-do-the-samples-need">What do the samples need?</h2>
+<p>The Input System package. TextMeshPro's Essential Resources are imported with a sample if the project does not have them.</p>
+<h2 id="what-happens-when-an-object-is-destroyed-while-a-state-plays">What happens when an object is destroyed while a state plays?</h2>
+<ul>
+<li><strong>An object a track animates is destroyed</strong>: only that track is skipped. The other tracks play to the end and <code>PlayAsync</code> completes normally, with no error.</li>
+<li><strong>The object with the KeyTween is destroyed or turned off</strong>: the play stops and <code>PlayAsync</code> ends with <code>OperationCanceledException</code>. No error is logged.</li>
+</ul>
+<h2 id="how-does-it-look-in-version-control-what-about-merge-conflicts">How does it look in version control? What about merge conflicts?</h2>
+<p>An animation has no file of its own: it is inside the <code>KeyTween</code> component in the prefab (or scene) file. Editing a state changes that prefab file, and version control shows it like any other prefab change.</p>
+<ul>
+<li>Two people editing states of the same prefab at once is an ordinary prefab conflict. Use Unity's Smart Merge (UnityYAMLMerge), or edit one at a time.</li>
+<li>Splitting screens and parts into prefabs narrows what can conflict. A child's animation changed from an outer prefab is saved in the outer prefab's file.</li>
+<li>With Auto Save on, an edit is written to the prefab file 0.4 seconds after the last change. Something tried in the window is in the file too, so check the changes before committing.</li>
+</ul>
+<h2 id="how-do-we-remove-keytween-later">How do we remove KeyTween later?</h2>
+<ol>
+<li>Replace the code that uses the <code>KeyTweening</code> namespace.</li>
+<li>Remove the KeyTween components, such as <code>KeyTween</code> and <code>KeyTweenTrigger</code>, from prefabs and scenes. Removing the package first leaves them as Missing Scripts.</li>
+<li>Remove the package in the Package Manager.</li>
+</ol>
+<p>There is no export of an animation to an Animator clip or another tool's format. The data goes with the component.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

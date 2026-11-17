@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Creating with AI Agents | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Creating with AI Agents | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/en/agents.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="creating-with-ai-agents">Creating with AI Agents</h1>
+
+<p>You can hand an animation to a coding agent such as Claude Code, Cursor or Codex in plain words. What the agent makes is the same states, tracks and keys a person makes, so you open it in the KeyTween window and carry on: drag keys, change an ease, preview.</p>
+<p>KeyTween contains no AI model. It provides the commands an agent uses to read and write animation data, and a contract document that describes the format. Which agent you use is up to you.</p>
+<h2 id="setting-up">Setting Up</h2>
+<p>You need Unity 6 and the Unity CLI package (<code>com.unity.pipeline</code>). Without the Unity CLI, KeyTween works as usual; only the commands are missing.</p>
+<ol>
+<li><strong>Install the Unity CLI package.</strong> Run <code>unity pipeline install</code> in the project folder. If you checked <strong>Use Unity CLI</strong> when creating the project in Unity Hub, it is already there and you can skip this. Once it is installed, KeyTween's commands compile automatically.</li>
+<li><strong>Choose Tools &gt; KeyTween &gt; Set Up Agent Access.</strong> A KeyTween section is added to <code>AGENTS.md</code> and <code>CLAUDE.md</code> in the project folder, which tells agents the commands and how to read the contract.
+<ul>
+<li>Choosing it again leaves one section.</li>
+<li>After updating the package, choose it once more so the contract's file path is written again. The <code>keytween_contract</code> command works regardless of updates.</li>
+</ul>
+</li>
+<li><strong>With the Unity Editor open, ask the agent.</strong></li>
+</ol>
+<pre><code class="lang-text">Give Assets/UI/Popup.prefab an Open animation where it grows in from slightly small and fades in,
+and a Close where it shrinks a little and fades out. Close shorter than Open. My code will play them.
+</code></pre>
+<p>To use it from an MCP client, register the Unity CLI as an MCP server with <code>unity mcp configure &lt;client&gt;</code>. <code>unity mcp configure --list</code> shows the supported clients.</p>
+<h2 id="what-it-makes">What It Makes</h2>
+<p>The agent reads the prefab (<code>keytween_read</code>) and writes the states it made (<code>keytween_write_prefab</code>). Below is the <code>Open</code> state an agent made from the request above, opened in the KeyTween window. It has the popup's Scale and a Group Alpha track that fades the whole popup; select the end key to change its value and ease right there. The popup had no <code>CanvasGroup</code>, so the write command added one.</p>
+<p><img src="../../media/agents/agent-popup.png" alt="The Open state an agent made for a popup, opened in the KeyTween window: one Scale track and one Group Alpha track, with the Out Back ease in the key inspector on the right."></p>
+<ul>
+<li>The states are stored in the prefab. They are no different from states made in the editor.</li>
+<li>Code plays them by name: <code>await popup.PlayAsync(&quot;Open&quot;)</code></li>
+<li>Change what you don't like in the KeyTween window, or ask the agent again. The agent reads again and builds on that.</li>
+<li>Open the KeyTween window with <strong>Window &gt; KeyTween Editor</strong>. Open the prefab, or select the object in the scene, and its states are there.</li>
+</ul>
+<h2 id="commands">Commands</h2>
+<p>Reading and the two writes are separate commands, so you can allow reading only, or scene edits only.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Changes</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keytween_contract</code></td>
+<td>Nothing</td>
+<td>Returns the contract (the format and the rules) as installed. An agent reads it before its first write.</td>
+</tr>
+<tr>
+<td><code>keytween_read</code></td>
+<td>Nothing</td>
+<td>Returns the target's states (tracks, keys, Play On) and the objects and tracks that can be animated, as a JSON document. Without a target it lists the KeyTweens of the open scenes and of Prefab Mode.</td>
+</tr>
+<tr>
+<td><code>keytween_write_scene</code></td>
+<td>An object of an open scene</td>
+<td>Changed in memory only. The scene is marked unsaved, and this command never saves it.</td>
+</tr>
+<tr>
+<td><code>keytween_write_prefab</code></td>
+<td>A prefab asset</td>
+<td>Applies to every instance of the prefab and is saved. If the prefab is open in Prefab Mode, the open objects are changed and saving follows the KeyTween window's Auto Save or Save.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-text">unity --json command keytween_read --target Assets/UI/Button.prefab
+unity --json command keytween_write_prefab --file Temp/hover.json --dry_run true
+unity --json command keytween_write_prefab --file Temp/hover.json
+</code></pre>
+<p>With <code>--json</code> the answer is JSON, and the document that was read is its <code>data.result</code>. Without it the output is a table, and line breaks are lost.</p>
+<p>The target is the object that has (or will get) the <code>KeyTween</code>. A prefab asset is <code>Assets/UI/Button.prefab</code>, an object inside it is <code>Assets/UI/Popup.prefab:Panel/OkButton</code>, and an object of an open scene is <code>/Canvas/Button</code>.</p>
+<h2 id="safeguards">Safeguards</h2>
+<p>People and agents edit the same data, so neither overwrites the other's work.</p>
+<ul>
+<li><strong>Refused if it changed after the read.</strong> A read returns a token, and a write sends it back. If a person edited the data in between, or another write happened, the write is refused, so the agent reads again and redoes its change on that document.</li>
+<li><strong>All or nothing.</strong> A missing path, an unknown track, a value with the wrong number of components or an unknown ease name are all reported at once, and nothing is changed. When a track itself is wrong, its keys are not checked.</li>
+<li><strong>One Ctrl+Z undoes it.</strong> Adding the component and setting Play On are part of the same Undo step.</li>
+<li><strong>Check only.</strong> <code>--dry_run true</code> checks the document and reports what would change.</li>
+<li><strong>Nothing is written in Play mode.</strong> A scene that is not open is not opened for the agent.</li>
+</ul>
+<h2 id="what-it-can-and-cannot-do">What It Can and Cannot Do</h2>
+<ul>
+<li>Written: creating, replacing and deleting states, loop, Play On, tracks (built-in, Material, custom), keys and their arrival, animation events</li>
+<li>Kept as they are: sounds, child calls, callbacks. Replacing a state does not remove them.</li>
+<li>Not supported: overrides, renaming a state</li>
+<li>The commands add three components and no other: <code>KeyTween</code>, <code>KeyTweenTrigger</code> for Play On, and a <code>CanvasGroup</code> for fading a group. The <code>CanvasGroup</code> is added only to a UI object that a <code>CanvasGroupAlpha</code> track fades and that has none, in the same Undo step. So a whole popup fades with one track (<a href="adding-tracks.html#fading-several-objects-together-canvasgroup">Fading Several Objects Together</a>).</li>
+</ul>
+<p>The format and the rules are in the package's <code>Editor/Agent/KEYTWEEN-CONTRACT.md</code>, which <code>unity --json command keytween_contract</code> also returns. A misspelled field name is ignored and its default is used, so it is safer to have the agent check with <code>--dry_run true</code> first.</p>
+<h2 id="calling-it-from-elsewhere">Calling It from Elsewhere</h2>
+<p>The commands wrap public methods of <code>KeyTweenAgent</code>. A tool that does not use the Unity CLI can call them from editor code.</p>
+<pre><code class="lang-csharp">using KeyTweening.Editor;
+
+string contract = KeyTweenAgent.ContractText();
+KeyTweenAgentDocument doc = KeyTweenAgent.Read(&quot;Assets/UI/Button.prefab&quot;);
+KeyTweenAgentResult result = KeyTweenAgent.Write(json, KeyTweenAgentScope.Prefab, dryRun: true);
+</code></pre>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

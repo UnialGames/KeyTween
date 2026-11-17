@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>벤치마크 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="벤치마크 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/benchmarks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="벤치마크">벤치마크</h1>
+
+<blockquote>
+<p>이 페이지는 <code>python Tools/bench_report.py</code>가 <code>Benchmarks/Results/*.jsonl</code>의 측정 결과로 만듭니다. 측정 프로젝트와 측정 방법은 <code>Benchmarks/README.md</code>에서 설명합니다.</p>
+</blockquote>
+<h2 id="프레임-시간--mono-릴리스">프레임 시간 — Mono 릴리스</h2>
+<p>값은 평균 프레임 시간(ms)이며, 낮을수록 좋습니다. 직접 대입(기준)은 애니메이션 시스템 없이 스크립트가 매 프레임 같은 값을 넣는 방식입니다. 괄호 안의 값은 <strong>직접 대입(기준)과의 차이</strong>로, 그 방식 자체의 비용을 나타냅니다. 같은 화면 변경을 uGUI가 그리는 비용은 기준과 각 방식에 똑같이 들어 있습니다.</p>
+<h3 id="맥박-반복">맥박 반복</h3>
+<p>버튼 N개가 맥박처럼 계속 변합니다. 크기는 1 → 1.1 → 1, 색은 흰색 → 금색 → 흰색으로 바뀌며, 1초 주기(InOutSine)로 무한 반복합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">2.13</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">8.33</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.64 (+0.06)</td>
+<td style="text-align: right;">2.28 (+0.15)</td>
+<td style="text-align: right;">4.52 (+0.26)</td>
+<td style="text-align: right;">8.88 (+0.56)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">0.81 (+0.22)</td>
+<td style="text-align: right;">2.81 (+0.67)</td>
+<td style="text-align: right;">5.42 (+1.17)</td>
+<td style="text-align: right;">10.95 (+2.63)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.61 (+0.02)</td>
+<td style="text-align: right;">2.23 (+0.10)</td>
+<td style="text-align: right;">4.48 (+0.23)</td>
+<td style="text-align: right;">8.99 (+0.66)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.69 (+0.10)</td>
+<td style="text-align: right;">2.24 (+0.11)</td>
+<td style="text-align: right;">4.37 (+0.12)</td>
+<td style="text-align: right;">8.67 (+0.35)</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">0.70 (+0.12)</td>
+<td style="text-align: right;">2.62 (+0.49)</td>
+<td style="text-align: right;">5.39 (+1.13)</td>
+<td style="text-align: right;">10.95 (+2.62)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="목록-등장">목록 등장</h3>
+<p>목록의 줄 N개가 등장합니다. 0.4초 동안 x는 +100 → 0(OutCubic), 투명도는 0 → 1로 바뀝니다. 0.5초마다 전부 다시 재생합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">1.16</td>
+<td style="text-align: right;">2.06</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.47 (+0.02)</td>
+<td style="text-align: right;">0.96 (+0.03)</td>
+<td style="text-align: right;">1.32 (+0.16)</td>
+<td style="text-align: right;">1.70 (-0.36)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">0.66 (+0.21)</td>
+<td style="text-align: right;">1.71 (+0.77)</td>
+<td style="text-align: right;">2.81 (+1.65)</td>
+<td style="text-align: right;">5.13 (+3.07)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.47 (+0.02)</td>
+<td style="text-align: right;">0.88 (-0.06)</td>
+<td style="text-align: right;">1.24 (+0.08)</td>
+<td style="text-align: right;">1.83 (-0.23)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.47 (+0.02)</td>
+<td style="text-align: right;">0.96 (+0.02)</td>
+<td style="text-align: right;">1.26 (+0.10)</td>
+<td style="text-align: right;">1.47 (-0.59)</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">0.51 (+0.06)</td>
+<td style="text-align: right;">1.03 (+0.09)</td>
+<td style="text-align: right;">1.24 (+0.08)</td>
+<td style="text-align: right;">2.69 (+0.63)</td>
+</tr>
+</tbody>
+</table>
+<p>다음 표는 재생 시작 비용입니다. 0.5초마다 N개를 다시 재생하는 호출 한 번에 드는 평균 시간(ms)입니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;">3.52</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">1.63</td>
+<td style="text-align: right;">3.02</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">1.73</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">7.49</td>
+<td style="text-align: right;">27.59</td>
+<td style="text-align: right;">115.93</td>
+</tr>
+</tbody>
+</table>
+<h3 id="글자-물결">글자 물결</h3>
+<p>24글자짜리 텍스트 N개에서 글자마다 y가 0 → 20 → 0으로 움직입니다(1초, InOutSine). 각 글자는 앞 글자보다 0.04초씩 늦게 움직이며, 무한 반복합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 10</th>
+<th style="text-align: right;">N = 50</th>
+<th style="text-align: right;">N = 100</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0.99</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">1.44</td>
+<td style="text-align: right;">2.71</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">2.04</td>
+<td style="text-align: right;">3.81</td>
+</tr>
+</tbody>
+</table>
+<h2 id="프레임-시간--il2cpp-릴리스">프레임 시간 — IL2CPP 릴리스</h2>
+<p>값은 평균 프레임 시간(ms)이며, 낮을수록 좋습니다. 직접 대입(기준)은 애니메이션 시스템 없이 스크립트가 매 프레임 같은 값을 넣는 방식입니다. 괄호 안의 값은 <strong>직접 대입(기준)과의 차이</strong>로, 그 방식 자체의 비용을 나타냅니다. 같은 화면 변경을 uGUI가 그리는 비용은 기준과 각 방식에 똑같이 들어 있습니다.</p>
+<h3 id="맥박-반복-1">맥박 반복</h3>
+<p>버튼 N개가 맥박처럼 계속 변합니다. 크기는 1 → 1.1 → 1, 색은 흰색 → 금색 → 흰색으로 바뀌며, 1초 주기(InOutSine)로 무한 반복합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;">3.77</td>
+<td style="text-align: right;">7.32</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.59 (-0.01)</td>
+<td style="text-align: right;">2.06 (+0.13)</td>
+<td style="text-align: right;">3.88 (+0.11)</td>
+<td style="text-align: right;">7.69 (+0.38)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">0.80 (+0.20)</td>
+<td style="text-align: right;">2.62 (+0.69)</td>
+<td style="text-align: right;">4.98 (+1.20)</td>
+<td style="text-align: right;">10.16 (+2.85)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.56 (-0.04)</td>
+<td style="text-align: right;">2.07 (+0.14)</td>
+<td style="text-align: right;">3.86 (+0.08)</td>
+<td style="text-align: right;">7.71 (+0.40)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.61 (+0.01)</td>
+<td style="text-align: right;">2.08 (+0.15)</td>
+<td style="text-align: right;">3.85 (+0.07)</td>
+<td style="text-align: right;">7.66 (+0.34)</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">0.65 (+0.05)</td>
+<td style="text-align: right;">2.27 (+0.34)</td>
+<td style="text-align: right;">4.53 (+0.76)</td>
+<td style="text-align: right;">9.31 (+2.00)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="목록-등장-1">목록 등장</h3>
+<p>목록의 줄 N개가 등장합니다. 0.4초 동안 x는 +100 → 0(OutCubic), 투명도는 0 → 1로 바뀝니다. 0.5초마다 전부 다시 재생합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">1.15</td>
+<td style="text-align: right;">1.66</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.45 (+0.01)</td>
+<td style="text-align: right;">0.88 (-0.01)</td>
+<td style="text-align: right;">1.04 (-0.11)</td>
+<td style="text-align: right;">1.70 (+0.04)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">0.66 (+0.22)</td>
+<td style="text-align: right;">1.69 (+0.80)</td>
+<td style="text-align: right;">2.88 (+1.72)</td>
+<td style="text-align: right;">5.23 (+3.57)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.44 (+0.00)</td>
+<td style="text-align: right;">0.82 (-0.07)</td>
+<td style="text-align: right;">1.17 (+0.02)</td>
+<td style="text-align: right;">1.59 (-0.06)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.46 (+0.02)</td>
+<td style="text-align: right;">0.85 (-0.04)</td>
+<td style="text-align: right;">1.18 (+0.03)</td>
+<td style="text-align: right;">1.53 (-0.13)</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">0.47 (+0.04)</td>
+<td style="text-align: right;">1.18 (+0.28)</td>
+<td style="text-align: right;">1.33 (+0.18)</td>
+<td style="text-align: right;">2.18 (+0.52)</td>
+</tr>
+</tbody>
+</table>
+<p>다음 표는 재생 시작 비용입니다. 0.5초마다 N개를 다시 재생하는 호출 한 번에 드는 평균 시간(ms)입니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">1.25</td>
+<td style="text-align: right;">2.31</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">1.10</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">3.89</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">1.34</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">7.90</td>
+<td style="text-align: right;">26.75</td>
+<td style="text-align: right;">118.39</td>
+</tr>
+</tbody>
+</table>
+<h3 id="글자-물결-1">글자 물결</h3>
+<p>24글자짜리 텍스트 N개에서 글자마다 y가 0 → 20 → 0으로 움직입니다(1초, InOutSine). 각 글자는 앞 글자보다 0.04초씩 늦게 움직이며, 무한 반복합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 10</th>
+<th style="text-align: right;">N = 50</th>
+<th style="text-align: right;">N = 100</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">1.21</td>
+<td style="text-align: right;">2.11</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">1.13</td>
+<td style="text-align: right;">2.05</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gc-할당--mono-개발-빌드">GC 할당 — Mono 개발 빌드</h2>
+<p>할당 카운터(<code>GC Allocated In Frame</code>)는 개발 빌드에서만 동작하므로, GC 할당은 개발 빌드로 따로 쟀습니다. 값은 프레임당 평균 바이트이고, 괄호 안은 프레임당 할당 횟수입니다. 직접 대입(기준)에도 나타나는 할당은 엔진과 측정 코드의 몫입니다. 따라서 <strong>기준보다 많은 만큼이 그 방식의 할당</strong>입니다.</p>
+<h3 id="맥박-반복-2">맥박 반복</h3>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">87 (2.0)</td>
+<td style="text-align: right;">94 (2.1)</td>
+<td style="text-align: right;">149 (2.3)</td>
+<td style="text-align: right;">258 (2.5)</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">84 (2.0)</td>
+<td style="text-align: right;">97 (2.1)</td>
+<td style="text-align: right;">154 (2.3)</td>
+<td style="text-align: right;">273 (2.6)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">56 (2.0)</td>
+<td style="text-align: right;">109 (2.2)</td>
+<td style="text-align: right;">179 (2.4)</td>
+<td style="text-align: right;">336 (2.7)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">83 (2.0)</td>
+<td style="text-align: right;">97 (2.1)</td>
+<td style="text-align: right;">154 (2.3)</td>
+<td style="text-align: right;">272 (2.6)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">90 (2.0)</td>
+<td style="text-align: right;">95 (2.1)</td>
+<td style="text-align: right;">151 (2.3)</td>
+<td style="text-align: right;">265 (2.6)</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">126 (2.9)</td>
+<td style="text-align: right;">894 (19.2)</td>
+<td style="text-align: right;">3,705 (79.0)</td>
+<td style="text-align: right;">15,795 (338.6)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="목록-등장-2">목록 등장</h3>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">70 (2.0)</td>
+<td style="text-align: right;">61 (2.1)</td>
+<td style="text-align: right;">71 (2.1)</td>
+<td style="text-align: right;">85 (2.1)</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">71 (2.0)</td>
+<td style="text-align: right;">58 (2.1)</td>
+<td style="text-align: right;">66 (2.1)</td>
+<td style="text-align: right;">79 (2.1)</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">87 (2.0)</td>
+<td style="text-align: right;">79 (2.1)</td>
+<td style="text-align: right;">110 (2.2)</td>
+<td style="text-align: right;">171 (2.4)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">229 (3.0)</td>
+<td style="text-align: right;">1,484 (10.8)</td>
+<td style="text-align: right;">4,343 (28.3)</td>
+<td style="text-align: right;">11,432 (71.8)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">71 (2.0)</td>
+<td style="text-align: right;">60 (2.1)</td>
+<td style="text-align: right;">64 (2.1)</td>
+<td style="text-align: right;">79 (2.1)</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">114 (2.9)</td>
+<td style="text-align: right;">429 (10.3)</td>
+<td style="text-align: right;">1,224 (27.9)</td>
+<td style="text-align: right;">4,576 (102.4)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="글자-물결-2">글자 물결</h3>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 10</th>
+<th style="text-align: right;">N = 50</th>
+<th style="text-align: right;">N = 100</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">84 (2.0)</td>
+<td style="text-align: right;">79 (2.0)</td>
+<td style="text-align: right;">62 (2.1)</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">76 (2.0)</td>
+<td style="text-align: right;">82 (2.1)</td>
+<td style="text-align: right;">125 (2.2)</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">80 (2.0)</td>
+<td style="text-align: right;">86 (2.1)</td>
+<td style="text-align: right;">129 (2.2)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="준비setup-할당">준비(Setup) 할당</h3>
+<p>처음 만들 때 한 번 드는 할당(KB)입니다. KeyTween은 측정 코드가 상태를 코드로 만들기 때문에 값이 크게 나옵니다. 실제로는 상태를 Prefab에서 불러오므로 이보다 적습니다.</p>
+<p><strong>맥박 반복</strong></p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">334</td>
+<td style="text-align: right;">1,728</td>
+<td style="text-align: right;">3,499</td>
+<td style="text-align: right;">6,613</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">63</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">625</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">1,289</td>
+<td style="text-align: right;">2,578</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">331</td>
+<td style="text-align: right;">457</td>
+<td style="text-align: right;">817</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">622</td>
+<td style="text-align: right;">3,106</td>
+<td style="text-align: right;">6,211</td>
+<td style="text-align: right;">12,422</td>
+</tr>
+</tbody>
+</table>
+<p><strong>목록 등장</strong></p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 100</th>
+<th style="text-align: right;">N = 500</th>
+<th style="text-align: right;">N = 1,000</th>
+<th style="text-align: right;">N = 2,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>직접 대입(기준)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">218</td>
+<td style="text-align: right;">1,086</td>
+<td style="text-align: right;">2,172</td>
+<td style="text-align: right;">5,496</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">63</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">637</td>
+<td style="text-align: right;">1,274</td>
+<td style="text-align: right;">2,547</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">307</td>
+<td style="text-align: right;">368</td>
+<td style="text-align: right;">785</td>
+</tr>
+<tr>
+<td>AnimationUI</td>
+<td style="text-align: right;">335</td>
+<td style="text-align: right;">1,672</td>
+<td style="text-align: right;">3,344</td>
+<td style="text-align: right;">6,688</td>
+</tr>
+</tbody>
+</table>
+<p><strong>글자 물결</strong></p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th style="text-align: right;">N = 10</th>
+<th style="text-align: right;">N = 50</th>
+<th style="text-align: right;">N = 100</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>KeyTween</strong></td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">258</td>
+<td style="text-align: right;">513</td>
+</tr>
+<tr>
+<td>DOTween Pro</td>
+<td style="text-align: right;">299</td>
+<td style="text-align: right;">1,482</td>
+<td style="text-align: right;">2,960</td>
+</tr>
+<tr>
+<td>LitMotion</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">235</td>
+</tr>
+</tbody>
+</table>
+<h2 id="환경">환경</h2>
+<ul>
+<li>Unity 6000.6.3f1로 만든 Windows 64비트 플레이어를 1280×720 창 모드로, VSync를 끄고 실행했습니다.</li>
+<li>CPU는 AMD Ryzen 7 7800X3D 8-Core Processor입니다.</li>
+<li>경우마다 1초 동안 예열한 뒤 4초 동안 측정했습니다. 한 번 실행한 값이므로 ±5 % 정도 흔들릴 수 있습니다.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

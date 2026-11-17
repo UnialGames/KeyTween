@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>트랙 추가 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="트랙 추가 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/adding-tracks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="트랙-추가">트랙 추가</h1>
+
+<p>트랙은 오브젝트 하나의 속성 하나를 움직입니다. 트랙은 트랙 추가 창에서 골라 상태에 넣습니다.</p>
+<h2 id="트랙-추가-창-열기">트랙 추가 창 열기</h2>
+<p>타임라인의 빈 곳을 우클릭하고 <strong>Add Track...</strong> 항목을 고릅니다.</p>
+<p><img src="../../media/editor/editor-add-track-menu.png" alt="타임라인의 트랙 영역을 우클릭한 메뉴. Add Track...과 Add Child Call이 있습니다."></p>
+<h2 id="트랙-고르기">트랙 고르기</h2>
+<p>트랙 추가 창의 왼쪽에는 Prefab 안의 오브젝트 트리가 있고, 오른쪽에는 선택한 오브젝트에서 만들 수 있는 트랙 카드가 현재 값과 함께 나옵니다.</p>
+<ol>
+<li>왼쪽 트리에서 오브젝트를 고릅니다. 트리는 검색할 수 있습니다.</li>
+<li>오른쪽에서 트랙 카드를 클릭해 고릅니다. 여러 개를 고를 수 있습니다.</li>
+<li><strong>Add N</strong>을 누릅니다.</li>
+</ol>
+<p><img src="../../media/editor/editor-add-track.gif" alt="트랙 추가 창에서 오브젝트를 고르고 트랙 카드를 선택해 추가하는 모습"></p>
+<ul>
+<li>카드를 더블클릭하면 바로 추가됩니다.</li>
+<li>다른 오브젝트로 옮겨 가며 골라도 선택은 유지됩니다.</li>
+<li>이미 있는 트랙에는 <code>Added</code> 표시가 붙습니다.</li>
+</ul>
+<h2 id="새-트랙의-기본값">새 트랙의 기본값</h2>
+<ul>
+<li>0초 키와 상태 끝 시간의 키가 생깁니다. 두 키 모두 지금 값을 가집니다.</li>
+<li>상태가 비어 있으면 끝 키는 0.2초에 생깁니다.</li>
+<li>Start는 <strong>Current Value</strong>입니다. Reveal과 글자별 트랙만 Key Value로 생깁니다.</li>
+<li>끝 키의 도착 방식은 Ease <code>OutSine</code>입니다.</li>
+<li>글자별 트랙의 Stagger는 0.05초입니다.</li>
+</ul>
+<p>Start 옵션은 <a href="track-options.html">트랙 옵션</a>을 참고하세요.</p>
+<h2 id="만들-수-있는-트랙">만들 수 있는 트랙</h2>
+<p>트랙 추가 창은 고른 오브젝트에 붙은 컴포넌트에 맞는 트랙만 보여 줍니다.</p>
+<p><strong>오브젝트</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>모든 오브젝트</td>
+<td>Scale, Rotation, Active</td>
+</tr>
+<tr>
+<td>UI가 아닌 오브젝트 (Transform)</td>
+<td>Position, World Position, World Rotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>UI</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RectTransform</td>
+<td>Position, Size, Anchor Min, Anchor Max, Pivot, Offset Min, Offset Max</td>
+</tr>
+<tr>
+<td>CanvasGroup</td>
+<td>Group Alpha</td>
+</tr>
+<tr>
+<td>Graphic (Image, RawImage, TMP 등)</td>
+<td>Color, Alpha</td>
+</tr>
+<tr>
+<td>Image (Image Type = Filled)</td>
+<td>Fill Amount</td>
+</tr>
+<tr>
+<td>RawImage</td>
+<td>UV Rect</td>
+</tr>
+<tr>
+<td>Shadow, Outline</td>
+<td>Effect Color, Effect Distance</td>
+</tr>
+<tr>
+<td>RectMask2D</td>
+<td>Softness, Padding</td>
+</tr>
+<tr>
+<td>Slider</td>
+<td>Value</td>
+</tr>
+<tr>
+<td>ScrollRect</td>
+<td>Scroll Position</td>
+</tr>
+<tr>
+<td>LayoutElement</td>
+<td>Min Size, Preferred Size, Flexible Size</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TextMeshPro</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TMP_Text</td>
+<td>Font Size, Character Spacing, Word Spacing, Line Spacing, Reveal (Typewriter), Number (Count)</td>
+</tr>
+<tr>
+<td>TMP_Text 재질</td>
+<td>Outline Width, Outline Color, Face Dilate, Underlay Color</td>
+</tr>
+<tr>
+<td>TMP_Text 글자별</td>
+<td>Char Scale, Char Position, Char Rotation, Char Color, Char Alpha</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2D, 3D, 카메라, 소리</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SpriteRenderer</td>
+<td>Color, Alpha</td>
+</tr>
+<tr>
+<td>Renderer (MeshRenderer 등)</td>
+<td>Material 트랙: 재질의 색, 숫자, 벡터 속성마다 하나 (예: <code>Material _BaseColor</code>)</td>
+</tr>
+<tr>
+<td>Light</td>
+<td>Light Color, Intensity, Range (Point, Spot), Spot Angle (Spot)</td>
+</tr>
+<tr>
+<td>Camera</td>
+<td>Camera Background, Camera Size, Field of View, Near Clip, Far Clip, Viewport Rect</td>
+</tr>
+<tr>
+<td>AudioSource</td>
+<td>Volume, Pitch</td>
+</tr>
+</tbody>
+</table>
+<p><strong>이벤트와 사운드</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>루트</td>
+<td>Animation Events, Sound</td>
+</tr>
+</tbody>
+</table>
+<p><strong>그 밖의 트랙</strong></p>
+<ul>
+<li>UIEffect를 설치하면 UIEffect 트랙 14종이 추가됩니다. 자세한 내용은 <a href="unitask.html">연동</a>을 참고하세요.</li>
+<li>프로젝트의 컴포넌트를 움직이는 트랙은 직접 만들 수 있습니다. 자세한 내용은 <a href="custom-tracks.html">커스텀 트랙 만들기</a>를 참고하세요.</li>
+</ul>
+<p><strong>알아 둘 점</strong></p>
+<ul>
+<li><code>Group Alpha</code>는 화면이나 팝업 전체를 페이드할 때 씁니다. 자세한 내용은 <a href="#%EC%97%AC%EB%9F%AC-%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8%EB%A5%BC-%ED%95%A8%EA%BB%98-%ED%8E%98%EC%9D%B4%EB%93%9C%ED%95%98%EA%B8%B0-canvasgroup">여러 오브젝트를 함께 페이드하기</a>를 참고하세요.</li>
+<li><code>Rotation</code>과 <code>World Rotation</code>은 오일러 각(도)입니다. 값을 −180~180 범위로 읽으므로, −30°에서 0°로 갈 때 먼 쪽으로 돌지 않습니다.</li>
+<li><code>Active</code>는 키 사이를 보간하지 않고, 키 시간에 오브젝트를 켜거나 끕니다.</li>
+<li>Material 트랙은 MaterialPropertyBlock으로 씁니다. 재질 에셋은 바뀌지 않고, 같은 재질을 쓰는 다른 오브젝트에도 영향을 주지 않습니다.</li>
+<li>TMP 재질 트랙은 그 텍스트만 쓰는 재질 인스턴스를 만듭니다. 미리보기를 멈추면 원래 재질로 돌아옵니다.</li>
+</ul>
+<h2 id="여러-오브젝트를-함께-페이드하기-canvasgroup">여러 오브젝트를 함께 페이드하기 (CanvasGroup)</h2>
+<p>팝업, 패널, 화면처럼 자식이 있는 오브젝트를 통째로 나타내거나 사라지게 할 때는 그 오브젝트에 <code>CanvasGroup</code>을 붙이고 <code>Group Alpha</code> 트랙 하나를 씁니다.</p>
+<ol>
+<li>페이드할 오브젝트(팝업의 루트 등)에 <strong>Add Component &gt; Canvas Group</strong>을 붙입니다.</li>
+<li>트랙 추가 창에서 그 오브젝트의 <code>Group Alpha</code>를 고릅니다. <code>CanvasGroup</code>이 없는 오브젝트에는 이 트랙이 나오지 않습니다.</li>
+<li>나타나는 상태에는 0초에 0, 끝에 1인 키를 두고 <a href="track-options.html#start">Start</a>를 <code>Key Value</code>로 합니다. 사라지는 상태에는 끝에 0인 키 하나만 둡니다.</li>
+</ol>
+<p>프리셋 <strong>Show + Hide</strong>와 <strong>Open + Close</strong>는 오브젝트에 <code>CanvasGroup</code>이 있으면 이 트랙으로 만듭니다. 녹화 중에 인스펙터에서 <code>CanvasGroup</code>의 Alpha를 바꿔도 이 트랙이 생깁니다.</p>
+<p><strong>어느 트랙을 쓸까</strong></p>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th>트랙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>자식이 있는 팝업, 패널, 화면 전체</td>
+<td>그 오브젝트의 <code>Group Alpha</code> 하나</td>
+</tr>
+<tr>
+<td>이미지나 텍스트 하나</td>
+<td>그 그래픽의 <code>Alpha</code></td>
+</tr>
+<tr>
+<td>자식마다 다른 시점에 나타남</td>
+<td>자식마다 <code>Alpha</code> (자식이 다시 묶음이면 자식마다 <code>CanvasGroup</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>알아 둘 동작</strong></p>
+<p>아래는 Unity 6000.6.3f1에서 측정한 uGUI의 동작입니다.</p>
+<ul>
+<li><p><strong>값은 곱해집니다.</strong> Group Alpha는 자식 각각의 알파에 곱해집니다. <code>CanvasGroup</code> 안에 <code>CanvasGroup</code>이 있으면 그 값도 곱해져서, 0.5 안의 0.5는 0.25로 보입니다. 자식 그룹의 <strong>Ignore Parent Groups</strong>를 켜면 자기 값만 씁니다.</p>
+</li>
+<li><p><strong>겹친 자식은 서로 비쳐 보입니다.</strong> 묶음을 한 장으로 합쳐서 흐리게 하는 것이 아니라 자식을 하나씩 흐리게 합니다. 불투명한 패널이 배경 이미지를 덮고 있어도 페이드 중간에는 배경이 패널 너머로 보이고, 자식마다 <code>Alpha</code>를 준 것과 같은 그림이 나옵니다. 눈에 띄면 페이드를 짧게 잡습니다.</p>
+</li>
+<li><p><strong>알파가 0이어도 입력을 받습니다.</strong> 다 사라진 팝업이 켜진 채 남아 있으면 그 아래 버튼의 클릭을 가로챕니다. 닫은 뒤에는 오브젝트를 끄거나 <code>CanvasGroup</code>의 <strong>Blocks Raycasts</strong>를 끕니다.</p>
+<pre><code class="lang-csharp">await popup.PlayAsync(&quot;Close&quot;);
+popup.gameObject.SetActive(false);
+</code></pre>
+<p>코드 없이 하려면 <code>Active</code> 트랙을 씁니다. 닫는 상태의 끝에 끄는 키를, 여는 상태의 0초에 켜는 키를 둡니다. 이때 KeyTween은 꺼지는 오브젝트의 부모처럼 계속 켜져 있는 오브젝트에 둡니다. KeyTween이 붙은 오브젝트 자신을 끄면 모습은 같지만, 닫는 재생이 취소된 것으로 끝나서 <code>await PlayAsync(&quot;Close&quot;)</code>가 <code>OperationCanceledException</code>을 던집니다.</p>
+</li>
+<li><p><strong>입력만 막을 때는 Blocks Raycasts를 끕니다.</strong> <strong>Interactable</strong>을 끄면 그 아래 버튼이 모두 비활성 색으로 바뀌고, 클릭은 여전히 그 버튼에 막혀 아래로 가지 않습니다. <a href="screens.html#%EC%9E%85%EB%A0%A5%EC%9D%84-%EB%A7%89%EB%8A%94-%EB%B0%A9%EC%8B%9D">화면 전환</a> 컨테이너도 전환 중 입력을 Blocks Raycasts로 막습니다.</p>
+</li>
+<li><p><strong>Group Alpha는 그래픽의 메시를 다시 만들지 않습니다.</strong> <code>Alpha</code>와 <code>Color</code> 트랙은 값이 바뀔 때마다 그 그래픽의 메시를 다시 만들게 합니다. 자식이 많은 묶음은 <code>Group Alpha</code> 하나로 페이드합니다.</p>
+</li>
+</ul>
+<p><strong>AI 에이전트에게 맡길 때</strong></p>
+<p>에이전트의 쓰기 명령은 <code>Group Alpha</code> 트랙이 움직이는 UI 오브젝트에 <code>CanvasGroup</code>이 없으면 붙여 줍니다. 그래서 미리 붙여 두지 않아도 팝업의 페이드가 트랙 하나로 만들어지고, 붙인 것도 같은 Ctrl+Z로 되돌아갑니다. 닫힌 뒤에 오브젝트를 끄는 일은 에이전트가 하지 않으므로 코드에서 합니다. 자세한 내용은 <a href="agents.html#%ED%95%A0-%EC%88%98-%EC%9E%88%EB%8A%94-%EA%B2%83%EA%B3%BC-%EC%97%86%EB%8A%94-%EA%B2%83">AI 에이전트로 만들기</a>를 참고하세요.</p>
+<h2 id="트랙-대상-바꾸기">트랙 대상 바꾸기</h2>
+<p>트랙의 대상을 바꾸려면 트랙 인스펙터 맨 위의 <code>경로 · 속성 ▾</code> 버튼을 누릅니다.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

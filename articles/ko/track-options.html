@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+      <title>트랙 옵션 | KeyTween </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="트랙 옵션 | KeyTween ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UnialGames/KeyTween-Dev/blob/main/Tools/docfx/articles/ko/track-options.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="KeyTween">
+            KeyTween
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="트랙-옵션">트랙 옵션</h1>
+
+<p>트랙 옵션은 첫 키의 값을 어디서 가져올지, 키 값을 무엇을 기준으로 읽을지 정합니다. 트랙을 고르면 트랙 인스펙터에 나옵니다.</p>
+<p><img src="../../media/editor/editor-track-inspector.png" alt="Button · Color 트랙의 트랙 인스펙터. Start = Current Value, Relative To Rest, Size Relative가 보입니다."></p>
+<h2 id="start">Start</h2>
+<p>첫 키의 값을 어디서 가져올지 정합니다.</p>
+<p>이 옵션이 다루는 문제는 &quot;재생이 중간에 끊길 때&quot;입니다. 버튼이 1 → 1.08로 커지는 도중(1.04)에 마우스가 나가면 Unhover가 재생됩니다. 이때 Unhover의 첫 키가 적힌 값(1.08)이면 크기가 1.04에서 1.08로 튀었다가 줄어듭니다. 첫 키를 재생을 시작하는 순간의 값(1.04)으로 하면 그 자리에서 이어집니다.</p>
+<table>
+<thead>
+<tr>
+<th>값</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Key Value</code></td>
+<td>키에 적힌 값</td>
+</tr>
+<tr>
+<td><code>Current Value</code></td>
+<td>재생을 시작하는 순간의 값</td>
+</tr>
+<tr>
+<td><code>Pointer (press position)</code></td>
+<td>상태를 재생시킨 포인터를 누른 위치. UI(RectTransform)의 Position 트랙에서만 쓸 수 있고, Play On이 포인터 이벤트일 때 동작합니다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>Current Value</code>는 재생이 중간에 끊겨도 값이 튀지 않습니다. 그래서 호버와 언호버, 열기와 닫기에 씁니다.</li>
+<li><code>Key Value</code>는 매번 같은 곳에서 출발해야 할 때 씁니다. 예를 들어 0에서 시작하는 등장 연출입니다.</li>
+<li><code>Current Value</code> 트랙의 첫 키를 0초보다 뒤에 두면 그 시간만큼 기다렸다가 출발합니다.</li>
+<li><code>Pointer</code>에서는 뒤의 키들이 누른 자리를 기준으로 합니다. 그래서 <code>(0,0)</code>이 &quot;누른 그 자리&quot;입니다. 버튼 리플 효과에 씁니다.</li>
+</ul>
+<h2 id="relative-to-rest">Relative To Rest</h2>
+<p>키 값을 원래 값에 더합니다.</p>
+<p>크기가 다른 버튼 여러 개에 같은 &quot;누르면 조금 작아지는&quot; 연출을 쓰는 경우가 예입니다. Size 트랙에 (200, 80) 같은 값을 적으면 그 크기의 버튼에만 맞습니다. Relative To Rest를 켜고 −(34, 17)을 적으면 버튼마다 자기 크기에서 34×17만큼 줄어듭니다.</p>
+<p>원래 값은 다음과 같습니다.</p>
+<ul>
+<li>실행 중: Awake 때의 값</li>
+<li>미리보기: 미리보기를 시작할 때의 값</li>
+</ul>
+<h2 id="size-relative">Size Relative</h2>
+<p>키 값을 대상 자신의 크기에 대한 배수로 읽습니다. x = 1이면 자기 폭만큼입니다. UI(RectTransform)의 Position과 Size 트랙에서만 쓸 수 있습니다.</p>
+<p>그래서 해상도가 달라도 같은 비율로 움직입니다. 예를 들어 화면이 오른쪽으로 한 화면 떨어진 곳(x = 1)에서 0으로 들어오게 할 수 있습니다.</p>
+<h2 id="텍스트-트랙의-옵션">텍스트 트랙의 옵션</h2>
+<p>위 옵션은 키프레임 트랙에 있습니다. 텍스트 트랙은 옵션이 다릅니다.</p>
+<ul>
+<li>Reveal 트랙에는 Scramble만 있습니다.</li>
+<li>글자별 트랙에는 Stagger와 Duration per Char만 있습니다.</li>
+<li>Reveal과 글자별 트랙의 Start는 항상 Key Value입니다. Number 트랙은 보통 트랙처럼 Start, Relative To Rest를 고를 수 있습니다.</li>
+</ul>
+<p>자세한 내용은 <a href="text-tracks.html">텍스트 트랙</a>을 참고하세요.</p>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Copyright © 2026 UnialGames. Generated with <a href="https://dotnet.github.io/docfx">DocFX</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
