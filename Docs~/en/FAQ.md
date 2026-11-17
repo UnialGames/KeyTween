@@ -40,6 +40,27 @@ Development, tests and performance measurements were done on Windows (the editor
 
 The Input System package. TextMeshPro's Essential Resources are imported with a sample if the project does not have them.
 
+### What happens when an object is destroyed while a state plays?
+
+* **An object a track animates is destroyed**: only that track is skipped. The other tracks play to the end and `PlayAsync` completes normally, with no error.
+* **The object with the KeyTween is destroyed or turned off**: the play stops and `PlayAsync` ends with `OperationCanceledException`. No error is logged.
+
+### How does it look in version control? What about merge conflicts?
+
+An animation has no file of its own: it is inside the `KeyTween` component in the prefab (or scene) file. Editing a state changes that prefab file, and version control shows it like any other prefab change.
+
+* Two people editing states of the same prefab at once is an ordinary prefab conflict. Use Unity's Smart Merge (UnityYAMLMerge), or edit one at a time.
+* Splitting screens and parts into prefabs narrows what can conflict. A child's animation changed from an outer prefab is saved in the outer prefab's file.
+* With Auto Save on, an edit is written to the prefab file 0.4 seconds after the last change. Something tried in the window is in the file too, so check the changes before committing.
+
+### How do we remove KeyTween later?
+
+1. Replace the code that uses the `KeyTweening` namespace.
+2. Remove the KeyTween components, such as `KeyTween` and `KeyTweenTrigger`, from prefabs and scenes. Removing the package first leaves them as Missing Scripts.
+3. Remove the package in the Package Manager.
+
+There is no export of an animation to an Animator clip or another tool's format. The data goes with the component.
+
 ## Troubleshooting
 
 ### I played a state and nothing happens
@@ -148,7 +169,7 @@ It follows [Semantic Versioning](https://semver.org). Before 1.0.0 (0.x):
 * An API that goes away is first marked `[Obsolete]` with what to use instead, and removed in the MINOR version after that.
 * Data saved in prefabs is converted automatically when a newer version loads it.
 
-What changed in each version is in the [CHANGELOG](../../CHANGELOG.md). To pin the version you use, add its tag to the install address, like `#v0.4.0`.
+What changed in each version is in the [CHANGELOG](../../CHANGELOG.md). To pin the version you use, add its tag to the install address, like `#v0.4.1`.
 
 ### Reporting a Problem
 

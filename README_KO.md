@@ -68,7 +68,7 @@ KeyTween을 프로젝트에 설치하는 방법을 설명합니다.
 
 ### Package Manager로 설치 (권장)
 
-Package Manager에서 Git 주소로 설치합니다.
+Package Manager에서 Git 주소로 설치합니다. PC에 [Git](https://git-scm.com/)이 설치되어 있어야 합니다. 없으면 Package Manager가 git을 찾지 못했다는 오류를 내므로, Git을 설치한 뒤 Unity와 Unity Hub를 다시 시작합니다.
 
 1. **Window > Package Manager**를 엽니다.
 2. **+** 버튼을 누르고 **Add package from git URL...** 항목을 고릅니다.
@@ -88,16 +88,18 @@ https://github.com/UnialGames/KeyTween.git
 }
 ```
 
+설치되면 **Window > KeyTween Editor** 메뉴가 생깁니다.
+
 ### 업데이트
 
-위 주소는 항상 최신 릴리스를 가리킵니다. 새 버전이 나오면 Package Manager에서 KeyTween을 고르고 **Update**를 누릅니다.
+위 주소는 공개 저장소의 `main` 브랜치를 따릅니다. `main`에는 릴리스한 패키지만 올라가므로 최신 릴리스와 같고, 릴리스 사이에는 문서만 바뀔 수 있습니다. 새 버전이 나오면 Package Manager에서 KeyTween을 고르고 **Update**를 누릅니다.
 
 ### 특정 버전으로 설치하기
 
 주소 뒤에 `#`과 버전 태그를 붙이면 그 버전에 고정됩니다. 버전 목록은 [Releases](https://github.com/UnialGames/KeyTween/releases)에 있습니다.
 
 ```text
-https://github.com/UnialGames/KeyTween.git#v0.4.0
+https://github.com/UnialGames/KeyTween.git#v0.4.1
 ```
 
 * 고정한 버전은 **Update**를 눌러도 바뀌지 않습니다.
@@ -181,7 +183,7 @@ public class Popup : MonoBehaviour
 * 에디터는 애니메이션 자체를 정합니다. 시간, 이징, 움직일 속성이 여기에 속합니다.
 * 코드는 *어느 상태*를 재생할지와 *끝난 뒤 무엇을 할지*만 정합니다.
 
-자세한 내용은 [API](Docs~/API.md#재생)를 참고하세요.
+자세한 내용은 [API](Docs~/API.md#재생)를 참고하세요. 코드 없이 버튼으로 팝업을 열고 닫는 방법은 [코드 없이 팝업 열고 닫기](Docs~/Guide.md#코드-없이-팝업-열고-닫기)에 있습니다.
 
 ## AI 에이전트로 만들기
 
@@ -189,7 +191,7 @@ public class Popup : MonoBehaviour
 
 ### 준비하기
 
-1. 프로젝트 폴더에서 `unity pipeline install`을 실행해 Unity CLI 패키지(`com.unity.pipeline`, Unity 6)를 설치합니다.
+1. 프로젝트 폴더에서 `unity pipeline install`을 실행해 Unity CLI 패키지(`com.unity.pipeline`, Unity 6)를 설치합니다. Unity Hub에서 새 프로젝트를 만들 때 **Unity CLI 사용**을 체크했다면 이미 들어 있습니다.
 2. **Tools > KeyTween > Set Up Agent Access**를 고릅니다. `AGENTS.md`와 `CLAUDE.md`에 에이전트용 안내가 들어갑니다.
 3. Unity 에디터를 연 채로 에이전트에게 요청합니다.
 

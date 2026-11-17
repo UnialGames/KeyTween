@@ -66,9 +66,10 @@ namespace KeyTweening.Editor
             "UI and object animations in this project are KeyTween states stored in prefabs and scene objects " +
             "(component `KeyTween`: named states such as `Hover` or `Open`, each with tracks and keys).\n\n" +
             "- To create or change one, use the Unity CLI commands `keytween_read`, `keytween_write_scene` and `keytween_write_prefab` " +
-            "(`unity command keytween_read --target Assets/UI/Button.prefab`; the Unity Editor must be open; " +
-            "from outside the project folder add `--project-path <project folder>`).\n" +
-            "- Read the contract first: it is the data format and the rules. `unity command keytween_contract` prints the installed version. " +
+            "(`unity --json command keytween_read --target Assets/UI/Button.prefab`; the Unity Editor must be open; " +
+            "from outside the project folder add `--project-path <project folder>` after `command`). " +
+            "Keep `--json`: the answer is then JSON with the result in `data.result`; without it the output is a table that puts everything on one line.\n" +
+            "- Read the contract first: it is the data format and the rules. `unity --json command keytween_contract` returns the installed version (the text is `data.result`). " +
             $"It is also the file `{contractFile}` (the path changes when the package is updated: Tools > KeyTween > Set Up Agent Access writes it again).\n" +
             "- Read a target, edit the returned JSON, write it back with its `token`. A write refused as stale means someone edited the data: read again.\n" +
             "- Never edit KeyTween data in `.prefab` or `.unity` files by hand.\n" +

@@ -8,7 +8,7 @@ KeyTween contains no AI model. It provides the commands an agent uses to read an
 
 You need Unity 6 and the Unity CLI package (`com.unity.pipeline`). Without the Unity CLI, KeyTween works as usual; only the commands are missing.
 
-1. **Install the Unity CLI package.** Run `unity pipeline install` in the project folder. Once it is installed, KeyTween's commands compile automatically.
+1. **Install the Unity CLI package.** Run `unity pipeline install` in the project folder. If you checked **Use Unity CLI** when creating the project in Unity Hub, it is already there and you can skip this. Once it is installed, KeyTween's commands compile automatically.
 2. **Choose Tools > KeyTween > Set Up Agent Access.** A KeyTween section is added to `AGENTS.md` and `CLAUDE.md` in the project folder, which tells agents the commands and how to read the contract.
    * Choosing it again leaves one section.
    * After updating the package, choose it once more so the contract's file path is written again. The `keytween_contract` command works regardless of updates.
@@ -23,13 +23,14 @@ To use it from an MCP client, register the Unity CLI as an MCP server with `unit
 
 ## What It Makes
 
-The agent reads the prefab (`keytween_read`) and writes the states it made (`keytween_write_prefab`). Below is the `Open` state an agent made from the request above, opened in the KeyTween window. It has the popup's Scale and an Alpha track for each graphic; select the end key to change its value and ease right there.
+The agent reads the prefab (`keytween_read`) and writes the states it made (`keytween_write_prefab`). Below is the `Open` state an agent made from the request above, opened in the KeyTween window. It has the popup's Scale and a Group Alpha track that fades the whole popup; select the end key to change its value and ease right there. The popup had no `CanvasGroup`, so the write command added one.
 
-![The Open state an agent made for a popup, opened in the KeyTween window: one Scale track and five Alpha tracks, with the Out Back ease in the key inspector on the right.](../media/agents/agent-popup.png)
+![The Open state an agent made for a popup, opened in the KeyTween window: one Scale track and one Group Alpha track, with the Out Back ease in the key inspector on the right.](../media/agents/agent-popup.png)
 
 * The states are stored in the prefab. They are no different from states made in the editor.
 * Code plays them by name: `await popup.PlayAsync("Open")`
 * Change what you don't like in the KeyTween window, or ask the agent again. The agent reads again and builds on that.
+* Open the KeyTween window with **Window > KeyTween Editor**. Open the prefab, or select the object in the scene, and its states are there.
 
 ## Commands
 
@@ -43,10 +44,12 @@ Reading and the two writes are separate commands, so you can allow reading only,
 | `keytween_write_prefab` | A prefab asset | Applies to every instance of the prefab and is saved. If the prefab is open in Prefab Mode, the open objects are changed and saving follows the KeyTween window's Auto Save or Save. |
 
 ```text
-unity command keytween_read --target Assets/UI/Button.prefab
-unity command keytween_write_prefab --file Temp/hover.json --dry_run true
-unity command keytween_write_prefab --file Temp/hover.json
+unity --json command keytween_read --target Assets/UI/Button.prefab
+unity --json command keytween_write_prefab --file Temp/hover.json --dry_run true
+unity --json command keytween_write_prefab --file Temp/hover.json
 ```
+
+With `--json` the answer is JSON, and the document that was read is its `data.result`. Without it the output is a table, and line breaks are lost.
 
 The target is the object that has (or will get) the `KeyTween`. A prefab asset is `Assets/UI/Button.prefab`, an object inside it is `Assets/UI/Popup.prefab:Panel/OkButton`, and an object of an open scene is `/Canvas/Button`.
 
@@ -55,7 +58,7 @@ The target is the object that has (or will get) the `KeyTween`. A prefab asset i
 People and agents edit the same data, so neither overwrites the other's work.
 
 * **Refused if it changed after the read.** A read returns a token, and a write sends it back. If a person edited the data in between, or another write happened, the write is refused, so the agent reads again and redoes its change on that document.
-* **All or nothing.** A missing path, an unknown track, a value with the wrong number of components or an unknown ease name are all reported at once, and nothing is changed.
+* **All or nothing.** A missing path, an unknown track, a value with the wrong number of components or an unknown ease name are all reported at once, and nothing is changed. When a track itself is wrong, its keys are not checked.
 * **One Ctrl+Z undoes it.** Adding the component and setting Play On are part of the same Undo step.
 * **Check only.** `--dry_run true` checks the document and reports what would change.
 * **Nothing is written in Play mode.** A scene that is not open is not opened for the agent.
@@ -65,9 +68,9 @@ People and agents edit the same data, so neither overwrites the other's work.
 * Written: creating, replacing and deleting states, loop, Play On, tracks (built-in, Material, custom), keys and their arrival, animation events
 * Kept as they are: sounds, child calls, callbacks. Replacing a state does not remove them.
 * Not supported: overrides, renaming a state
-* The commands add no component other than `KeyTween` and, for Play On, `KeyTweenTrigger`. To fade a whole popup at once, give that object a `CanvasGroup` beforehand.
+* The commands add three components and no other: `KeyTween`, `KeyTweenTrigger` for Play On, and a `CanvasGroup` for fading a group. The `CanvasGroup` is added only to a UI object that a `CanvasGroupAlpha` track fades and that has none, in the same Undo step. So a whole popup fades with one track ([Fading Several Objects Together](Guide.md#fading-several-objects-together-canvasgroup)).
 
-The format and the rules are in the package's `Editor/Agent/KEYTWEEN-CONTRACT.md`, which `unity command keytween_contract` also prints. A misspelled field name is ignored and its default is used, so it is safer to have the agent check with `--dry_run true` first.
+The format and the rules are in the package's `Editor/Agent/KEYTWEEN-CONTRACT.md`, which `unity --json command keytween_contract` also returns. A misspelled field name is ignored and its default is used, so it is safer to have the agent check with `--dry_run true` first.
 
 ## Calling It from Elsewhere
 

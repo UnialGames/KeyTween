@@ -2,6 +2,14 @@
 
 All notable changes to this package are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package uses [Semantic Versioning](https://semver.org/).
 
+## [0.4.1] - 2026-11-17
+
+An AI agent now fades a whole popup with one track: the write adds the `CanvasGroup` it needs. The guidance written for agents calls the commands with `--json`.
+
+### Changed
+- AI agent access: a write adds a `CanvasGroup` to a UI object when a `CanvasGroupAlpha` track fades it and it has none (in the same Undo step, reported in `changes` and by a dry run), and a read lists `CanvasGroupAlpha` for every UI object. A whole popup or panel now fades with one track instead of an `Alpha` track per graphic. A non-UI object is refused as before.
+- AI agent access: the section **Set Up Agent Access** writes to `AGENTS.md` and `CLAUDE.md`, and the contract's examples, call the commands as `unity --json command …`. Without `--json` the Unity CLI prints a table that puts the contract and a read document on one line. Choose **Tools > KeyTween > Set Up Agent Access** again after updating to get the new text.
+
 ## [0.4.0] - 2026-11-14
 
 AI agents can create and edit animations through the Unity CLI (`keytween_read`, `keytween_write_scene`, `keytween_write_prefab`, `keytween_contract`), the KeyTween Editor starts new states from presets, and a callback or event that plays its own state again while it starts or ends no longer leaves it half playing. New help pages: FAQ, troubleshooting, coming from other tools, versions and support.

@@ -259,6 +259,18 @@ You can also play a state from a UnityEvent, such as a Button's OnClick.
 
 To play it in reverse, choose `PlayReversed (string)`.
 
+### A Popup Without Code
+
+Open and close a popup from buttons, and turn the closed popup off so it does not catch clicks, all without code.
+
+1. Add a **Canvas Group** to the popup's root, then choose **Open + Close** under **Presets ▾** in the KeyTween window. The `Open` and `Close` states are made.
+2. In `Close`, add the popup's own **Active** track and uncheck its end key. The popup turns off the moment the close ends.
+3. In `Open`, add an **Active** track too and set the track's Start to `Key Value`. With `Current Value`, a popup that is off does not turn on.
+4. Drag the popup object onto the close button's **On Click ()**, choose `KeyTween.Play (string)` in the function list and enter `Close`.
+5. Do the same on the button that opens the popup, with `Open`. It plays on a popup that is off, too.
+
+Because the popup turns itself off, the closing play ends as canceled, not as having reached its end. If something is connected to `Close`'s On Complete, or code waits with `await PlayAsync("Close")`, put the KeyTween on a parent that stays on and make the popup's body a child. For details, see [Fading Several Objects Together](#fading-several-objects-together-canvasgroup).
+
 ## 5. Adding Tracks
 
 A track animates one property of one object. You choose tracks in the Add Track window and add them to the state.
@@ -350,11 +362,51 @@ The Add Track window shows only the tracks that match the components on the sele
 
 **Things to know**
 
-* `Group Alpha` is for fading a whole screen or popup.
+* `Group Alpha` is for fading a whole screen or popup. For details, see [Fading Several Objects Together](#fading-several-objects-together-canvasgroup).
 * `Rotation` and `World Rotation` use Euler angles in degrees. Values are read in the range −180 to 180, so going from −30° to 0° does not turn the long way around.
 * `Active` does not interpolate between keys. It turns the object on or off at each key's time.
 * Material tracks write through a MaterialPropertyBlock. The material asset does not change, and other objects that use the same material are not affected.
 * TMP material tracks make a material instance used only by that text. When the preview stops, the original material comes back.
+
+### Fading Several Objects Together (CanvasGroup)
+
+To make an object with children, such as a popup, a panel or a screen, appear or disappear as a whole, give that object a `CanvasGroup` and use one `Group Alpha` track.
+
+1. Add **Add Component > Canvas Group** to the object to fade (the popup's root, for example).
+2. In the Add Track window, pick that object's `Group Alpha`. The track is not listed for an object without a `CanvasGroup`.
+3. In the state that appears, put a key of 0 at 0 s and a key of 1 at the end, and set [Start](#start) to `Key Value`. In the state that disappears, one key of 0 at the end is enough.
+
+The **Show + Hide** and **Open + Close** presets use this track when the object has a `CanvasGroup`. Changing the `CanvasGroup`'s Alpha in the Inspector while recording also makes this track.
+
+**Which track to use**
+
+| Case | Track |
+|---|---|
+| A whole popup, panel or screen with children | One `Group Alpha` on that object |
+| One image or text | That graphic's `Alpha` |
+| Children that appear at different times | `Alpha` on each child (a `CanvasGroup` on each child that is itself a group) |
+
+**Things to know**
+
+The following is how uGUI behaves, measured on Unity 6000.6.3f1.
+
+* **Values multiply.** Group Alpha is multiplied into each child's own alpha. A `CanvasGroup` inside a `CanvasGroup` multiplies too, so 0.5 inside 0.5 shows as 0.25. With **Ignore Parent Groups** on, a child group uses only its own value.
+* **Overlapping children show through each other.** The group is not flattened into one picture and then faded: each child is faded on its own. An opaque panel over a background image still lets the background show through halfway through the fade, the same picture as an `Alpha` on every child. If it stands out, keep the fade short.
+* **It still takes input at alpha 0.** A popup that has faded out but is still active catches the clicks meant for the buttons under it. After closing, turn the object off, or turn off the `CanvasGroup`'s **Blocks Raycasts**.
+
+  ```csharp
+  await popup.PlayAsync("Close");
+  popup.gameObject.SetActive(false);
+  ```
+
+  To do it without code, use an `Active` track: a key that turns the object off at the end of the closing state, and one that turns it on at 0 s of the opening state. Put the KeyTween on an object that stays on, such as the parent of the one being turned off. Turning off the KeyTween's own object looks the same, but the closing play ends as canceled, so `await PlayAsync("Close")` throws `OperationCanceledException`.
+
+* **To block input only, turn off Blocks Raycasts.** Turning off **Interactable** draws every button under the group in its disabled color, and clicks are still stopped by those buttons instead of reaching what is below. The [screen transition](Screens.md#how-input-is-blocked) containers block input during a transition with Blocks Raycasts too.
+* **Group Alpha does not rebuild the graphics' meshes.** `Alpha` and `Color` tracks make their graphic rebuild its mesh every time the value changes. Fade a group with many children with one `Group Alpha`.
+
+**When an AI agent makes it**
+
+The agent's write commands add a `CanvasGroup` to a UI object that a `Group Alpha` track fades and that has none. So a popup's fade is made with one track without adding it yourself, and the same Ctrl+Z takes it back. The agent does not turn the object off after it closes: do that in code. For details, see [Creating with AI Agents](Agents.md#what-it-can-and-cannot-do).
 
 ### Changing a Track's Target
 

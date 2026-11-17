@@ -68,7 +68,7 @@ This section explains how to install KeyTween in your project.
 
 ### Install via Package Manager (Recommended)
 
-Install KeyTween from its Git URL in the Package Manager.
+Install KeyTween from its Git URL in the Package Manager. [Git](https://git-scm.com/) must be installed on the PC. Without it the Package Manager reports that it found no git, so install Git, then restart Unity and Unity Hub.
 
 1. Open **Window > Package Manager**.
 2. Click the **+** button and select **Add package from git URL...**.
@@ -88,16 +88,18 @@ Alternatively, add the following line to the `dependencies` block of `Packages/m
 }
 ```
 
+Once installed, the **Window > KeyTween Editor** menu is there.
+
 ### Updating
 
-The URL above always points to the latest release. When a new version is out, select KeyTween in the Package Manager and click **Update**.
+The URL above follows the public repository's `main` branch. Only released packages go to `main`, so it is the latest release; between releases only the documentation may change. When a new version is out, select KeyTween in the Package Manager and click **Update**.
 
 ### Installing a specific version
 
 Add `#` and a version tag to the URL to stay on that version. All versions are listed on the [Releases](https://github.com/UnialGames/KeyTween/releases) page.
 
 ```text
-https://github.com/UnialGames/KeyTween.git#v0.4.0
+https://github.com/UnialGames/KeyTween.git#v0.4.1
 ```
 
 * A pinned version does not change when you click **Update**.
@@ -181,7 +183,7 @@ The editor and the code split the work as follows:
 * The editor defines the animation itself. This includes its timing, eases and animated properties.
 * The code only decides *which state* to play and *what happens after* it ends.
 
-For details, see [Playing](Docs~/en/API.md#playing).
+For details, see [Playing](Docs~/en/API.md#playing). To open and close a popup from buttons without code, see [A Popup Without Code](Docs~/en/Guide.md#a-popup-without-code).
 
 ## Creating with AI Agents
 
@@ -189,7 +191,7 @@ Hand an animation to a coding agent in words, then carry on in the KeyTween wind
 
 ### Setting Up
 
-1. Run `unity pipeline install` in the project folder to install the Unity CLI package (`com.unity.pipeline`, Unity 6).
+1. Run `unity pipeline install` in the project folder to install the Unity CLI package (`com.unity.pipeline`, Unity 6). If you checked **Use Unity CLI** when creating the project in Unity Hub, it is already there.
 2. Choose **Tools > KeyTween > Set Up Agent Access**. Guidance for agents is added to `AGENTS.md` and `CLAUDE.md`.
 3. With the Unity Editor open, ask the agent.
 

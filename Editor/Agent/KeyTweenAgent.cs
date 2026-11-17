@@ -172,7 +172,7 @@ namespace KeyTweening.Editor
                     {
                         path = PathFrom(at.go.transform, t),
                         components = t.GetComponents<Component>().Where(c => c != null).Select(c => c.GetType().Name).ToArray(),
-                        tracks = KeyTweenPropertyPicker.Properties(t).Select(p => TrackId(p.type)).Distinct().ToArray(),
+                        tracks = Tracks(t),
                     });
             if (anim == null) return doc;
             var trigger = at.go.GetComponent<KeyTweenTrigger>();
@@ -225,6 +225,14 @@ namespace KeyTweening.Editor
             return doc;
         }
 
+        // The tracks an object takes. A UI object takes CanvasGroupAlpha with or without a CanvasGroup: a write adds the one it lacks.
+        static string[] Tracks(Transform t)
+        {
+            var ids = KeyTweenPropertyPicker.Properties(t).Select(p => TrackId(p.type));
+            if (t is RectTransform) ids = ids.Append(nameof(KeyTweenProperty.CanvasGroupAlpha));
+            return ids.Distinct().ToArray();
+        }
+
         // A track this contract can write: its object is the target or under it (named by its path from there).
         static bool Writable(KeyTweenTrack track, Transform root) =>
             track.target != null && (track.target.transform == root || track.target.transform.IsChildOf(root));
@@ -263,9 +271,9 @@ namespace KeyTweening.Editor
 
             // A prefab asset takes no new component in place: add what is missing through its contents, then plan against the reloaded objects.
             var needsTrigger = plan.bindings.Exists(b => b.evt != null) && at.go.GetComponent<KeyTweenTrigger>() == null;
-            if (EditorUtility.IsPersistent(at.go) && (at.go.GetComponent<KeyTween>() == null || needsTrigger))
+            if (EditorUtility.IsPersistent(at.go) && (at.go.GetComponent<KeyTween>() == null || needsTrigger || plan.groups.Count > 0))
             {
-                AddToPrefabAsset(at, needsTrigger);
+                AddToPrefabAsset(at, needsTrigger, plan.groups.Select(g => PathFrom(at.go.transform, g.on)).Distinct().ToArray());
                 at = Resolve(doc.target);
                 plan = Plan(doc, at.go, errors);
                 if (errors.Count > 0) throw new InvalidOperationException("The prefab changed while its components were added:\n- " + string.Join("\n- ", errors));
@@ -284,6 +292,7 @@ namespace KeyTweening.Editor
             public readonly List<KeyTweenState> upserts = new();
             public readonly List<string> deletes = new();
             public readonly List<(string state, KeyTweenEvent? evt)> bindings = new();   // null = no Play On
+            public readonly List<(KeyTweenTrack track, Transform on)> groups = new();    // CanvasGroupAlpha tracks whose object has no CanvasGroup yet
             public readonly List<string> changes = new();
         }
 
@@ -307,7 +316,7 @@ namespace KeyTweening.Editor
                     continue;
                 }
                 var old = anim != null ? anim.states.Find(x => x.name == s.name) : null;
-                var state = Build(s, old, go.transform, errors);
+                var state = Build(s, old, go.transform, plan, errors);
                 plan.upserts.Add(state);
                 KeyTweenEvent? evt = null;
                 if (!string.IsNullOrEmpty(s.playOn) && s.playOn != "None")
@@ -333,10 +342,10 @@ namespace KeyTweening.Editor
             return plan;
         }
 
-        static KeyTweenState Build(KeyTweenAgentState s, KeyTweenState old, Transform root, List<string> errors)
+        static KeyTweenState Build(KeyTweenAgentState s, KeyTweenState old, Transform root, WritePlan plan, List<string> errors)
         {
             var state = new KeyTweenState { name = s.name, loop = s.loop };
-            var seen = new HashSet<(Component, string)>();
+            var seen = new HashSet<(Transform, string)>();
             foreach (var t in s.tracks ?? new List<KeyTweenAgentTrack>())
             {
                 var where = $"State '{s.name}', track '{t.track}' on '{t.@object}'";
@@ -349,16 +358,18 @@ namespace KeyTweening.Editor
                 var type = TrackType(t.track);
                 if (type == null)
                 {
-                    errors.Add($"{where}: unknown track. This object takes: {string.Join(", ", KeyTweenPropertyPicker.Properties(target).Select(p => TrackId(p.type)).Distinct())}.");
+                    errors.Add($"{where}: unknown track. This object takes: {string.Join(", ", Tracks(target))}.");
                     continue;
                 }
                 var component = target.GetComponent(type.ComponentType);
-                if (component == null || !type.Offers(component))
+                // The one component a write adds for a track: fading a UI object with its children needs a CanvasGroup on it.
+                var addGroup = component == null && type.Property == KeyTweenProperty.CanvasGroupAlpha && target is RectTransform;
+                if (!addGroup && (component == null || !type.Offers(component)))
                 {
-                    errors.Add($"{where}: the object does not take this track (it needs a {type.ComponentType.Name}). It takes: {string.Join(", ", KeyTweenPropertyPicker.Properties(target).Select(p => TrackId(p.type)).Distinct())}.");
+                    errors.Add($"{where}: the object does not take this track (it needs a {type.ComponentType.Name}). It takes: {string.Join(", ", Tracks(target))}.");
                     continue;
                 }
-                if (!seen.Add((component, t.track)))
+                if (!seen.Add((target, t.track)))
                 {
                     errors.Add($"{where}: the state has this track twice.");
                     continue;
@@ -366,6 +377,11 @@ namespace KeyTweening.Editor
 
                 var track = new KeyTweenTrack { target = component, relativeToRest = t.relativeToRest, sizeRelative = t.sizeRelative, stagger = t.stagger, durationPerChar = t.durationPerChar };
                 KeyTweenTrackTypes.Assign(track, type);
+                if (addGroup)
+                {
+                    if (!plan.groups.Exists(g => g.on == target)) plan.changes.Add($"add a CanvasGroup to {(target == root ? "the target" : $"'{t.@object}'")}");
+                    plan.groups.Add((track, target));
+                }
                 if (Name<KeyTweenStart>(Or(t.start, "Current"), out var start)) track.start = start;
                 else errors.Add($"{where}: start '{t.start}' is not one of {Names<KeyTweenStart>()}.");
                 if (track.start == KeyTweenStart.Pointer && !type.PointerStart) errors.Add($"{where}: start Pointer is for AnchoredPosition only.");
@@ -422,6 +438,9 @@ namespace KeyTweening.Editor
             Undo.SetCurrentGroupName(UndoName);
             var group = Undo.GetCurrentGroup();
 
+            foreach (var (track, on) in plan.groups)
+                track.target = on.TryGetComponent<CanvasGroup>(out var has) ? has : Undo.AddComponent<CanvasGroup>(on.gameObject);
+
             var anim = go.GetComponent<KeyTween>();
             if (anim == null) anim = Undo.AddComponent<KeyTween>(go);
             Undo.RecordObject(anim, UndoName);
@@ -456,12 +475,17 @@ namespace KeyTweening.Editor
             Undo.CollapseUndoOperations(group);
         }
 
-        static void AddToPrefabAsset(Target at, bool trigger)
+        static void AddToPrefabAsset(Target at, bool trigger, string[] groups)
         {
             using var contents = new PrefabUtility.EditPrefabContentsScope(at.assetPath);
             var into = string.IsNullOrEmpty(at.inner) ? contents.prefabContentsRoot.transform : contents.prefabContentsRoot.transform.Find(at.inner);
             if (into.GetComponent<KeyTween>() == null) into.gameObject.AddComponent<KeyTween>();
             if (trigger && into.GetComponent<KeyTweenTrigger>() == null) into.gameObject.AddComponent<KeyTweenTrigger>();
+            foreach (var path in groups)
+            {
+                var on = path.Length == 0 ? into : into.Find(path);
+                if (on.GetComponent<CanvasGroup>() == null) on.gameObject.AddComponent<CanvasGroup>();
+            }
         }
 
         // Where the change is now: a scene is left unsaved, a prefab is saved as the KeyTween Editor saves it.

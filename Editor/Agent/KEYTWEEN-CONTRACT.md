@@ -22,12 +22,13 @@ commands are MCP tools after `unity mcp configure <client>`. Run from the projec
 Both writes take `--content '<json>'` or `--file <path>.json`, and `--dry_run true` to check a document without changing
 anything (a dry run returns the same token: nothing changed). A read tells you which write a target needs (`"scope"`).
 Nothing is written in Play mode. The commands change KeyTween data only: they add the `KeyTween` (and, for Play On, the
-`KeyTweenTrigger`) component when needed, and no other component.
+`KeyTweenTrigger`) component when needed, and a `CanvasGroup` to a UI object that a `CanvasGroupAlpha` track fades and
+that has none. No other component.
 
 ```
-unity command keytween_read --target Assets/UI/Button.prefab
-unity command keytween_write_prefab --file Temp/hover.json --dry_run true
-unity command keytween_write_prefab --file Temp/hover.json
+unity --json command keytween_read --target Assets/UI/Button.prefab
+unity --json command keytween_write_prefab --file Temp/hover.json --dry_run true
+unity --json command keytween_write_prefab --file Temp/hover.json
 ```
 
 ## Targets
@@ -60,8 +61,8 @@ The target is the object that has (or will get) the `KeyTween` component.
   "token": "3f9a0c21d4e87b65",
   "hasKeyTween": true,
   "objects": [
-    { "path": "", "components": ["RectTransform", "Image", "Button"], "tracks": ["Scale", "Rotation", "Active", "SizeDelta", "AnchoredPosition", "GraphicColor", "GraphicAlpha"] },
-    { "path": "Label", "components": ["RectTransform", "TextMeshProUGUI"], "tracks": ["Scale", "GraphicColor", "FontSize", "TextReveal", "CharScale"] }
+    { "path": "", "components": ["RectTransform", "Image", "Button"], "tracks": ["Scale", "Rotation", "Active", "SizeDelta", "AnchoredPosition", "GraphicColor", "GraphicAlpha", "CanvasGroupAlpha"] },
+    { "path": "Label", "components": ["RectTransform", "TextMeshProUGUI"], "tracks": ["Scale", "GraphicColor", "FontSize", "TextReveal", "CharScale", "CanvasGroupAlpha"] }
   ],
   "states": [
     {
@@ -143,11 +144,15 @@ value to that key.
 
 ## Fading a group
 
-To fade a whole popup or panel with its children, animate `CanvasGroupAlpha` on an object that has a `CanvasGroup`: one
-track fades everything under it. The commands do not add a `CanvasGroup`. If the object has none (its `tracks` list in a
-read has no `CanvasGroupAlpha`), ask the person to add one (Add Component > Canvas Group), then read again. Otherwise fade
-each graphic with its own `GraphicAlpha` track, and remember that a closing state leaves them at 0, so the opening state
-must start them from 0 and bring them back to 1 (`start: KeyValue`).
+To fade a whole popup or panel with its children, write one `CanvasGroupAlpha` track on that object: one track fades
+everything under it. Every UI object (one with a `RectTransform`) lists `CanvasGroupAlpha` in its `tracks`. If the object
+has no `CanvasGroup` yet (see its `components`), the write adds one, which changes nothing by itself (alpha 1), and says so
+in `changes`. Use `GraphicAlpha` for one graphic, or for children that fade at different times, not one per graphic to
+fade a group.
+
+A closing state leaves the alpha at 0, so the opening state must start from 0 and bring it back to 1
+(`start: KeyValue`). An object at alpha 0 still takes clicks, and these commands do not turn it off: tell the person to
+deactivate it after the closing state (or turn off its CanvasGroup's Blocks Raycasts) if it stays over other controls.
 
 ## After a write
 
